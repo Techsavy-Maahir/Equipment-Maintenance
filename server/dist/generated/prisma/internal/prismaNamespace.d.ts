@@ -684,6 +684,7 @@ export declare const UserScalarFieldEnum: {
     readonly name: "name";
     readonly password_hash: "password_hash";
     readonly role: "role";
+    readonly isActive: "isActive";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -765,6 +766,10 @@ export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'Role[]'
  */
 export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>;
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>;
 /**
  * Reference to a field of type 'DateTime'
  */

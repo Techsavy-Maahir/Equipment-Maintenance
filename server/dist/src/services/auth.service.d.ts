@@ -8,6 +8,7 @@ export declare const authService: {
             id: number;
             name: string;
             password_hash: string | null;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
         };

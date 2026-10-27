@@ -111,7 +111,7 @@ app.use((req, res) => {
 });
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error("Error:", err);
+    console.error("Request error:", err);
     // Zod validation error (caught by validate middleware)
     if (err instanceof ValidationError) {
         return res.status(400).json({
@@ -138,11 +138,16 @@ app.use((err, req, res, next) => {
             statusCode: err.statusCode,
         });
     }
-    // Unknown error
-    res.status(500).json({
-        error: "Internal Server Error",
-        message: "An unexpected error occurred",
-        statusCode: 500,
+    const statusCode = typeof err === "object" &&
+        err !== null &&
+        "statusCode" in err &&
+        typeof err.statusCode === "number"
+        ? err.statusCode
+        : 500;
+    res.status(statusCode).json({
+        error: statusCode === 500 ? "Internal Server Error" : "Request Error",
+        message: statusCode === 500 ? "An unexpected error occurred" : "The request could not be processed",
+        statusCode,
     });
 });
 export default app;

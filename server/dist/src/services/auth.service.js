@@ -1,7 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { env } from "../env.js";
+import { AppError } from "../errors.js";
 import { prisma } from "../prisma.js";
-const JWT_SECRET = "your-super-secret-key-change-in-production";
 const JWT_EXPIRY = "8h";
 export const authService = {
     async login(email, password) {
@@ -15,16 +16,16 @@ export const authService = {
         if (!user) {
             // User doesn't exist, but we pretend to check password
             await bcrypt.compare(password, dummy);
-            throw new Error("Invalid credentials");
+            throw new AppError(401, "Invalid credentials");
         }
         // Check if password matches (we don't store passwords, just for demo)
         // In real app, compare password with user.password_hash
-        const isValid = await bcrypt.compare(password, user.password_hash || dummy);
-        if (!isValid) {
-            throw new Error("Invalid credentials");
+        const isValid = await bcrypt.compare(password, user.password_hash ?? dummy);
+        if (!user.password_hash || !isValid) {
+            throw new AppError(401, "Invalid credentials");
         }
         // Create JWT token
-        const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+        const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, env.JWT_SECRET, { expiresIn: JWT_EXPIRY });
         return { token, user };
     },
     async getCurrentUser(userId) {
@@ -42,7 +43,7 @@ export const authService = {
     },
     verifyToken(token) {
         try {
-            const decoded = jwt.verify(token, JWT_SECRET);
+            const decoded = jwt.verify(token, env.JWT_SECRET);
             return decoded;
         }
         catch {
