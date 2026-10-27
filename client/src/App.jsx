@@ -1,122 +1,125 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useCallback, useEffect, useState } from "react";
+import { api, handleApiError, isUnauthorizedError } from "./api";
+import { EquipmentListPage } from "./pages/EquipmentListPage";
+import { LoginPage } from "./pages/LoginPage";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [user, setUser] = useState(null);
+  const [authStatus, setAuthStatus] = useState("loading");
+  const [authError, setAuthError] = useState("");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const loadCurrentUser = useCallback(async () => {
+    setAuthStatus("loading");
+    setAuthError("");
+
+    try {
+      const currentUser = await api.getCurrentUser();
+      setUser(currentUser);
+      setAuthStatus("authenticated");
+    } catch (error) {
+      if (isUnauthorizedError(error)) {
+        setUser(null);
+        setAuthStatus("unauthenticated");
+        return;
+      }
+
+      setAuthError(handleApiError(error));
+      setAuthStatus("error");
+    }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    const restoreSession = async () => {
+      try {
+        const currentUser = await api.getCurrentUser();
+        if (active) {
+          setUser(currentUser);
+          setAuthStatus("authenticated");
+        }
+      } catch (error) {
+        if (!active) return;
+
+        if (isUnauthorizedError(error)) {
+          setUser(null);
+          setAuthStatus("unauthenticated");
+        } else {
+          setAuthError(handleApiError(error));
+          setAuthStatus("error");
+        }
+      }
+    };
+
+    restoreSession();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleLogin = async (email, password) => {
+    const authenticatedUser = await api.login(email, password);
+    setUser(authenticatedUser);
+    setAuthError("");
+    setAuthStatus("authenticated");
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    setAuthError("");
+
+    try {
+      await api.logout();
+      setUser(null);
+      setAuthStatus("unauthenticated");
+    } catch (error) {
+      setAuthError(handleApiError(error));
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  if (authStatus === "loading") {
+    return <main className="app-shell app-message">Checking your session...</main>;
+  }
+
+  if (authStatus === "error") {
+    return (
+      <main className="app-shell app-message" role="alert">
+        <p>Unable to check your sign-in status: {authError}</p>
+        <button className="button button-primary" type="button" onClick={loadCurrentUser}>
+          Try again
+        </button>
+      </main>
+    );
+  }
+
+  if (authStatus === "unauthenticated") {
+    return <LoginPage onLogin={handleLogin} />;
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <main className="app-shell">
+      <header className="app-header">
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
+          <p className="app-eyebrow">Equipment Maintenance</p>
+          <p className="app-user">{user?.name} · {user?.role}</p>
         </div>
         <button
+          className="button button-secondary"
           type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          onClick={handleLogout}
+          disabled={isLoggingOut}
         >
-          Count is {count}
+          {isLoggingOut ? "Signing out..." : "Sign out"}
         </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      </header>
+      {authError && <p className="app-error" role="alert">{authError}</p>}
+      <EquipmentListPage />
+    </main>
+  );
 }
 
-export default App
+export default App;

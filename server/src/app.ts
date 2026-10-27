@@ -1,16 +1,96 @@
 import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { ZodError } from "zod";
 import { AppError, ValidationError, ConflictError } from "./errors.js";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js";
+import { env } from "./env.js";
+import { PrismaClient } from "../generated/prisma/client.js";
+import cookieParser from "cookie-parser";
+import { authService } from "./services/auth.service.js";
+import { authMiddleware, AuthRequest } from "./middleware/auth.middleware.js";
 
 const app = express();
+const prisma = new PrismaClient();
 
-// Middleware
+app.use(cookieParser());
+
+// CORS middleware
+app.use(
+  cors({
+    origin: env.CLIENT_ORIGIN,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
+
+// JSON middleware
 app.use(express.json());
 
 // Health check endpoint
 app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "ok", message: "Server is healthy" });
+});
+
+// POST /api/login
+app.post("/api/login", async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      throw new AppError(400, "Email and password required");
+    }
+
+    const { token, user } = await authService.login(email, password);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: env.NODE_ENV === "production",
+      maxAge: 8 * 60 * 60 * 1000, // 8 hours
+    });
+
+    res.status(200).json({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/logout
+app.post("/api/logout", (req: AuthRequest, res: Response) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out" });
+});
+
+// GET /api/me
+app.get("/api/me", authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const user = await authService.getCurrentUser(req.userId!);
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET /api/equipment - fetch all equipment
+app.get("/api/equipment", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const equipment = await prisma.equipment.findMany({
+      include: {
+        department: true,
+        location: true,
+        category: true,
+      },
+    });
+    res.status(200).json(equipment);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Validation middleware factory
@@ -45,7 +125,7 @@ app.use((req: Request, res: Response) => {
 
 // Global error handler
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
-  console.error("Error:", err);
+  console.error("Request error:", err);
 
   // Zod validation error (caught by validate middleware)
   if (err instanceof ValidationError) {
@@ -76,11 +156,18 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     });
   }
 
-  // Unknown error
-  res.status(500).json({
-    error: "Internal Server Error",
-    message: "An unexpected error occurred",
-    statusCode: 500,
+  const statusCode =
+    typeof err === "object" &&
+    err !== null &&
+    "statusCode" in err &&
+    typeof err.statusCode === "number"
+      ? err.statusCode
+      : 500;
+
+  res.status(statusCode).json({
+    error: statusCode === 500 ? "Internal Server Error" : "Request Error",
+    message: statusCode === 500 ? "An unexpected error occurred" : "The request could not be processed",
+    statusCode,
   });
 });
 

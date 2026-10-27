@@ -1,7 +1,5 @@
 import "dotenv/config";
-import { PrismaClient } from "./generated/prisma/client.ts";
-
-const prisma = new PrismaClient();
+import { prisma } from "./src/prisma.ts";
 
 async function main() {
   // Clear existing data (idempotent: safe to run multiple times)
@@ -14,37 +12,43 @@ async function main() {
   console.log("Cleared existing data.");
 
   // Seed Users (1 per role)
-  const admin = await prisma.user.create({
-    data: {
-      email: "admin@example.com",
-      name: "Admin User",
-      role: "ADMIN",
-    },
-  });
+const passwordHash = "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36P4/KFm";
 
-  const manager = await prisma.user.create({
-    data: {
-      email: "manager@example.com",
-      name: "Manager User",
-      role: "MANAGER",
-    },
-  });
+const admin = await prisma.user.create({
+  data: {
+    email: "admin@example.com",
+    name: "Admin User",
+    role: "ADMIN",
+    password_hash: passwordHash,
+  },
+});
 
-  const technician = await prisma.user.create({
-    data: {
-      email: "technician@example.com",
-      name: "Technician User",
-      role: "TECHNICIAN",
-    },
-  });
+const manager = await prisma.user.create({
+  data: {
+    email: "manager@example.com",
+    name: "Manager User",
+    role: "MANAGER",
+    password_hash: passwordHash,
+  },
+});
 
-  const viewer = await prisma.user.create({
-    data: {
-      email: "viewer@example.com",
-      name: "Viewer User",
-      role: "VIEWER",
-    },
-  });
+const technician = await prisma.user.create({
+  data: {
+    email: "technician@example.com",
+    name: "Technician User",
+    role: "TECHNICIAN",
+    password_hash: passwordHash,
+  },
+});
+
+const viewer = await prisma.user.create({
+  data: {
+    email: "viewer@example.com",
+    name: "Viewer User",
+    role: "VIEWER",
+    password_hash: passwordHash,
+  },
+});
 
   console.log("Created 4 users (1 per role).");
 

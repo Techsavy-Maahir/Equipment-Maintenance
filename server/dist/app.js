@@ -1,13 +1,40 @@
 import express from "express";
+import cors from "cors";
 import { ZodError } from "zod";
 import { AppError, ValidationError } from "./errors.js";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js";
+import { env } from "./env.js";
+import { PrismaClient } from "../generated/prisma/client.js";
 const app = express();
-// Middleware
+const prisma = new PrismaClient();
+// CORS middleware
+app.use(cors({
+    origin: env.CLIENT_ORIGIN,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+}));
+// JSON middleware
 app.use(express.json());
 // Health check endpoint
 app.get("/api/health", (req, res) => {
     res.status(200).json({ status: "ok", message: "Server is healthy" });
+});
+// GET /api/equipment - fetch all equipment
+app.get("/api/equipment", async (req, res, next) => {
+    try {
+        const equipment = await prisma.equipment.findMany({
+            include: {
+                department: true,
+                location: true,
+                category: true,
+            },
+        });
+        res.status(200).json(equipment);
+    }
+    catch (error) {
+        next(error);
+    }
 });
 // Validation middleware factory
 export const validate = (schema) => {
