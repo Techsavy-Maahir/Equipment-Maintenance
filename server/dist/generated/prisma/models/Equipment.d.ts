@@ -35,6 +35,8 @@ export type EquipmentMinAggregateOutputType = {
     departmentId: number | null;
     locationId: number | null;
     categoryId: number | null;
+    isDeactivated: boolean | null;
+    deactivatedAt: Date | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
@@ -48,6 +50,8 @@ export type EquipmentMaxAggregateOutputType = {
     departmentId: number | null;
     locationId: number | null;
     categoryId: number | null;
+    isDeactivated: boolean | null;
+    deactivatedAt: Date | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
@@ -61,6 +65,8 @@ export type EquipmentCountAggregateOutputType = {
     departmentId: number;
     locationId: number;
     categoryId: number;
+    isDeactivated: number;
+    deactivatedAt: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -87,6 +93,8 @@ export type EquipmentMinAggregateInputType = {
     departmentId?: true;
     locationId?: true;
     categoryId?: true;
+    isDeactivated?: true;
+    deactivatedAt?: true;
     createdAt?: true;
     updatedAt?: true;
 };
@@ -100,6 +108,8 @@ export type EquipmentMaxAggregateInputType = {
     departmentId?: true;
     locationId?: true;
     categoryId?: true;
+    isDeactivated?: true;
+    deactivatedAt?: true;
     createdAt?: true;
     updatedAt?: true;
 };
@@ -113,6 +123,8 @@ export type EquipmentCountAggregateInputType = {
     departmentId?: true;
     locationId?: true;
     categoryId?: true;
+    isDeactivated?: true;
+    deactivatedAt?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -203,6 +215,8 @@ export type EquipmentGroupByOutputType = {
     departmentId: number;
     locationId: number;
     categoryId: number;
+    isDeactivated: boolean;
+    deactivatedAt: Date | null;
     createdAt: Date;
     updatedAt: Date;
     _count: EquipmentCountAggregateOutputType | null;
@@ -227,11 +241,14 @@ export type EquipmentWhereInput = {
     departmentId?: Prisma.IntFilter<"Equipment"> | number;
     locationId?: Prisma.IntFilter<"Equipment"> | number;
     categoryId?: Prisma.IntFilter<"Equipment"> | number;
+    isDeactivated?: Prisma.BoolFilter<"Equipment"> | boolean;
+    deactivatedAt?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
     createdAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string;
     department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>;
     location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>;
     category?: Prisma.XOR<Prisma.EquipmentCategoryScalarRelationFilter, Prisma.EquipmentCategoryWhereInput>;
+    locationHistory?: Prisma.EquipmentLocationHistoryListRelationFilter;
 };
 export type EquipmentOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
@@ -243,11 +260,14 @@ export type EquipmentOrderByWithRelationInput = {
     departmentId?: Prisma.SortOrder;
     locationId?: Prisma.SortOrder;
     categoryId?: Prisma.SortOrder;
+    isDeactivated?: Prisma.SortOrder;
+    deactivatedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     department?: Prisma.DepartmentOrderByWithRelationInput;
     location?: Prisma.LocationOrderByWithRelationInput;
     category?: Prisma.EquipmentCategoryOrderByWithRelationInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryOrderByRelationAggregateInput;
 };
 export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
     id?: number;
@@ -262,11 +282,14 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
     departmentId?: Prisma.IntFilter<"Equipment"> | number;
     locationId?: Prisma.IntFilter<"Equipment"> | number;
     categoryId?: Prisma.IntFilter<"Equipment"> | number;
+    isDeactivated?: Prisma.BoolFilter<"Equipment"> | boolean;
+    deactivatedAt?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
     createdAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string;
     department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>;
     location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>;
     category?: Prisma.XOR<Prisma.EquipmentCategoryScalarRelationFilter, Prisma.EquipmentCategoryWhereInput>;
+    locationHistory?: Prisma.EquipmentLocationHistoryListRelationFilter;
 }, "id" | "code">;
 export type EquipmentOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
@@ -278,6 +301,8 @@ export type EquipmentOrderByWithAggregationInput = {
     departmentId?: Prisma.SortOrder;
     locationId?: Prisma.SortOrder;
     categoryId?: Prisma.SortOrder;
+    isDeactivated?: Prisma.SortOrder;
+    deactivatedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.EquipmentCountOrderByAggregateInput;
@@ -299,6 +324,8 @@ export type EquipmentScalarWhereWithAggregatesInput = {
     departmentId?: Prisma.IntWithAggregatesFilter<"Equipment"> | number;
     locationId?: Prisma.IntWithAggregatesFilter<"Equipment"> | number;
     categoryId?: Prisma.IntWithAggregatesFilter<"Equipment"> | number;
+    isDeactivated?: Prisma.BoolWithAggregatesFilter<"Equipment"> | boolean;
+    deactivatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Equipment"> | Date | string | null;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Equipment"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Equipment"> | Date | string;
 };
@@ -308,11 +335,14 @@ export type EquipmentCreateInput = {
     description?: string | null;
     status?: $Enums.EquipmentStatus;
     criticality: $Enums.Criticality;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateInput = {
     id?: number;
@@ -324,8 +354,11 @@ export type EquipmentUncheckedCreateInput = {
     departmentId: number;
     locationId: number;
     categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUpdateInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -333,11 +366,14 @@ export type EquipmentUpdateInput = {
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -349,8 +385,11 @@ export type EquipmentUncheckedUpdateInput = {
     departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
     locationId?: Prisma.IntFieldUpdateOperationsInput | number;
     categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentCreateManyInput = {
     id?: number;
@@ -362,6 +401,8 @@ export type EquipmentCreateManyInput = {
     departmentId: number;
     locationId: number;
     categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -371,6 +412,8 @@ export type EquipmentUpdateManyMutationInput = {
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -384,6 +427,8 @@ export type EquipmentUncheckedUpdateManyInput = {
     departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
     locationId?: Prisma.IntFieldUpdateOperationsInput | number;
     categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -405,6 +450,8 @@ export type EquipmentCountOrderByAggregateInput = {
     departmentId?: Prisma.SortOrder;
     locationId?: Prisma.SortOrder;
     categoryId?: Prisma.SortOrder;
+    isDeactivated?: Prisma.SortOrder;
+    deactivatedAt?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -424,6 +471,8 @@ export type EquipmentMaxOrderByAggregateInput = {
     departmentId?: Prisma.SortOrder;
     locationId?: Prisma.SortOrder;
     categoryId?: Prisma.SortOrder;
+    isDeactivated?: Prisma.SortOrder;
+    deactivatedAt?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -437,6 +486,8 @@ export type EquipmentMinOrderByAggregateInput = {
     departmentId?: Prisma.SortOrder;
     locationId?: Prisma.SortOrder;
     categoryId?: Prisma.SortOrder;
+    isDeactivated?: Prisma.SortOrder;
+    deactivatedAt?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -445,6 +496,10 @@ export type EquipmentSumOrderByAggregateInput = {
     departmentId?: Prisma.SortOrder;
     locationId?: Prisma.SortOrder;
     categoryId?: Prisma.SortOrder;
+};
+export type EquipmentScalarRelationFilter = {
+    is?: Prisma.EquipmentWhereInput;
+    isNot?: Prisma.EquipmentWhereInput;
 };
 export type EquipmentCreateNestedManyWithoutDepartmentInput = {
     create?: Prisma.XOR<Prisma.EquipmentCreateWithoutDepartmentInput, Prisma.EquipmentUncheckedCreateWithoutDepartmentInput> | Prisma.EquipmentCreateWithoutDepartmentInput[] | Prisma.EquipmentUncheckedCreateWithoutDepartmentInput[];
@@ -566,16 +621,34 @@ export type EnumEquipmentStatusFieldUpdateOperationsInput = {
 export type EnumCriticalityFieldUpdateOperationsInput = {
     set?: $Enums.Criticality;
 };
+export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null;
+};
+export type EquipmentCreateNestedOneWithoutLocationHistoryInput = {
+    create?: Prisma.XOR<Prisma.EquipmentCreateWithoutLocationHistoryInput, Prisma.EquipmentUncheckedCreateWithoutLocationHistoryInput>;
+    connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutLocationHistoryInput;
+    connect?: Prisma.EquipmentWhereUniqueInput;
+};
+export type EquipmentUpdateOneRequiredWithoutLocationHistoryNestedInput = {
+    create?: Prisma.XOR<Prisma.EquipmentCreateWithoutLocationHistoryInput, Prisma.EquipmentUncheckedCreateWithoutLocationHistoryInput>;
+    connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutLocationHistoryInput;
+    upsert?: Prisma.EquipmentUpsertWithoutLocationHistoryInput;
+    connect?: Prisma.EquipmentWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.EquipmentUpdateToOneWithWhereWithoutLocationHistoryInput, Prisma.EquipmentUpdateWithoutLocationHistoryInput>, Prisma.EquipmentUncheckedUpdateWithoutLocationHistoryInput>;
+};
 export type EquipmentCreateWithoutDepartmentInput = {
     code: string;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
     criticality: $Enums.Criticality;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutDepartmentInput = {
     id?: number;
@@ -586,8 +659,11 @@ export type EquipmentUncheckedCreateWithoutDepartmentInput = {
     criticality: $Enums.Criticality;
     locationId: number;
     categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutDepartmentInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -623,6 +699,8 @@ export type EquipmentScalarWhereInput = {
     departmentId?: Prisma.IntFilter<"Equipment"> | number;
     locationId?: Prisma.IntFilter<"Equipment"> | number;
     categoryId?: Prisma.IntFilter<"Equipment"> | number;
+    isDeactivated?: Prisma.BoolFilter<"Equipment"> | boolean;
+    deactivatedAt?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
     createdAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Equipment"> | Date | string;
 };
@@ -632,10 +710,13 @@ export type EquipmentCreateWithoutLocationInput = {
     description?: string | null;
     status?: $Enums.EquipmentStatus;
     criticality: $Enums.Criticality;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutLocationInput = {
     id?: number;
@@ -646,8 +727,11 @@ export type EquipmentUncheckedCreateWithoutLocationInput = {
     criticality: $Enums.Criticality;
     departmentId: number;
     categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutLocationInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -676,10 +760,13 @@ export type EquipmentCreateWithoutCategoryInput = {
     description?: string | null;
     status?: $Enums.EquipmentStatus;
     criticality: $Enums.Criticality;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutCategoryInput = {
     id?: number;
@@ -690,8 +777,11 @@ export type EquipmentUncheckedCreateWithoutCategoryInput = {
     criticality: $Enums.Criticality;
     departmentId: number;
     locationId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutCategoryInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -714,6 +804,77 @@ export type EquipmentUpdateManyWithWhereWithoutCategoryInput = {
     where: Prisma.EquipmentScalarWhereInput;
     data: Prisma.XOR<Prisma.EquipmentUpdateManyMutationInput, Prisma.EquipmentUncheckedUpdateManyWithoutCategoryInput>;
 };
+export type EquipmentCreateWithoutLocationHistoryInput = {
+    code: string;
+    name: string;
+    description?: string | null;
+    status?: $Enums.EquipmentStatus;
+    criticality: $Enums.Criticality;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
+    location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
+    category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
+};
+export type EquipmentUncheckedCreateWithoutLocationHistoryInput = {
+    id?: number;
+    code: string;
+    name: string;
+    description?: string | null;
+    status?: $Enums.EquipmentStatus;
+    criticality: $Enums.Criticality;
+    departmentId: number;
+    locationId: number;
+    categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type EquipmentCreateOrConnectWithoutLocationHistoryInput = {
+    where: Prisma.EquipmentWhereUniqueInput;
+    create: Prisma.XOR<Prisma.EquipmentCreateWithoutLocationHistoryInput, Prisma.EquipmentUncheckedCreateWithoutLocationHistoryInput>;
+};
+export type EquipmentUpsertWithoutLocationHistoryInput = {
+    update: Prisma.XOR<Prisma.EquipmentUpdateWithoutLocationHistoryInput, Prisma.EquipmentUncheckedUpdateWithoutLocationHistoryInput>;
+    create: Prisma.XOR<Prisma.EquipmentCreateWithoutLocationHistoryInput, Prisma.EquipmentUncheckedCreateWithoutLocationHistoryInput>;
+    where?: Prisma.EquipmentWhereInput;
+};
+export type EquipmentUpdateToOneWithWhereWithoutLocationHistoryInput = {
+    where?: Prisma.EquipmentWhereInput;
+    data: Prisma.XOR<Prisma.EquipmentUpdateWithoutLocationHistoryInput, Prisma.EquipmentUncheckedUpdateWithoutLocationHistoryInput>;
+};
+export type EquipmentUpdateWithoutLocationHistoryInput = {
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
+    location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
+    category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
+};
+export type EquipmentUncheckedUpdateWithoutLocationHistoryInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
+    locationId?: Prisma.IntFieldUpdateOperationsInput | number;
+    categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
 export type EquipmentCreateManyDepartmentInput = {
     id?: number;
     code: string;
@@ -723,6 +884,8 @@ export type EquipmentCreateManyDepartmentInput = {
     criticality: $Enums.Criticality;
     locationId: number;
     categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -732,10 +895,13 @@ export type EquipmentUpdateWithoutDepartmentInput = {
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutDepartmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -746,8 +912,11 @@ export type EquipmentUncheckedUpdateWithoutDepartmentInput = {
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
     locationId?: Prisma.IntFieldUpdateOperationsInput | number;
     categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateManyWithoutDepartmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -758,6 +927,8 @@ export type EquipmentUncheckedUpdateManyWithoutDepartmentInput = {
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
     locationId?: Prisma.IntFieldUpdateOperationsInput | number;
     categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -770,6 +941,8 @@ export type EquipmentCreateManyLocationInput = {
     criticality: $Enums.Criticality;
     departmentId: number;
     categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -779,10 +952,13 @@ export type EquipmentUpdateWithoutLocationInput = {
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutLocationInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -793,8 +969,11 @@ export type EquipmentUncheckedUpdateWithoutLocationInput = {
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
     departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
     categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateManyWithoutLocationInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -805,6 +984,8 @@ export type EquipmentUncheckedUpdateManyWithoutLocationInput = {
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
     departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
     categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -817,6 +998,8 @@ export type EquipmentCreateManyCategoryInput = {
     criticality: $Enums.Criticality;
     departmentId: number;
     locationId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -826,10 +1009,13 @@ export type EquipmentUpdateWithoutCategoryInput = {
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutCategoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -840,8 +1026,11 @@ export type EquipmentUncheckedUpdateWithoutCategoryInput = {
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
     departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
     locationId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateManyWithoutCategoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -852,8 +1041,34 @@ export type EquipmentUncheckedUpdateManyWithoutCategoryInput = {
     criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
     departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
     locationId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+/**
+ * Count Type EquipmentCountOutputType
+ */
+export type EquipmentCountOutputType = {
+    locationHistory: number;
+};
+export type EquipmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    locationHistory?: boolean | EquipmentCountOutputTypeCountLocationHistoryArgs;
+};
+/**
+ * EquipmentCountOutputType without action
+ */
+export type EquipmentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EquipmentCountOutputType
+     */
+    select?: Prisma.EquipmentCountOutputTypeSelect<ExtArgs> | null;
+};
+/**
+ * EquipmentCountOutputType without action
+ */
+export type EquipmentCountOutputTypeCountLocationHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.EquipmentLocationHistoryWhereInput;
 };
 export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
@@ -865,11 +1080,15 @@ export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
     departmentId?: boolean;
     locationId?: boolean;
     categoryId?: boolean;
+    isDeactivated?: boolean;
+    deactivatedAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>;
     location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>;
     category?: boolean | Prisma.EquipmentCategoryDefaultArgs<ExtArgs>;
+    locationHistory?: boolean | Prisma.Equipment$locationHistoryArgs<ExtArgs>;
+    _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["equipment"]>;
 export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
@@ -881,6 +1100,8 @@ export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
     departmentId?: boolean;
     locationId?: boolean;
     categoryId?: boolean;
+    isDeactivated?: boolean;
+    deactivatedAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>;
@@ -897,6 +1118,8 @@ export type EquipmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
     departmentId?: boolean;
     locationId?: boolean;
     categoryId?: boolean;
+    isDeactivated?: boolean;
+    deactivatedAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>;
@@ -913,14 +1136,18 @@ export type EquipmentSelectScalar = {
     departmentId?: boolean;
     locationId?: boolean;
     categoryId?: boolean;
+    isDeactivated?: boolean;
+    deactivatedAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "description" | "status" | "criticality" | "departmentId" | "locationId" | "categoryId" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>;
+export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "description" | "status" | "criticality" | "departmentId" | "locationId" | "categoryId" | "isDeactivated" | "deactivatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>;
 export type EquipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>;
     location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>;
     category?: boolean | Prisma.EquipmentCategoryDefaultArgs<ExtArgs>;
+    locationHistory?: boolean | Prisma.Equipment$locationHistoryArgs<ExtArgs>;
+    _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type EquipmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>;
@@ -938,6 +1165,7 @@ export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
         department: Prisma.$DepartmentPayload<ExtArgs>;
         location: Prisma.$LocationPayload<ExtArgs>;
         category: Prisma.$EquipmentCategoryPayload<ExtArgs>;
+        locationHistory: Prisma.$EquipmentLocationHistoryPayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: number;
@@ -949,6 +1177,8 @@ export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
         departmentId: number;
         locationId: number;
         categoryId: number;
+        isDeactivated: boolean;
+        deactivatedAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["equipment"]>;
@@ -1283,6 +1513,7 @@ export interface Prisma__EquipmentClient<T, Null = never, ExtArgs extends runtim
     department<T extends Prisma.DepartmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentDefaultArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
     location<T extends Prisma.LocationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LocationDefaultArgs<ExtArgs>>): Prisma.Prisma__LocationClient<runtime.Types.Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
     category<T extends Prisma.EquipmentCategoryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EquipmentCategoryDefaultArgs<ExtArgs>>): Prisma.Prisma__EquipmentCategoryClient<runtime.Types.Result.GetResult<Prisma.$EquipmentCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    locationHistory<T extends Prisma.Equipment$locationHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$locationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentLocationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1317,6 +1548,8 @@ export interface EquipmentFieldRefs {
     readonly departmentId: Prisma.FieldRef<"Equipment", 'Int'>;
     readonly locationId: Prisma.FieldRef<"Equipment", 'Int'>;
     readonly categoryId: Prisma.FieldRef<"Equipment", 'Int'>;
+    readonly isDeactivated: Prisma.FieldRef<"Equipment", 'Boolean'>;
+    readonly deactivatedAt: Prisma.FieldRef<"Equipment", 'DateTime'>;
     readonly createdAt: Prisma.FieldRef<"Equipment", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Equipment", 'DateTime'>;
 }
@@ -1696,6 +1929,29 @@ export type EquipmentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
      * Limit how many Equipment to delete.
      */
     limit?: number;
+};
+/**
+ * Equipment.locationHistory
+ */
+export type Equipment$locationHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EquipmentLocationHistory
+     */
+    select?: Prisma.EquipmentLocationHistorySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the EquipmentLocationHistory
+     */
+    omit?: Prisma.EquipmentLocationHistoryOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.EquipmentLocationHistoryInclude<ExtArgs> | null;
+    where?: Prisma.EquipmentLocationHistoryWhereInput;
+    orderBy?: Prisma.EquipmentLocationHistoryOrderByWithRelationInput | Prisma.EquipmentLocationHistoryOrderByWithRelationInput[];
+    cursor?: Prisma.EquipmentLocationHistoryWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.EquipmentLocationHistoryScalarFieldEnum | Prisma.EquipmentLocationHistoryScalarFieldEnum[];
 };
 /**
  * Equipment without action

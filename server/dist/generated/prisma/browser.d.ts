@@ -27,4 +27,9 @@ export type EquipmentCategory = Prisma.EquipmentCategoryModel;
  *
  */
 export type Equipment = Prisma.EquipmentModel;
+/**
+ * Model EquipmentLocationHistory
+ *
+ */
+export type EquipmentLocationHistory = Prisma.EquipmentLocationHistoryModel;
 //# sourceMappingURL=browser.d.ts.map

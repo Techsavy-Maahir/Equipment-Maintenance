@@ -258,6 +258,7 @@ export declare const ModelName: {
     readonly Location: "Location";
     readonly EquipmentCategory: "EquipmentCategory";
     readonly Equipment: "Equipment";
+    readonly EquipmentLocationHistory: "EquipmentLocationHistory";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export interface TypeMapCb<GlobalOmitOptions = {}> extends runtime.Types.Utils.Fn<{
@@ -270,7 +271,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "department" | "location" | "equipmentCategory" | "equipment";
+        modelProps: "user" | "department" | "location" | "equipmentCategory" | "equipment" | "equipmentLocationHistory";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -644,6 +645,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
+        EquipmentLocationHistory: {
+            payload: Prisma.$EquipmentLocationHistoryPayload<ExtArgs>;
+            fields: Prisma.EquipmentLocationHistoryFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.EquipmentLocationHistoryFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.EquipmentLocationHistoryFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload>;
+                };
+                findFirst: {
+                    args: Prisma.EquipmentLocationHistoryFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.EquipmentLocationHistoryFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload>;
+                };
+                findMany: {
+                    args: Prisma.EquipmentLocationHistoryFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload>[];
+                };
+                create: {
+                    args: Prisma.EquipmentLocationHistoryCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload>;
+                };
+                createMany: {
+                    args: Prisma.EquipmentLocationHistoryCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.EquipmentLocationHistoryCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload>[];
+                };
+                delete: {
+                    args: Prisma.EquipmentLocationHistoryDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload>;
+                };
+                update: {
+                    args: Prisma.EquipmentLocationHistoryUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.EquipmentLocationHistoryDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.EquipmentLocationHistoryUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.EquipmentLocationHistoryUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload>[];
+                };
+                upsert: {
+                    args: Prisma.EquipmentLocationHistoryUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EquipmentLocationHistoryPayload>;
+                };
+                aggregate: {
+                    args: Prisma.EquipmentLocationHistoryAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateEquipmentLocationHistory>;
+                };
+                groupBy: {
+                    args: Prisma.EquipmentLocationHistoryGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.EquipmentLocationHistoryGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.EquipmentLocationHistoryCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.EquipmentLocationHistoryCountAggregateOutputType> | number;
+                };
+            };
+        };
     };
 } & {
     other: {
@@ -720,10 +795,20 @@ export declare const EquipmentScalarFieldEnum: {
     readonly departmentId: "departmentId";
     readonly locationId: "locationId";
     readonly categoryId: "categoryId";
+    readonly isDeactivated: "isDeactivated";
+    readonly deactivatedAt: "deactivatedAt";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
 export type EquipmentScalarFieldEnum = (typeof EquipmentScalarFieldEnum)[keyof typeof EquipmentScalarFieldEnum];
+export declare const EquipmentLocationHistoryScalarFieldEnum: {
+    readonly id: "id";
+    readonly equipmentId: "equipmentId";
+    readonly fromLocationId: "fromLocationId";
+    readonly toLocationId: "toLocationId";
+    readonly changedAt: "changedAt";
+};
+export type EquipmentLocationHistoryScalarFieldEnum = (typeof EquipmentLocationHistoryScalarFieldEnum)[keyof typeof EquipmentLocationHistoryScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
@@ -891,6 +976,7 @@ export type GlobalOmitConfig = {
     location?: Prisma.LocationOmit;
     equipmentCategory?: Prisma.EquipmentCategoryOmit;
     equipment?: Prisma.EquipmentOmit;
+    equipmentLocationHistory?: Prisma.EquipmentLocationHistoryOmit;
 };
 export type LogLevel = 'info' | 'query' | 'warn' | 'error';
 export type LogDefinition = {

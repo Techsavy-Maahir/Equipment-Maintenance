@@ -4,12 +4,12 @@ import { ZodError } from "zod";
 import { AppError, ValidationError } from "./errors.js";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js";
 import { env } from "./env.js";
-import { PrismaClient } from "../generated/prisma/client.js";
 import cookieParser from "cookie-parser";
 import { authService } from "./services/auth.service.js";
 import { authMiddleware } from "./middleware/auth.middleware.js";
+import { createEquipment, deactivateEquipment, getEquipment, listEquipment, updateEquipment, } from "./services/equipment.service.js";
+import { createEquipmentSchema, equipmentIdSchema, updateEquipmentSchema, } from "./schemas/equipment.schema.js";
 const app = express();
-const prisma = new PrismaClient();
 app.use(cookieParser());
 // CORS middleware
 app.use(cors({
@@ -64,22 +64,6 @@ app.get("/api/me", authMiddleware, async (req, res, next) => {
         next(error);
     }
 });
-// GET /api/equipment - fetch all equipment
-app.get("/api/equipment", async (req, res, next) => {
-    try {
-        const equipment = await prisma.equipment.findMany({
-            include: {
-                department: true,
-                location: true,
-                category: true,
-            },
-        });
-        res.status(200).json(equipment);
-    }
-    catch (error) {
-        next(error);
-    }
-});
 // Validation middleware factory
 export const validate = (schema) => {
     return (req, res, next) => {
@@ -101,6 +85,57 @@ export const validate = (schema) => {
         }
     };
 };
+const parseEquipmentId = (rawId) => {
+    const result = equipmentIdSchema.safeParse(rawId);
+    if (!result.success) {
+        throw new AppError(400, "Invalid equipment ID");
+    }
+    return result.data;
+};
+app.get("/api/equipment", async (_req, res, next) => {
+    try {
+        res.status(200).json(await listEquipment());
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.post("/api/equipment", validate(createEquipmentSchema), async (req, res, next) => {
+    try {
+        const equipment = await createEquipment(req.body);
+        res.status(201).json(equipment);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.get("/api/equipment/:id", async (req, res, next) => {
+    try {
+        const equipment = await getEquipment(parseEquipmentId(req.params.id));
+        res.status(200).json(equipment);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.put("/api/equipment/:id", validate(updateEquipmentSchema), async (req, res, next) => {
+    try {
+        const equipment = await updateEquipment(parseEquipmentId(req.params.id), req.body);
+        res.status(200).json(equipment);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.delete("/api/equipment/:id", async (req, res, next) => {
+    try {
+        const equipment = await deactivateEquipment(parseEquipmentId(req.params.id));
+        res.status(200).json(equipment);
+    }
+    catch (error) {
+        next(error);
+    }
+});
 // 404 handler
 app.use((req, res) => {
     res.status(404).json({

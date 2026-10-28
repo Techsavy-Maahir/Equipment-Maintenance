@@ -46,6 +46,7 @@ export declare const ModelName: {
     readonly Location: "Location";
     readonly EquipmentCategory: "EquipmentCategory";
     readonly Equipment: "Equipment";
+    readonly EquipmentLocationHistory: "EquipmentLocationHistory";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -97,10 +98,20 @@ export declare const EquipmentScalarFieldEnum: {
     readonly departmentId: "departmentId";
     readonly locationId: "locationId";
     readonly categoryId: "categoryId";
+    readonly isDeactivated: "isDeactivated";
+    readonly deactivatedAt: "deactivatedAt";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
 export type EquipmentScalarFieldEnum = (typeof EquipmentScalarFieldEnum)[keyof typeof EquipmentScalarFieldEnum];
+export declare const EquipmentLocationHistoryScalarFieldEnum: {
+    readonly id: "id";
+    readonly equipmentId: "equipmentId";
+    readonly fromLocationId: "fromLocationId";
+    readonly toLocationId: "toLocationId";
+    readonly changedAt: "changedAt";
+};
+export type EquipmentLocationHistoryScalarFieldEnum = (typeof EquipmentLocationHistoryScalarFieldEnum)[keyof typeof EquipmentLocationHistoryScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";

@@ -161,6 +161,8 @@ export type LocationWhereInput = {
     createdAt?: Prisma.DateTimeFilter<"Location"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Location"> | Date | string;
     equipment?: Prisma.EquipmentListRelationFilter;
+    historyFrom?: Prisma.EquipmentLocationHistoryListRelationFilter;
+    historyTo?: Prisma.EquipmentLocationHistoryListRelationFilter;
 };
 export type LocationOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
@@ -168,6 +170,8 @@ export type LocationOrderByWithRelationInput = {
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     equipment?: Prisma.EquipmentOrderByRelationAggregateInput;
+    historyFrom?: Prisma.EquipmentLocationHistoryOrderByRelationAggregateInput;
+    historyTo?: Prisma.EquipmentLocationHistoryOrderByRelationAggregateInput;
 };
 export type LocationWhereUniqueInput = Prisma.AtLeast<{
     id?: number;
@@ -178,6 +182,8 @@ export type LocationWhereUniqueInput = Prisma.AtLeast<{
     createdAt?: Prisma.DateTimeFilter<"Location"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Location"> | Date | string;
     equipment?: Prisma.EquipmentListRelationFilter;
+    historyFrom?: Prisma.EquipmentLocationHistoryListRelationFilter;
+    historyTo?: Prisma.EquipmentLocationHistoryListRelationFilter;
 }, "id" | "name">;
 export type LocationOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
@@ -204,6 +210,8 @@ export type LocationCreateInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     equipment?: Prisma.EquipmentCreateNestedManyWithoutLocationInput;
+    historyFrom?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutFromLocationInput;
+    historyTo?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutToLocationInput;
 };
 export type LocationUncheckedCreateInput = {
     id?: number;
@@ -211,12 +219,16 @@ export type LocationUncheckedCreateInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     equipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutLocationInput;
+    historyFrom?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutFromLocationInput;
+    historyTo?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutToLocationInput;
 };
 export type LocationUpdateInput = {
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     equipment?: Prisma.EquipmentUpdateManyWithoutLocationNestedInput;
+    historyFrom?: Prisma.EquipmentLocationHistoryUpdateManyWithoutFromLocationNestedInput;
+    historyTo?: Prisma.EquipmentLocationHistoryUpdateManyWithoutToLocationNestedInput;
 };
 export type LocationUncheckedUpdateInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -224,6 +236,8 @@ export type LocationUncheckedUpdateInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     equipment?: Prisma.EquipmentUncheckedUpdateManyWithoutLocationNestedInput;
+    historyFrom?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutFromLocationNestedInput;
+    historyTo?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutToLocationNestedInput;
 };
 export type LocationCreateManyInput = {
     id?: number;
@@ -270,6 +284,10 @@ export type LocationScalarRelationFilter = {
     is?: Prisma.LocationWhereInput;
     isNot?: Prisma.LocationWhereInput;
 };
+export type LocationNullableScalarRelationFilter = {
+    is?: Prisma.LocationWhereInput | null;
+    isNot?: Prisma.LocationWhereInput | null;
+};
 export type LocationCreateNestedOneWithoutEquipmentInput = {
     create?: Prisma.XOR<Prisma.LocationCreateWithoutEquipmentInput, Prisma.LocationUncheckedCreateWithoutEquipmentInput>;
     connectOrCreate?: Prisma.LocationCreateOrConnectWithoutEquipmentInput;
@@ -282,16 +300,46 @@ export type LocationUpdateOneRequiredWithoutEquipmentNestedInput = {
     connect?: Prisma.LocationWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutEquipmentInput, Prisma.LocationUpdateWithoutEquipmentInput>, Prisma.LocationUncheckedUpdateWithoutEquipmentInput>;
 };
+export type LocationCreateNestedOneWithoutHistoryFromInput = {
+    create?: Prisma.XOR<Prisma.LocationCreateWithoutHistoryFromInput, Prisma.LocationUncheckedCreateWithoutHistoryFromInput>;
+    connectOrCreate?: Prisma.LocationCreateOrConnectWithoutHistoryFromInput;
+    connect?: Prisma.LocationWhereUniqueInput;
+};
+export type LocationCreateNestedOneWithoutHistoryToInput = {
+    create?: Prisma.XOR<Prisma.LocationCreateWithoutHistoryToInput, Prisma.LocationUncheckedCreateWithoutHistoryToInput>;
+    connectOrCreate?: Prisma.LocationCreateOrConnectWithoutHistoryToInput;
+    connect?: Prisma.LocationWhereUniqueInput;
+};
+export type LocationUpdateOneWithoutHistoryFromNestedInput = {
+    create?: Prisma.XOR<Prisma.LocationCreateWithoutHistoryFromInput, Prisma.LocationUncheckedCreateWithoutHistoryFromInput>;
+    connectOrCreate?: Prisma.LocationCreateOrConnectWithoutHistoryFromInput;
+    upsert?: Prisma.LocationUpsertWithoutHistoryFromInput;
+    disconnect?: Prisma.LocationWhereInput | boolean;
+    delete?: Prisma.LocationWhereInput | boolean;
+    connect?: Prisma.LocationWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutHistoryFromInput, Prisma.LocationUpdateWithoutHistoryFromInput>, Prisma.LocationUncheckedUpdateWithoutHistoryFromInput>;
+};
+export type LocationUpdateOneRequiredWithoutHistoryToNestedInput = {
+    create?: Prisma.XOR<Prisma.LocationCreateWithoutHistoryToInput, Prisma.LocationUncheckedCreateWithoutHistoryToInput>;
+    connectOrCreate?: Prisma.LocationCreateOrConnectWithoutHistoryToInput;
+    upsert?: Prisma.LocationUpsertWithoutHistoryToInput;
+    connect?: Prisma.LocationWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.LocationUpdateToOneWithWhereWithoutHistoryToInput, Prisma.LocationUpdateWithoutHistoryToInput>, Prisma.LocationUncheckedUpdateWithoutHistoryToInput>;
+};
 export type LocationCreateWithoutEquipmentInput = {
     name: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    historyFrom?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutFromLocationInput;
+    historyTo?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutToLocationInput;
 };
 export type LocationUncheckedCreateWithoutEquipmentInput = {
     id?: number;
     name: string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    historyFrom?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutFromLocationInput;
+    historyTo?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutToLocationInput;
 };
 export type LocationCreateOrConnectWithoutEquipmentInput = {
     where: Prisma.LocationWhereUniqueInput;
@@ -310,21 +358,115 @@ export type LocationUpdateWithoutEquipmentInput = {
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    historyFrom?: Prisma.EquipmentLocationHistoryUpdateManyWithoutFromLocationNestedInput;
+    historyTo?: Prisma.EquipmentLocationHistoryUpdateManyWithoutToLocationNestedInput;
 };
 export type LocationUncheckedUpdateWithoutEquipmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    historyFrom?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutFromLocationNestedInput;
+    historyTo?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutToLocationNestedInput;
+};
+export type LocationCreateWithoutHistoryFromInput = {
+    name: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    equipment?: Prisma.EquipmentCreateNestedManyWithoutLocationInput;
+    historyTo?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutToLocationInput;
+};
+export type LocationUncheckedCreateWithoutHistoryFromInput = {
+    id?: number;
+    name: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    equipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutLocationInput;
+    historyTo?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutToLocationInput;
+};
+export type LocationCreateOrConnectWithoutHistoryFromInput = {
+    where: Prisma.LocationWhereUniqueInput;
+    create: Prisma.XOR<Prisma.LocationCreateWithoutHistoryFromInput, Prisma.LocationUncheckedCreateWithoutHistoryFromInput>;
+};
+export type LocationCreateWithoutHistoryToInput = {
+    name: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    equipment?: Prisma.EquipmentCreateNestedManyWithoutLocationInput;
+    historyFrom?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutFromLocationInput;
+};
+export type LocationUncheckedCreateWithoutHistoryToInput = {
+    id?: number;
+    name: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    equipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutLocationInput;
+    historyFrom?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutFromLocationInput;
+};
+export type LocationCreateOrConnectWithoutHistoryToInput = {
+    where: Prisma.LocationWhereUniqueInput;
+    create: Prisma.XOR<Prisma.LocationCreateWithoutHistoryToInput, Prisma.LocationUncheckedCreateWithoutHistoryToInput>;
+};
+export type LocationUpsertWithoutHistoryFromInput = {
+    update: Prisma.XOR<Prisma.LocationUpdateWithoutHistoryFromInput, Prisma.LocationUncheckedUpdateWithoutHistoryFromInput>;
+    create: Prisma.XOR<Prisma.LocationCreateWithoutHistoryFromInput, Prisma.LocationUncheckedCreateWithoutHistoryFromInput>;
+    where?: Prisma.LocationWhereInput;
+};
+export type LocationUpdateToOneWithWhereWithoutHistoryFromInput = {
+    where?: Prisma.LocationWhereInput;
+    data: Prisma.XOR<Prisma.LocationUpdateWithoutHistoryFromInput, Prisma.LocationUncheckedUpdateWithoutHistoryFromInput>;
+};
+export type LocationUpdateWithoutHistoryFromInput = {
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    equipment?: Prisma.EquipmentUpdateManyWithoutLocationNestedInput;
+    historyTo?: Prisma.EquipmentLocationHistoryUpdateManyWithoutToLocationNestedInput;
+};
+export type LocationUncheckedUpdateWithoutHistoryFromInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    equipment?: Prisma.EquipmentUncheckedUpdateManyWithoutLocationNestedInput;
+    historyTo?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutToLocationNestedInput;
+};
+export type LocationUpsertWithoutHistoryToInput = {
+    update: Prisma.XOR<Prisma.LocationUpdateWithoutHistoryToInput, Prisma.LocationUncheckedUpdateWithoutHistoryToInput>;
+    create: Prisma.XOR<Prisma.LocationCreateWithoutHistoryToInput, Prisma.LocationUncheckedCreateWithoutHistoryToInput>;
+    where?: Prisma.LocationWhereInput;
+};
+export type LocationUpdateToOneWithWhereWithoutHistoryToInput = {
+    where?: Prisma.LocationWhereInput;
+    data: Prisma.XOR<Prisma.LocationUpdateWithoutHistoryToInput, Prisma.LocationUncheckedUpdateWithoutHistoryToInput>;
+};
+export type LocationUpdateWithoutHistoryToInput = {
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    equipment?: Prisma.EquipmentUpdateManyWithoutLocationNestedInput;
+    historyFrom?: Prisma.EquipmentLocationHistoryUpdateManyWithoutFromLocationNestedInput;
+};
+export type LocationUncheckedUpdateWithoutHistoryToInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    equipment?: Prisma.EquipmentUncheckedUpdateManyWithoutLocationNestedInput;
+    historyFrom?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutFromLocationNestedInput;
 };
 /**
  * Count Type LocationCountOutputType
  */
 export type LocationCountOutputType = {
     equipment: number;
+    historyFrom: number;
+    historyTo: number;
 };
 export type LocationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     equipment?: boolean | LocationCountOutputTypeCountEquipmentArgs;
+    historyFrom?: boolean | LocationCountOutputTypeCountHistoryFromArgs;
+    historyTo?: boolean | LocationCountOutputTypeCountHistoryToArgs;
 };
 /**
  * LocationCountOutputType without action
@@ -341,12 +483,26 @@ export type LocationCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
 export type LocationCountOutputTypeCountEquipmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.EquipmentWhereInput;
 };
+/**
+ * LocationCountOutputType without action
+ */
+export type LocationCountOutputTypeCountHistoryFromArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.EquipmentLocationHistoryWhereInput;
+};
+/**
+ * LocationCountOutputType without action
+ */
+export type LocationCountOutputTypeCountHistoryToArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.EquipmentLocationHistoryWhereInput;
+};
 export type LocationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     equipment?: boolean | Prisma.Location$equipmentArgs<ExtArgs>;
+    historyFrom?: boolean | Prisma.Location$historyFromArgs<ExtArgs>;
+    historyTo?: boolean | Prisma.Location$historyToArgs<ExtArgs>;
     _count?: boolean | Prisma.LocationCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["location"]>;
 export type LocationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -370,6 +526,8 @@ export type LocationSelectScalar = {
 export type LocationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["location"]>;
 export type LocationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     equipment?: boolean | Prisma.Location$equipmentArgs<ExtArgs>;
+    historyFrom?: boolean | Prisma.Location$historyFromArgs<ExtArgs>;
+    historyTo?: boolean | Prisma.Location$historyToArgs<ExtArgs>;
     _count?: boolean | Prisma.LocationCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type LocationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
@@ -378,6 +536,8 @@ export type $LocationPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     name: "Location";
     objects: {
         equipment: Prisma.$EquipmentPayload<ExtArgs>[];
+        historyFrom: Prisma.$EquipmentLocationHistoryPayload<ExtArgs>[];
+        historyTo: Prisma.$EquipmentLocationHistoryPayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: number;
@@ -714,6 +874,8 @@ export interface LocationDelegate<ExtArgs extends runtime.Types.Extensions.Inter
 export interface Prisma__LocationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise";
     equipment<T extends Prisma.Location$equipmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$equipmentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    historyFrom<T extends Prisma.Location$historyFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$historyFromArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentLocationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    historyTo<T extends Prisma.Location$historyToArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Location$historyToArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentLocationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1135,6 +1297,52 @@ export type Location$equipmentArgs<ExtArgs extends runtime.Types.Extensions.Inte
     take?: number;
     skip?: number;
     distinct?: Prisma.EquipmentScalarFieldEnum | Prisma.EquipmentScalarFieldEnum[];
+};
+/**
+ * Location.historyFrom
+ */
+export type Location$historyFromArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EquipmentLocationHistory
+     */
+    select?: Prisma.EquipmentLocationHistorySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the EquipmentLocationHistory
+     */
+    omit?: Prisma.EquipmentLocationHistoryOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.EquipmentLocationHistoryInclude<ExtArgs> | null;
+    where?: Prisma.EquipmentLocationHistoryWhereInput;
+    orderBy?: Prisma.EquipmentLocationHistoryOrderByWithRelationInput | Prisma.EquipmentLocationHistoryOrderByWithRelationInput[];
+    cursor?: Prisma.EquipmentLocationHistoryWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.EquipmentLocationHistoryScalarFieldEnum | Prisma.EquipmentLocationHistoryScalarFieldEnum[];
+};
+/**
+ * Location.historyTo
+ */
+export type Location$historyToArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EquipmentLocationHistory
+     */
+    select?: Prisma.EquipmentLocationHistorySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the EquipmentLocationHistory
+     */
+    omit?: Prisma.EquipmentLocationHistoryOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.EquipmentLocationHistoryInclude<ExtArgs> | null;
+    where?: Prisma.EquipmentLocationHistoryWhereInput;
+    orderBy?: Prisma.EquipmentLocationHistoryOrderByWithRelationInput | Prisma.EquipmentLocationHistoryOrderByWithRelationInput[];
+    cursor?: Prisma.EquipmentLocationHistoryWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.EquipmentLocationHistoryScalarFieldEnum | Prisma.EquipmentLocationHistoryScalarFieldEnum[];
 };
 /**
  * Location without action

@@ -71,7 +71,8 @@ export const ModelName = {
     Department: 'Department',
     Location: 'Location',
     EquipmentCategory: 'EquipmentCategory',
-    Equipment: 'Equipment'
+    Equipment: 'Equipment',
+    EquipmentLocationHistory: 'EquipmentLocationHistory'
 };
 /**
  * Enums
@@ -120,8 +121,17 @@ export const EquipmentScalarFieldEnum = {
     departmentId: 'departmentId',
     locationId: 'locationId',
     categoryId: 'categoryId',
+    isDeactivated: 'isDeactivated',
+    deactivatedAt: 'deactivatedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
+};
+export const EquipmentLocationHistoryScalarFieldEnum = {
+    id: 'id',
+    equipmentId: 'equipmentId',
+    fromLocationId: 'fromLocationId',
+    toLocationId: 'toLocationId',
+    changedAt: 'changedAt'
 };
 export const SortOrder = {
     asc: 'asc',

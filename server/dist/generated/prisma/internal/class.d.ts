@@ -166,6 +166,17 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get equipment(): Prisma.EquipmentDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    /**
+     * `prisma.equipmentLocationHistory`: Exposes CRUD operations for the **EquipmentLocationHistory** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more EquipmentLocationHistories
+      * const equipmentLocationHistories = await prisma.equipmentLocationHistory.findMany()
+      * ```
+      */
+    get equipmentLocationHistory(): Prisma.EquipmentLocationHistoryDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
 }
 export declare function getPrismaClientClass(dirname: string): PrismaClientConstructor;
 //# sourceMappingURL=class.d.ts.map

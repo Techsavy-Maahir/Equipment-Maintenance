@@ -55,6 +55,8 @@ model Location {
   updatedAt DateTime @updatedAt
   
   equipment Equipment[]
+  historyFrom EquipmentLocationHistory[] @relation("HistoryFromLocation")
+  historyTo   EquipmentLocationHistory[] @relation("HistoryToLocation")
 }
 
 model EquipmentCategory {
@@ -76,14 +78,33 @@ model Equipment {
   departmentId Int
   locationId   Int
   categoryId   Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isDeactivated Boolean   @default(false)
+  deactivatedAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
   
   department   Department @relation(fields: [departmentId], references: [id])
   location     Location @relation(fields: [locationId], references: [id])
   category     EquipmentCategory @relation(fields: [categoryId], references: [id])
+  locationHistory EquipmentLocationHistory[]
   
   @@index([departmentId])
   @@index([locationId])
   @@index([categoryId])
+}
+
+model EquipmentLocationHistory {
+  id             Int      @id @default(autoincrement())
+  equipmentId    Int
+  fromLocationId Int?
+  toLocationId   Int
+  changedAt      DateTime @default(now())
+
+  equipment    Equipment  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  fromLocation Location?  @relation("HistoryFromLocation", fields: [fromLocationId], references: [id])
+  toLocation   Location   @relation("HistoryToLocation", fields: [toLocationId], references: [id])
+
+  @@index([equipmentId, changedAt])
+  @@index([fromLocationId])
+  @@index([toLocationId])
 }
