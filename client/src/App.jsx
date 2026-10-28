@@ -101,23 +101,13 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
-      <header className="app-header">
-        <div>
-          <p className="app-eyebrow">Equipment Maintenance</p>
-          <p className="app-user">{user?.name} · {user?.role}</p>
-        </div>
-        <button
-          className="button button-secondary"
-          type="button"
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-        >
-          {isLoggingOut ? "Signing out..." : "Sign out"}
-        </button>
-      </header>
-      {authError && <p className="app-error" role="alert">{authError}</p>}
-      <EquipmentListPage />
+    <main className="app-shell app-shell-equipment">
+      <EquipmentListPage
+        user={user}
+        authError={authError}
+        onLogout={handleLogout}
+        isLoggingOut={isLoggingOut}
+      />
     </main>
   );
 }
