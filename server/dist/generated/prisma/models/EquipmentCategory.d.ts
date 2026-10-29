@@ -21,18 +21,21 @@ export type EquipmentCategorySumAggregateOutputType = {
 export type EquipmentCategoryMinAggregateOutputType = {
     id: number | null;
     name: string | null;
+    isActive: boolean | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
 export type EquipmentCategoryMaxAggregateOutputType = {
     id: number | null;
     name: string | null;
+    isActive: boolean | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
 export type EquipmentCategoryCountAggregateOutputType = {
     id: number;
     name: number;
+    isActive: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -46,18 +49,21 @@ export type EquipmentCategorySumAggregateInputType = {
 export type EquipmentCategoryMinAggregateInputType = {
     id?: true;
     name?: true;
+    isActive?: true;
     createdAt?: true;
     updatedAt?: true;
 };
 export type EquipmentCategoryMaxAggregateInputType = {
     id?: true;
     name?: true;
+    isActive?: true;
     createdAt?: true;
     updatedAt?: true;
 };
 export type EquipmentCategoryCountAggregateInputType = {
     id?: true;
     name?: true;
+    isActive?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -141,6 +147,7 @@ export type EquipmentCategoryGroupByArgs<ExtArgs extends runtime.Types.Extension
 export type EquipmentCategoryGroupByOutputType = {
     id: number;
     name: string;
+    isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
     _count: EquipmentCategoryCountAggregateOutputType | null;
@@ -158,6 +165,7 @@ export type EquipmentCategoryWhereInput = {
     NOT?: Prisma.EquipmentCategoryWhereInput | Prisma.EquipmentCategoryWhereInput[];
     id?: Prisma.IntFilter<"EquipmentCategory"> | number;
     name?: Prisma.StringFilter<"EquipmentCategory"> | string;
+    isActive?: Prisma.BoolFilter<"EquipmentCategory"> | boolean;
     createdAt?: Prisma.DateTimeFilter<"EquipmentCategory"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"EquipmentCategory"> | Date | string;
     equipment?: Prisma.EquipmentListRelationFilter;
@@ -165,6 +173,7 @@ export type EquipmentCategoryWhereInput = {
 export type EquipmentCategoryOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     equipment?: Prisma.EquipmentOrderByRelationAggregateInput;
@@ -175,6 +184,7 @@ export type EquipmentCategoryWhereUniqueInput = Prisma.AtLeast<{
     AND?: Prisma.EquipmentCategoryWhereInput | Prisma.EquipmentCategoryWhereInput[];
     OR?: Prisma.EquipmentCategoryWhereInput[];
     NOT?: Prisma.EquipmentCategoryWhereInput | Prisma.EquipmentCategoryWhereInput[];
+    isActive?: Prisma.BoolFilter<"EquipmentCategory"> | boolean;
     createdAt?: Prisma.DateTimeFilter<"EquipmentCategory"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"EquipmentCategory"> | Date | string;
     equipment?: Prisma.EquipmentListRelationFilter;
@@ -182,6 +192,7 @@ export type EquipmentCategoryWhereUniqueInput = Prisma.AtLeast<{
 export type EquipmentCategoryOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.EquipmentCategoryCountOrderByAggregateInput;
@@ -196,11 +207,13 @@ export type EquipmentCategoryScalarWhereWithAggregatesInput = {
     NOT?: Prisma.EquipmentCategoryScalarWhereWithAggregatesInput | Prisma.EquipmentCategoryScalarWhereWithAggregatesInput[];
     id?: Prisma.IntWithAggregatesFilter<"EquipmentCategory"> | number;
     name?: Prisma.StringWithAggregatesFilter<"EquipmentCategory"> | string;
+    isActive?: Prisma.BoolWithAggregatesFilter<"EquipmentCategory"> | boolean;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"EquipmentCategory"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EquipmentCategory"> | Date | string;
 };
 export type EquipmentCategoryCreateInput = {
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     equipment?: Prisma.EquipmentCreateNestedManyWithoutCategoryInput;
@@ -208,12 +221,14 @@ export type EquipmentCategoryCreateInput = {
 export type EquipmentCategoryUncheckedCreateInput = {
     id?: number;
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     equipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutCategoryInput;
 };
 export type EquipmentCategoryUpdateInput = {
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     equipment?: Prisma.EquipmentUpdateManyWithoutCategoryNestedInput;
@@ -221,6 +236,7 @@ export type EquipmentCategoryUpdateInput = {
 export type EquipmentCategoryUncheckedUpdateInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     equipment?: Prisma.EquipmentUncheckedUpdateManyWithoutCategoryNestedInput;
@@ -228,23 +244,27 @@ export type EquipmentCategoryUncheckedUpdateInput = {
 export type EquipmentCategoryCreateManyInput = {
     id?: number;
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type EquipmentCategoryUpdateManyMutationInput = {
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EquipmentCategoryUncheckedUpdateManyInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EquipmentCategoryCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -254,12 +274,14 @@ export type EquipmentCategoryAvgOrderByAggregateInput = {
 export type EquipmentCategoryMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
 export type EquipmentCategoryMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -284,12 +306,14 @@ export type EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput = {
 };
 export type EquipmentCategoryCreateWithoutEquipmentInput = {
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type EquipmentCategoryUncheckedCreateWithoutEquipmentInput = {
     id?: number;
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -308,12 +332,14 @@ export type EquipmentCategoryUpdateToOneWithWhereWithoutEquipmentInput = {
 };
 export type EquipmentCategoryUpdateWithoutEquipmentInput = {
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type EquipmentCategoryUncheckedUpdateWithoutEquipmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -344,6 +370,7 @@ export type EquipmentCategoryCountOutputTypeCountEquipmentArgs<ExtArgs extends r
 export type EquipmentCategorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
+    isActive?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     equipment?: boolean | Prisma.EquipmentCategory$equipmentArgs<ExtArgs>;
@@ -352,22 +379,25 @@ export type EquipmentCategorySelect<ExtArgs extends runtime.Types.Extensions.Int
 export type EquipmentCategorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
+    isActive?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 }, ExtArgs["result"]["equipmentCategory"]>;
 export type EquipmentCategorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
+    isActive?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 }, ExtArgs["result"]["equipmentCategory"]>;
 export type EquipmentCategorySelectScalar = {
     id?: boolean;
     name?: boolean;
+    isActive?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type EquipmentCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["equipmentCategory"]>;
+export type EquipmentCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["equipmentCategory"]>;
 export type EquipmentCategoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     equipment?: boolean | Prisma.EquipmentCategory$equipmentArgs<ExtArgs>;
     _count?: boolean | Prisma.EquipmentCategoryCountOutputTypeDefaultArgs<ExtArgs>;
@@ -382,6 +412,7 @@ export type $EquipmentCategoryPayload<ExtArgs extends runtime.Types.Extensions.I
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: number;
         name: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["equipmentCategory"]>;
@@ -741,6 +772,7 @@ export interface Prisma__EquipmentCategoryClient<T, Null = never, ExtArgs extend
 export interface EquipmentCategoryFieldRefs {
     readonly id: Prisma.FieldRef<"EquipmentCategory", 'Int'>;
     readonly name: Prisma.FieldRef<"EquipmentCategory", 'String'>;
+    readonly isActive: Prisma.FieldRef<"EquipmentCategory", 'Boolean'>;
     readonly createdAt: Prisma.FieldRef<"EquipmentCategory", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"EquipmentCategory", 'DateTime'>;
 }

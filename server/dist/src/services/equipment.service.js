@@ -5,11 +5,44 @@ const equipmentInclude = {
     location: true,
     category: true,
 };
-export async function listEquipment() {
-    return prisma.equipment.findMany({
-        where: { isDeactivated: false },
-        include: equipmentInclude,
-        orderBy: { id: "asc" },
+export async function listEquipment(query) {
+    const where = {
+        isDeactivated: false,
+        ...(query.status ? { status: query.status } : {}),
+        ...(query.location ? { locationId: query.location } : {}),
+        ...(query.category ? { categoryId: query.category } : {}),
+        ...(query.search
+            ? {
+                OR: [
+                    { code: { contains: query.search, mode: "insensitive" } },
+                    { name: { contains: query.search, mode: "insensitive" } },
+                    { serialNumber: { contains: query.search, mode: "insensitive" } },
+                ],
+            }
+            : {}),
+    };
+    return prisma.$transaction(async (tx) => {
+        const [total, locations, categories] = await Promise.all([
+            tx.equipment.count({ where }),
+            tx.location.findMany({
+                select: { id: true, name: true },
+                orderBy: { name: "asc" },
+            }),
+            tx.equipmentCategory.findMany({
+                select: { id: true, name: true },
+                orderBy: { name: "asc" },
+            }),
+        ]);
+        const pageCount = Math.max(1, Math.ceil(total / query.pageSize));
+        const page = Math.min(query.page, pageCount);
+        const items = await tx.equipment.findMany({
+            where,
+            include: equipmentInclude,
+            orderBy: { id: "asc" },
+            skip: (page - 1) * query.pageSize,
+            take: query.pageSize,
+        });
+        return { items, total, page, pageSize: query.pageSize, locations, categories };
     });
 }
 export async function getEquipment(id) {

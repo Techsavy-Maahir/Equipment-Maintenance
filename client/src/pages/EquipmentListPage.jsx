@@ -83,6 +83,8 @@ export function EquipmentListPage({
   authError = "",
   onLogout,
   isLoggingOut = false,
+  currentPage = "equipment",
+  onNavigate = () => {},
 }) {
   const [filters, setFilters] = useState(readFiltersFromUrl);
   const [searchInput, setSearchInput] = useState(() => readFiltersFromUrl().search);
@@ -219,8 +221,9 @@ export function EquipmentListPage({
             </button>
             <button
               type="button"
-              className="equipment-nav-item is-active"
-              aria-current="page"
+              className={`equipment-nav-item ${currentPage === "equipment" ? "is-active" : ""}`}
+              onClick={() => onNavigate("equipment")}
+              aria-current={currentPage === "equipment" ? "page" : undefined}
             >
               <MaterialIcon>precision_manufacturing</MaterialIcon><span>Equipment</span>
             </button>
@@ -247,15 +250,25 @@ export function EquipmentListPage({
           <div className="equipment-nav-divider" />
           <div className="equipment-admin-label">Administration</div>
           <nav className="equipment-nav equipment-admin-nav" aria-label="Administration">
-            <button type="button" className="equipment-nav-item" disabled>
+            <button
+              type="button"
+              className={`equipment-nav-item ${currentPage === "master-data" ? "is-active" : ""}`}
+              onClick={() => onNavigate("master-data")}
+            >
               <MaterialIcon>dataset</MaterialIcon><span>Master Data</span>
             </button>
             <button type="button" className="equipment-nav-item" disabled>
               <MaterialIcon>history_edu</MaterialIcon><span>Audit Log</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
-              <MaterialIcon>group</MaterialIcon><span>User Management</span>
-            </button>
+            {user?.role === "ADMIN" && (
+              <button
+                type="button"
+                className={`equipment-nav-item ${currentPage === "user-management" ? "is-active" : ""}`}
+                onClick={() => onNavigate("user-management")}
+              >
+                <MaterialIcon>group</MaterialIcon><span>User Management</span>
+              </button>
+            )}
             <button type="button" className="equipment-nav-item" disabled>
               <MaterialIcon>settings</MaterialIcon><span>Settings</span>
             </button>

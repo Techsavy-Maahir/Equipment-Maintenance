@@ -13,4 +13,5 @@ export interface AuthRequest extends Request {
     user?: AuthenticatedUser;
 }
 export declare const authMiddleware: (req: AuthRequest, res: Response, next: NextFunction) => Promise<void>;
+export declare const requireAdmin: (req: AuthRequest, res: Response, next: NextFunction) => void;
 //# sourceMappingURL=auth.middleware.d.ts.map

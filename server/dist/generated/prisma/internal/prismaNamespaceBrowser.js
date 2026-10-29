@@ -68,24 +68,28 @@ export const UserScalarFieldEnum = {
 export const DepartmentScalarFieldEnum = {
     id: 'id',
     name: 'name',
+    isActive: 'isActive',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
 export const LocationScalarFieldEnum = {
     id: 'id',
     name: 'name',
+    isActive: 'isActive',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
 export const EquipmentCategoryScalarFieldEnum = {
     id: 'id',
     name: 'name',
+    isActive: 'isActive',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
 export const EquipmentScalarFieldEnum = {
     id: 'id',
     code: 'code',
+    serialNumber: 'serialNumber',
     name: 'name',
     description: 'description',
     status: 'status',

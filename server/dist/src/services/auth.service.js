@@ -18,8 +18,10 @@ export const authService = {
             await bcrypt.compare(password, dummy);
             throw new AppError(401, "Invalid credentials");
         }
-        // Check if password matches (we don't store passwords, just for demo)
-        // In real app, compare password with user.password_hash
+        if (!user.isActive) {
+            throw new AppError(401, "Invalid credentials");
+        }
+        // Check if password matches
         const isValid = await bcrypt.compare(password, user.password_hash ?? dummy);
         if (!user.password_hash || !isValid) {
             throw new AppError(401, "Invalid credentials");
@@ -36,6 +38,7 @@ export const authService = {
                 email: true,
                 name: true,
                 role: true,
+                isActive: true,
                 createdAt: true,
             },
         });

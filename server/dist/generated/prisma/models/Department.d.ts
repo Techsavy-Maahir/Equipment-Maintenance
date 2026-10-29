@@ -21,18 +21,21 @@ export type DepartmentSumAggregateOutputType = {
 export type DepartmentMinAggregateOutputType = {
     id: number | null;
     name: string | null;
+    isActive: boolean | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
 export type DepartmentMaxAggregateOutputType = {
     id: number | null;
     name: string | null;
+    isActive: boolean | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
 export type DepartmentCountAggregateOutputType = {
     id: number;
     name: number;
+    isActive: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -46,18 +49,21 @@ export type DepartmentSumAggregateInputType = {
 export type DepartmentMinAggregateInputType = {
     id?: true;
     name?: true;
+    isActive?: true;
     createdAt?: true;
     updatedAt?: true;
 };
 export type DepartmentMaxAggregateInputType = {
     id?: true;
     name?: true;
+    isActive?: true;
     createdAt?: true;
     updatedAt?: true;
 };
 export type DepartmentCountAggregateInputType = {
     id?: true;
     name?: true;
+    isActive?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -141,6 +147,7 @@ export type DepartmentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 export type DepartmentGroupByOutputType = {
     id: number;
     name: string;
+    isActive: boolean;
     createdAt: Date;
     updatedAt: Date;
     _count: DepartmentCountAggregateOutputType | null;
@@ -158,6 +165,7 @@ export type DepartmentWhereInput = {
     NOT?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[];
     id?: Prisma.IntFilter<"Department"> | number;
     name?: Prisma.StringFilter<"Department"> | string;
+    isActive?: Prisma.BoolFilter<"Department"> | boolean;
     createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Department"> | Date | string;
     equipment?: Prisma.EquipmentListRelationFilter;
@@ -165,6 +173,7 @@ export type DepartmentWhereInput = {
 export type DepartmentOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     equipment?: Prisma.EquipmentOrderByRelationAggregateInput;
@@ -175,6 +184,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
     AND?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[];
     OR?: Prisma.DepartmentWhereInput[];
     NOT?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[];
+    isActive?: Prisma.BoolFilter<"Department"> | boolean;
     createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Department"> | Date | string;
     equipment?: Prisma.EquipmentListRelationFilter;
@@ -182,6 +192,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
 export type DepartmentOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.DepartmentCountOrderByAggregateInput;
@@ -196,11 +207,13 @@ export type DepartmentScalarWhereWithAggregatesInput = {
     NOT?: Prisma.DepartmentScalarWhereWithAggregatesInput | Prisma.DepartmentScalarWhereWithAggregatesInput[];
     id?: Prisma.IntWithAggregatesFilter<"Department"> | number;
     name?: Prisma.StringWithAggregatesFilter<"Department"> | string;
+    isActive?: Prisma.BoolWithAggregatesFilter<"Department"> | boolean;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Department"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Department"> | Date | string;
 };
 export type DepartmentCreateInput = {
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     equipment?: Prisma.EquipmentCreateNestedManyWithoutDepartmentInput;
@@ -208,12 +221,14 @@ export type DepartmentCreateInput = {
 export type DepartmentUncheckedCreateInput = {
     id?: number;
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     equipment?: Prisma.EquipmentUncheckedCreateNestedManyWithoutDepartmentInput;
 };
 export type DepartmentUpdateInput = {
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     equipment?: Prisma.EquipmentUpdateManyWithoutDepartmentNestedInput;
@@ -221,6 +236,7 @@ export type DepartmentUpdateInput = {
 export type DepartmentUncheckedUpdateInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     equipment?: Prisma.EquipmentUncheckedUpdateManyWithoutDepartmentNestedInput;
@@ -228,23 +244,27 @@ export type DepartmentUncheckedUpdateInput = {
 export type DepartmentCreateManyInput = {
     id?: number;
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type DepartmentUpdateManyMutationInput = {
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type DepartmentUncheckedUpdateManyInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type DepartmentCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -254,12 +274,14 @@ export type DepartmentAvgOrderByAggregateInput = {
 export type DepartmentMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
 export type DepartmentMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    isActive?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -284,12 +306,14 @@ export type DepartmentUpdateOneRequiredWithoutEquipmentNestedInput = {
 };
 export type DepartmentCreateWithoutEquipmentInput = {
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type DepartmentUncheckedCreateWithoutEquipmentInput = {
     id?: number;
     name: string;
+    isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -308,12 +332,14 @@ export type DepartmentUpdateToOneWithWhereWithoutEquipmentInput = {
 };
 export type DepartmentUpdateWithoutEquipmentInput = {
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type DepartmentUncheckedUpdateWithoutEquipmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -344,6 +370,7 @@ export type DepartmentCountOutputTypeCountEquipmentArgs<ExtArgs extends runtime.
 export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
+    isActive?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     equipment?: boolean | Prisma.Department$equipmentArgs<ExtArgs>;
@@ -352,22 +379,25 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type DepartmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
+    isActive?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 }, ExtArgs["result"]["department"]>;
 export type DepartmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
+    isActive?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 }, ExtArgs["result"]["department"]>;
 export type DepartmentSelectScalar = {
     id?: boolean;
     name?: boolean;
+    isActive?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>;
+export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>;
 export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     equipment?: boolean | Prisma.Department$equipmentArgs<ExtArgs>;
     _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>;
@@ -382,6 +412,7 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: number;
         name: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["department"]>;
@@ -741,6 +772,7 @@ export interface Prisma__DepartmentClient<T, Null = never, ExtArgs extends runti
 export interface DepartmentFieldRefs {
     readonly id: Prisma.FieldRef<"Department", 'Int'>;
     readonly name: Prisma.FieldRef<"Department", 'String'>;
+    readonly isActive: Prisma.FieldRef<"Department", 'Boolean'>;
     readonly createdAt: Prisma.FieldRef<"Department", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Department", 'DateTime'>;
 }

@@ -35,4 +35,10 @@ export const authMiddleware = async (req, res, next) => {
         next(error);
     }
 };
+export const requireAdmin = (req, res, next) => {
+    if (!req.user || req.user.role !== "ADMIN") {
+        throw new AppError(403, "Forbidden: Administrator access required");
+    }
+    next();
+};
 //# sourceMappingURL=auth.middleware.js.map

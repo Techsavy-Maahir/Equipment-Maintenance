@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { prismaMock, transactionMocks } = vi.hoisted(() => {
   const equipmentDelegates = {
+    count: vi.fn(),
     findMany: vi.fn(),
     findUnique: vi.fn(),
     findUniqueOrThrow: vi.fn(),
@@ -17,9 +18,13 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
       $transaction: vi.fn(),
       equipment: equipmentDelegates,
       equipmentLocationHistory: historyDelegates,
+      location: { findMany: vi.fn() },
+      equipmentCategory: { findMany: vi.fn() },
     },
     transactionMocks: {
       equipment: {
+        count: vi.fn(),
+        findMany: vi.fn(),
         findUnique: vi.fn(),
         findUniqueOrThrow: vi.fn(),
         update: vi.fn(),
@@ -27,6 +32,8 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
       equipmentLocationHistory: {
         create: vi.fn(),
       },
+      location: { findMany: vi.fn() },
+      equipmentCategory: { findMany: vi.fn() },
     },
   };
 });
@@ -57,6 +64,8 @@ const equipment = {
 const transactionClient = {
   equipment: transactionMocks.equipment,
   equipmentLocationHistory: transactionMocks.equipmentLocationHistory,
+  location: transactionMocks.location,
+  equipmentCategory: transactionMocks.equipmentCategory,
 };
 
 beforeEach(() => {
@@ -67,12 +76,59 @@ beforeEach(() => {
 });
 
 describe("equipment service", () => {
-  it("lists only non-deactivated equipment", async () => {
-    prismaMock.equipment.findMany.mockResolvedValue([equipment]);
+  it("uses the same filters for paginated equipment and matching totals", async () => {
+    transactionMocks.equipment.count.mockResolvedValue(17);
+    transactionMocks.equipment.findMany.mockResolvedValue([equipment]);
+    transactionMocks.location.findMany.mockResolvedValue([]);
+    transactionMocks.equipmentCategory.findMany.mockResolvedValue([]);
 
-    await expect(listEquipment()).resolves.toEqual([equipment]);
-    expect(prismaMock.equipment.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { isDeactivated: false } }),
+    const result = await listEquipment({
+      search: "CNC",
+      status: "ACTIVE",
+      location: 2,
+      category: 3,
+      page: 2,
+      pageSize: 8,
+    });
+
+    const countArgs = transactionMocks.equipment.count.mock.calls[0][0];
+    const listArgs = transactionMocks.equipment.findMany.mock.calls[0][0];
+    expect(listArgs.where).toBe(countArgs.where);
+    expect(countArgs.where).toEqual({
+      isDeactivated: false,
+      status: "ACTIVE",
+      locationId: 2,
+      categoryId: 3,
+      OR: [
+        { code: { contains: "CNC", mode: "insensitive" } },
+        { name: { contains: "CNC", mode: "insensitive" } },
+        { serialNumber: { contains: "CNC", mode: "insensitive" } },
+      ],
+    });
+    expect(listArgs).toEqual(
+      expect.objectContaining({ skip: 8, take: 8, orderBy: { id: "asc" } }),
+    );
+    expect(result).toEqual({
+      items: [equipment],
+      total: 17,
+      page: 2,
+      pageSize: 8,
+      locations: [],
+      categories: [],
+    });
+  });
+
+  it("clamps requested list pages to the last page", async () => {
+    transactionMocks.equipment.count.mockResolvedValue(10);
+    transactionMocks.equipment.findMany.mockResolvedValue([equipment]);
+    transactionMocks.location.findMany.mockResolvedValue([]);
+    transactionMocks.equipmentCategory.findMany.mockResolvedValue([]);
+
+    const result = await listEquipment({ search: "", page: 99, pageSize: 8 });
+
+    expect(result.page).toBe(2);
+    expect(transactionMocks.equipment.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ skip: 8, take: 8 }),
     );
   });
 

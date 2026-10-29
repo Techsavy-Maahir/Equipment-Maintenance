@@ -28,6 +28,7 @@ export type EquipmentSumAggregateOutputType = {
 export type EquipmentMinAggregateOutputType = {
     id: number | null;
     code: string | null;
+    serialNumber: string | null;
     name: string | null;
     description: string | null;
     status: $Enums.EquipmentStatus | null;
@@ -43,6 +44,7 @@ export type EquipmentMinAggregateOutputType = {
 export type EquipmentMaxAggregateOutputType = {
     id: number | null;
     code: string | null;
+    serialNumber: string | null;
     name: string | null;
     description: string | null;
     status: $Enums.EquipmentStatus | null;
@@ -58,6 +60,7 @@ export type EquipmentMaxAggregateOutputType = {
 export type EquipmentCountAggregateOutputType = {
     id: number;
     code: number;
+    serialNumber: number;
     name: number;
     description: number;
     status: number;
@@ -86,6 +89,7 @@ export type EquipmentSumAggregateInputType = {
 export type EquipmentMinAggregateInputType = {
     id?: true;
     code?: true;
+    serialNumber?: true;
     name?: true;
     description?: true;
     status?: true;
@@ -101,6 +105,7 @@ export type EquipmentMinAggregateInputType = {
 export type EquipmentMaxAggregateInputType = {
     id?: true;
     code?: true;
+    serialNumber?: true;
     name?: true;
     description?: true;
     status?: true;
@@ -116,6 +121,7 @@ export type EquipmentMaxAggregateInputType = {
 export type EquipmentCountAggregateInputType = {
     id?: true;
     code?: true;
+    serialNumber?: true;
     name?: true;
     description?: true;
     status?: true;
@@ -208,6 +214,7 @@ export type EquipmentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 export type EquipmentGroupByOutputType = {
     id: number;
     code: string;
+    serialNumber: string | null;
     name: string;
     description: string | null;
     status: $Enums.EquipmentStatus;
@@ -234,6 +241,7 @@ export type EquipmentWhereInput = {
     NOT?: Prisma.EquipmentWhereInput | Prisma.EquipmentWhereInput[];
     id?: Prisma.IntFilter<"Equipment"> | number;
     code?: Prisma.StringFilter<"Equipment"> | string;
+    serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null;
     name?: Prisma.StringFilter<"Equipment"> | string;
     description?: Prisma.StringNullableFilter<"Equipment"> | string | null;
     status?: Prisma.EnumEquipmentStatusFilter<"Equipment"> | $Enums.EquipmentStatus;
@@ -253,6 +261,7 @@ export type EquipmentWhereInput = {
 export type EquipmentOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
+    serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrderInput | Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -275,6 +284,7 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
     AND?: Prisma.EquipmentWhereInput | Prisma.EquipmentWhereInput[];
     OR?: Prisma.EquipmentWhereInput[];
     NOT?: Prisma.EquipmentWhereInput | Prisma.EquipmentWhereInput[];
+    serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null;
     name?: Prisma.StringFilter<"Equipment"> | string;
     description?: Prisma.StringNullableFilter<"Equipment"> | string | null;
     status?: Prisma.EnumEquipmentStatusFilter<"Equipment"> | $Enums.EquipmentStatus;
@@ -294,6 +304,7 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
 export type EquipmentOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
+    serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrderInput | Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -317,6 +328,7 @@ export type EquipmentScalarWhereWithAggregatesInput = {
     NOT?: Prisma.EquipmentScalarWhereWithAggregatesInput | Prisma.EquipmentScalarWhereWithAggregatesInput[];
     id?: Prisma.IntWithAggregatesFilter<"Equipment"> | number;
     code?: Prisma.StringWithAggregatesFilter<"Equipment"> | string;
+    serialNumber?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null;
     name?: Prisma.StringWithAggregatesFilter<"Equipment"> | string;
     description?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null;
     status?: Prisma.EnumEquipmentStatusWithAggregatesFilter<"Equipment"> | $Enums.EquipmentStatus;
@@ -331,6 +343,7 @@ export type EquipmentScalarWhereWithAggregatesInput = {
 };
 export type EquipmentCreateInput = {
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -347,6 +360,7 @@ export type EquipmentCreateInput = {
 export type EquipmentUncheckedCreateInput = {
     id?: number;
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -362,6 +376,7 @@ export type EquipmentUncheckedCreateInput = {
 };
 export type EquipmentUpdateInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -378,6 +393,7 @@ export type EquipmentUpdateInput = {
 export type EquipmentUncheckedUpdateInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -394,6 +410,7 @@ export type EquipmentUncheckedUpdateInput = {
 export type EquipmentCreateManyInput = {
     id?: number;
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -408,6 +425,7 @@ export type EquipmentCreateManyInput = {
 };
 export type EquipmentUpdateManyMutationInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -420,6 +438,7 @@ export type EquipmentUpdateManyMutationInput = {
 export type EquipmentUncheckedUpdateManyInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -443,6 +462,7 @@ export type EquipmentOrderByRelationAggregateInput = {
 export type EquipmentCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
+    serialNumber?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -464,6 +484,7 @@ export type EquipmentAvgOrderByAggregateInput = {
 export type EquipmentMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
+    serialNumber?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -479,6 +500,7 @@ export type EquipmentMaxOrderByAggregateInput = {
 export type EquipmentMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
+    serialNumber?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -638,6 +660,7 @@ export type EquipmentUpdateOneRequiredWithoutLocationHistoryNestedInput = {
 };
 export type EquipmentCreateWithoutDepartmentInput = {
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -653,6 +676,7 @@ export type EquipmentCreateWithoutDepartmentInput = {
 export type EquipmentUncheckedCreateWithoutDepartmentInput = {
     id?: number;
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -692,6 +716,7 @@ export type EquipmentScalarWhereInput = {
     NOT?: Prisma.EquipmentScalarWhereInput | Prisma.EquipmentScalarWhereInput[];
     id?: Prisma.IntFilter<"Equipment"> | number;
     code?: Prisma.StringFilter<"Equipment"> | string;
+    serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null;
     name?: Prisma.StringFilter<"Equipment"> | string;
     description?: Prisma.StringNullableFilter<"Equipment"> | string | null;
     status?: Prisma.EnumEquipmentStatusFilter<"Equipment"> | $Enums.EquipmentStatus;
@@ -706,6 +731,7 @@ export type EquipmentScalarWhereInput = {
 };
 export type EquipmentCreateWithoutLocationInput = {
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -721,6 +747,7 @@ export type EquipmentCreateWithoutLocationInput = {
 export type EquipmentUncheckedCreateWithoutLocationInput = {
     id?: number;
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -756,6 +783,7 @@ export type EquipmentUpdateManyWithWhereWithoutLocationInput = {
 };
 export type EquipmentCreateWithoutCategoryInput = {
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -771,6 +799,7 @@ export type EquipmentCreateWithoutCategoryInput = {
 export type EquipmentUncheckedCreateWithoutCategoryInput = {
     id?: number;
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -806,6 +835,7 @@ export type EquipmentUpdateManyWithWhereWithoutCategoryInput = {
 };
 export type EquipmentCreateWithoutLocationHistoryInput = {
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -821,6 +851,7 @@ export type EquipmentCreateWithoutLocationHistoryInput = {
 export type EquipmentUncheckedCreateWithoutLocationHistoryInput = {
     id?: number;
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -848,6 +879,7 @@ export type EquipmentUpdateToOneWithWhereWithoutLocationHistoryInput = {
 };
 export type EquipmentUpdateWithoutLocationHistoryInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -863,6 +895,7 @@ export type EquipmentUpdateWithoutLocationHistoryInput = {
 export type EquipmentUncheckedUpdateWithoutLocationHistoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -878,6 +911,7 @@ export type EquipmentUncheckedUpdateWithoutLocationHistoryInput = {
 export type EquipmentCreateManyDepartmentInput = {
     id?: number;
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -891,6 +925,7 @@ export type EquipmentCreateManyDepartmentInput = {
 };
 export type EquipmentUpdateWithoutDepartmentInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -906,6 +941,7 @@ export type EquipmentUpdateWithoutDepartmentInput = {
 export type EquipmentUncheckedUpdateWithoutDepartmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -921,6 +957,7 @@ export type EquipmentUncheckedUpdateWithoutDepartmentInput = {
 export type EquipmentUncheckedUpdateManyWithoutDepartmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -935,6 +972,7 @@ export type EquipmentUncheckedUpdateManyWithoutDepartmentInput = {
 export type EquipmentCreateManyLocationInput = {
     id?: number;
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -948,6 +986,7 @@ export type EquipmentCreateManyLocationInput = {
 };
 export type EquipmentUpdateWithoutLocationInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -963,6 +1002,7 @@ export type EquipmentUpdateWithoutLocationInput = {
 export type EquipmentUncheckedUpdateWithoutLocationInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -978,6 +1018,7 @@ export type EquipmentUncheckedUpdateWithoutLocationInput = {
 export type EquipmentUncheckedUpdateManyWithoutLocationInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -992,6 +1033,7 @@ export type EquipmentUncheckedUpdateManyWithoutLocationInput = {
 export type EquipmentCreateManyCategoryInput = {
     id?: number;
     code: string;
+    serialNumber?: string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -1005,6 +1047,7 @@ export type EquipmentCreateManyCategoryInput = {
 };
 export type EquipmentUpdateWithoutCategoryInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -1020,6 +1063,7 @@ export type EquipmentUpdateWithoutCategoryInput = {
 export type EquipmentUncheckedUpdateWithoutCategoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -1035,6 +1079,7 @@ export type EquipmentUncheckedUpdateWithoutCategoryInput = {
 export type EquipmentUncheckedUpdateManyWithoutCategoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -1073,6 +1118,7 @@ export type EquipmentCountOutputTypeCountLocationHistoryArgs<ExtArgs extends run
 export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     code?: boolean;
+    serialNumber?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -1093,6 +1139,7 @@ export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     code?: boolean;
+    serialNumber?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -1111,6 +1158,7 @@ export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type EquipmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     code?: boolean;
+    serialNumber?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -1129,6 +1177,7 @@ export type EquipmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type EquipmentSelectScalar = {
     id?: boolean;
     code?: boolean;
+    serialNumber?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -1141,7 +1190,7 @@ export type EquipmentSelectScalar = {
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "description" | "status" | "criticality" | "departmentId" | "locationId" | "categoryId" | "isDeactivated" | "deactivatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>;
+export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "serialNumber" | "name" | "description" | "status" | "criticality" | "departmentId" | "locationId" | "categoryId" | "isDeactivated" | "deactivatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>;
 export type EquipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>;
     location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>;
@@ -1170,6 +1219,7 @@ export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: number;
         code: string;
+        serialNumber: string | null;
         name: string;
         description: string | null;
         status: $Enums.EquipmentStatus;
@@ -1541,6 +1591,7 @@ export interface Prisma__EquipmentClient<T, Null = never, ExtArgs extends runtim
 export interface EquipmentFieldRefs {
     readonly id: Prisma.FieldRef<"Equipment", 'Int'>;
     readonly code: Prisma.FieldRef<"Equipment", 'String'>;
+    readonly serialNumber: Prisma.FieldRef<"Equipment", 'String'>;
     readonly name: Prisma.FieldRef<"Equipment", 'String'>;
     readonly description: Prisma.FieldRef<"Equipment", 'String'>;
     readonly status: Prisma.FieldRef<"Equipment", 'EquipmentStatus'>;

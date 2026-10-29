@@ -1,4 +1,3 @@
-
 import { Request, Response, NextFunction } from "express";
 import { authService } from "../services/auth.service.js";
 import { AppError } from "../errors.js";
@@ -63,4 +62,15 @@ export const authMiddleware = async (
   } catch (error) {
     next(error);
   }
+};
+
+export const requireAdmin = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (!req.user || req.user.role !== "ADMIN") {
+    throw new AppError(403, "Forbidden: Administrator access required");
+  }
+  next();
 };

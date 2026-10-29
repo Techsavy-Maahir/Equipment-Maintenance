@@ -40,37 +40,41 @@ model User {
 }
 
 model Department {
-  id        Int     @id @default(autoincrement())
-  name      String  @unique
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   equipment Equipment[]
 }
 
 model Location {
-  id        Int     @id @default(autoincrement())
-  name      String  @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  equipment Equipment[]
+  id          Int                        @id @default(autoincrement())
+  name        String                     @unique
+  isActive    Boolean                    @default(true)
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+
+  equipment   Equipment[]
   historyFrom EquipmentLocationHistory[] @relation("HistoryFromLocation")
   historyTo   EquipmentLocationHistory[] @relation("HistoryToLocation")
 }
 
 model EquipmentCategory {
-  id        Int     @id @default(autoincrement())
-  name      String  @unique
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   equipment Equipment[]
 }
 
 model Equipment {
   id           Int       @id @default(autoincrement())
   code         String    @unique
+  serialNumber String?
   name         String
   description  String?
   status       EquipmentStatus @default(ACTIVE)
@@ -82,15 +86,16 @@ model Equipment {
   deactivatedAt DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  
+
   department   Department @relation(fields: [departmentId], references: [id])
   location     Location @relation(fields: [locationId], references: [id])
   category     EquipmentCategory @relation(fields: [categoryId], references: [id])
   locationHistory EquipmentLocationHistory[]
-  
+
   @@index([departmentId])
   @@index([locationId])
   @@index([categoryId])
+  @@index([isDeactivated, status])
 }
 
 model EquipmentLocationHistory {

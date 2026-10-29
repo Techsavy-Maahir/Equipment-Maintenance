@@ -767,6 +767,7 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export declare const DepartmentScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
+    readonly isActive: "isActive";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -774,6 +775,7 @@ export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof
 export declare const LocationScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
+    readonly isActive: "isActive";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -781,6 +783,7 @@ export type LocationScalarFieldEnum = (typeof LocationScalarFieldEnum)[keyof typ
 export declare const EquipmentCategoryScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
+    readonly isActive: "isActive";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -788,6 +791,7 @@ export type EquipmentCategoryScalarFieldEnum = (typeof EquipmentCategoryScalarFi
 export declare const EquipmentScalarFieldEnum: {
     readonly id: "id";
     readonly code: "code";
+    readonly serialNumber: "serialNumber";
     readonly name: "name";
     readonly description: "description";
     readonly status: "status";

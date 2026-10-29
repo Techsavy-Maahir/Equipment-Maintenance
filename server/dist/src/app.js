@@ -6,16 +6,20 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js
 import { env } from "./env.js";
 import cookieParser from "cookie-parser";
 import { authService } from "./services/auth.service.js";
-import { authMiddleware } from "./middleware/auth.middleware.js";
+import { authMiddleware, requireAdmin, } from "./middleware/auth.middleware.js";
 import { createEquipment, deactivateEquipment, getEquipment, listEquipment, updateEquipment, } from "./services/equipment.service.js";
-import { createEquipmentSchema, equipmentIdSchema, updateEquipmentSchema, } from "./schemas/equipment.schema.js";
+import { createEquipmentSchema, equipmentListQuerySchema, equipmentIdSchema, updateEquipmentSchema, } from "./schemas/equipment.schema.js";
+import { createMasterDataSchema, masterDataIdSchema, masterDataQuerySchema, updateMasterDataSchema, } from "./schemas/master-data.schema.js";
+import { createDepartment, deactivateDepartment, listDepartments, reactivateDepartment, updateDepartment, createLocation, deactivateLocation, listLocations, reactivateLocation, updateLocation, createCategory, deactivateCategory, listCategories, reactivateCategory, updateCategory, } from "./services/master-data.service.js";
+import { createUserSchema, updateUserRoleSchema, userIdSchema, userListQuerySchema, } from "./schemas/user.schema.js";
+import { changeUserRole, createUser, deactivateUser, listUsers, reactivateUser, } from "./services/user.service.js";
 const app = express();
 app.use(cookieParser());
 // CORS middleware
 app.use(cors({
     origin: env.CLIENT_ORIGIN,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type"],
 }));
 // JSON middleware
@@ -92,9 +96,43 @@ const parseEquipmentId = (rawId) => {
     }
     return result.data;
 };
-app.get("/api/equipment", async (_req, res, next) => {
+const parseMasterDataId = (rawId, entityName) => {
+    const result = masterDataIdSchema.safeParse(rawId);
+    if (!result.success) {
+        throw new AppError(400, `Invalid ${entityName} ID`);
+    }
+    return result.data;
+};
+const parseUserId = (rawId) => {
+    const result = userIdSchema.safeParse(rawId);
+    if (!result.success) {
+        throw new AppError(400, "Invalid user ID");
+    }
+    return result.data;
+};
+const parseMasterDataQuery = (query) => {
+    const parsedQuery = masterDataQuerySchema.safeParse(query);
+    if (!parsedQuery.success) {
+        const details = {};
+        parsedQuery.error.issues.forEach((issue) => {
+            details[issue.path.join(".")] = issue.message;
+        });
+        throw new ValidationError(details);
+    }
+    return parsedQuery.data;
+};
+// ==================== EQUIPMENT ROUTES ====================
+app.get("/api/equipment", async (req, res, next) => {
     try {
-        res.status(200).json(await listEquipment());
+        const parsedQuery = equipmentListQuerySchema.safeParse(req.query);
+        if (!parsedQuery.success) {
+            const details = {};
+            parsedQuery.error.issues.forEach((issue) => {
+                details[issue.path.join(".")] = issue.message;
+            });
+            throw new ValidationError(details);
+        }
+        res.status(200).json(await listEquipment(parsedQuery.data));
     }
     catch (error) {
         next(error);
@@ -131,6 +169,263 @@ app.delete("/api/equipment/:id", async (req, res, next) => {
     try {
         const equipment = await deactivateEquipment(parseEquipmentId(req.params.id));
         res.status(200).json(equipment);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// ==================== MASTER DATA: DEPARTMENTS ====================
+app.get("/api/departments", authMiddleware, async (req, res, next) => {
+    try {
+        const query = parseMasterDataQuery(req.query);
+        const result = await listDepartments(query);
+        res.status(200).json(result);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.post("/api/departments", authMiddleware, requireAdmin, validate(createMasterDataSchema), async (req, res, next) => {
+    try {
+        const department = await createDepartment(req.body);
+        res.status(201).json(department);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.put("/api/departments/:id", authMiddleware, requireAdmin, validate(updateMasterDataSchema), async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "department");
+        const department = await updateDepartment(id, req.body);
+        res.status(200).json(department);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.delete("/api/departments/:id", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "department");
+        const department = await deactivateDepartment(id);
+        res.status(200).json(department);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/departments/:id/deactivate", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "department");
+        const department = await deactivateDepartment(id);
+        res.status(200).json(department);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/departments/:id/reactivate", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "department");
+        const department = await reactivateDepartment(id);
+        res.status(200).json(department);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// ==================== MASTER DATA: LOCATIONS ====================
+app.get("/api/locations", authMiddleware, async (req, res, next) => {
+    try {
+        const query = parseMasterDataQuery(req.query);
+        const result = await listLocations(query);
+        res.status(200).json(result);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.post("/api/locations", authMiddleware, requireAdmin, validate(createMasterDataSchema), async (req, res, next) => {
+    try {
+        const location = await createLocation(req.body);
+        res.status(201).json(location);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.put("/api/locations/:id", authMiddleware, requireAdmin, validate(updateMasterDataSchema), async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "location");
+        const location = await updateLocation(id, req.body);
+        res.status(200).json(location);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.delete("/api/locations/:id", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "location");
+        const location = await deactivateLocation(id);
+        res.status(200).json(location);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/locations/:id/deactivate", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "location");
+        const location = await deactivateLocation(id);
+        res.status(200).json(location);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/locations/:id/reactivate", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "location");
+        const location = await reactivateLocation(id);
+        res.status(200).json(location);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// ==================== MASTER DATA: CATEGORIES ====================
+app.get("/api/categories", authMiddleware, async (req, res, next) => {
+    try {
+        const query = parseMasterDataQuery(req.query);
+        const result = await listCategories(query);
+        res.status(200).json(result);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.post("/api/categories", authMiddleware, requireAdmin, validate(createMasterDataSchema), async (req, res, next) => {
+    try {
+        const category = await createCategory(req.body);
+        res.status(201).json(category);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.put("/api/categories/:id", authMiddleware, requireAdmin, validate(updateMasterDataSchema), async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "category");
+        const category = await updateCategory(id, req.body);
+        res.status(200).json(category);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.delete("/api/categories/:id", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "category");
+        const category = await deactivateCategory(id);
+        res.status(200).json(category);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/categories/:id/deactivate", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "category");
+        const category = await deactivateCategory(id);
+        res.status(200).json(category);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/categories/:id/reactivate", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseMasterDataId(req.params.id, "category");
+        const category = await reactivateCategory(id);
+        res.status(200).json(category);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// ==================== USER MANAGEMENT ====================
+app.get("/api/users", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const parsedQuery = userListQuerySchema.safeParse(req.query);
+        if (!parsedQuery.success) {
+            const details = {};
+            parsedQuery.error.issues.forEach((issue) => {
+                details[issue.path.join(".")] = issue.message;
+            });
+            throw new ValidationError(details);
+        }
+        const result = await listUsers(parsedQuery.data);
+        res.status(200).json(result);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.post("/api/users", authMiddleware, requireAdmin, validate(createUserSchema), async (req, res, next) => {
+    try {
+        const user = await createUser(req.body);
+        res.status(201).json(user);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/users/:id/role", authMiddleware, requireAdmin, validate(updateUserRoleSchema), async (req, res, next) => {
+    try {
+        const id = parseUserId(req.params.id);
+        const user = await changeUserRole(id, req.body.role, req.userId);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.put("/api/users/:id/role", authMiddleware, requireAdmin, validate(updateUserRoleSchema), async (req, res, next) => {
+    try {
+        const id = parseUserId(req.params.id);
+        const user = await changeUserRole(id, req.body.role, req.userId);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.delete("/api/users/:id", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseUserId(req.params.id);
+        const user = await deactivateUser(id, req.userId);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/users/:id/deactivate", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseUserId(req.params.id);
+        const user = await deactivateUser(id, req.userId);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/users/:id/reactivate", authMiddleware, requireAdmin, async (req, res, next) => {
+    try {
+        const id = parseUserId(req.params.id);
+        const user = await reactivateUser(id);
+        res.status(200).json(user);
     }
     catch (error) {
         next(error);

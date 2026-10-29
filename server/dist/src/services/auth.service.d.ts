@@ -18,6 +18,7 @@ export declare const authService: {
         role: import("../../generated/prisma/enums.js").Role;
         id: number;
         name: string;
+        isActive: boolean;
         createdAt: Date;
     } | null>;
     verifyToken(token: string): string | jwt.JwtPayload | null;

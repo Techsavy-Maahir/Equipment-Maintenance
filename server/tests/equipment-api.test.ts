@@ -48,7 +48,14 @@ beforeEach(() => {
 describe("equipment API", () => {
   it("supports listing, creating, getting, updating, and deactivating equipment", async () => {
     const equipment = { id: 1, ...validEquipmentInput, isDeactivated: false };
-    equipmentService.listEquipment.mockResolvedValue([equipment]);
+    equipmentService.listEquipment.mockResolvedValue({
+      items: [equipment],
+      total: 1,
+      page: 1,
+      pageSize: 8,
+      locations: [],
+      categories: [],
+    });
     equipmentService.createEquipment.mockResolvedValue(equipment);
     equipmentService.getEquipment.mockResolvedValue(equipment);
     equipmentService.updateEquipment.mockResolvedValue(equipment);
@@ -59,13 +66,26 @@ describe("equipment API", () => {
 
     const listResponse = await fetch(`${baseUrl}/api/equipment`);
     expect(listResponse.status).toBe(200);
-    expect(await listResponse.json()).toEqual([equipment]);
+    expect(await listResponse.json()).toEqual({
+      items: [equipment],
+      total: 1,
+      page: 1,
+      pageSize: 8,
+      locations: [],
+      categories: [],
+    });
+    expect(equipmentService.listEquipment).toHaveBeenCalledWith({
+      search: "",
+      page: 1,
+      pageSize: 8,
+    });
 
     const createResponse = await fetch(`${baseUrl}/api/equipment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(validEquipmentInput),
     });
+
     expect(createResponse.status).toBe(201);
     expect(await createResponse.json()).toEqual(equipment);
     expect(equipmentService.createEquipment).toHaveBeenCalledWith(
@@ -92,6 +112,40 @@ describe("equipment API", () => {
     });
     expect(deactivateResponse.status).toBe(200);
     expect(equipmentService.deactivateEquipment).toHaveBeenCalledWith(1);
+  });
+
+  it("parses list filters and caps page size at 100", async () => {
+    equipmentService.listEquipment.mockResolvedValue({
+      items: [],
+      total: 0,
+      page: 1,
+      pageSize: 100,
+      locations: [],
+      categories: [],
+    });
+
+    const response = await fetch(
+      `${baseUrl}/api/equipment?search=CNC&status=ACTIVE&location=2&category=3&page=2&pageSize=500`,
+    );
+
+    expect(response.status).toBe(200);
+    expect(equipmentService.listEquipment).toHaveBeenCalledWith({
+      search: "CNC",
+      status: "ACTIVE",
+      location: 2,
+      category: 3,
+      page: 2,
+      pageSize: 100,
+    });
+  });
+
+  it("rejects malformed list query parameters", async () => {
+    const response = await fetch(
+      `${baseUrl}/api/equipment?status=UNKNOWN&page=0&unexpected=true`,
+    );
+
+    expect(response.status).toBe(400);
+    expect(equipmentService.listEquipment).not.toHaveBeenCalled();
   });
 
   it("returns 409 when an asset code conflicts", async () => {

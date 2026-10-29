@@ -1,54 +1,74 @@
-import type { CreateEquipmentInput, UpdateEquipmentInput } from "../schemas/equipment.schema.js";
-export declare function listEquipment(): Promise<({
-    department: {
+import type { CreateEquipmentInput, EquipmentListQuery, UpdateEquipmentInput } from "../schemas/equipment.schema.js";
+export declare function listEquipment(query: EquipmentListQuery): Promise<{
+    items: ({
+        location: {
+            id: number;
+            name: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        category: {
+            id: number;
+            name: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        department: {
+            id: number;
+            name: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+    } & {
         id: number;
         name: string;
         createdAt: Date;
         updatedAt: Date;
-    };
-    location: {
+        code: string;
+        criticality: import("../../generated/prisma/enums.js").Criticality;
+        departmentId: number;
+        locationId: number;
+        categoryId: number;
+        serialNumber: string | null;
+        description: string | null;
+        status: import("../../generated/prisma/enums.js").EquipmentStatus;
+        isDeactivated: boolean;
+        deactivatedAt: Date | null;
+    })[];
+    total: number;
+    page: number;
+    pageSize: number;
+    locations: {
         id: number;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-    };
-    category: {
+    }[];
+    categories: {
         id: number;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-    };
-} & {
-    id: number;
-    name: string;
-    createdAt: Date;
-    updatedAt: Date;
-    code: string;
-    criticality: import("../../generated/prisma/enums.js").Criticality;
-    departmentId: number;
-    locationId: number;
-    categoryId: number;
-    description: string | null;
-    status: import("../../generated/prisma/enums.js").EquipmentStatus;
-    isDeactivated: boolean;
-    deactivatedAt: Date | null;
-})[]>;
+    }[];
+}>;
 export declare function getEquipment(id: number): Promise<{
-    department: {
-        id: number;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
-    };
     location: {
         id: number;
         name: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     };
     category: {
         id: number;
         name: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    };
+    department: {
+        id: number;
+        name: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     };
@@ -62,27 +82,31 @@ export declare function getEquipment(id: number): Promise<{
     departmentId: number;
     locationId: number;
     categoryId: number;
+    serialNumber: string | null;
     description: string | null;
     status: import("../../generated/prisma/enums.js").EquipmentStatus;
     isDeactivated: boolean;
     deactivatedAt: Date | null;
 }>;
 export declare function createEquipment(input: CreateEquipmentInput): Promise<{
-    department: {
-        id: number;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
-    };
     location: {
         id: number;
         name: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     };
     category: {
         id: number;
         name: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    };
+    department: {
+        id: number;
+        name: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     };
@@ -96,27 +120,31 @@ export declare function createEquipment(input: CreateEquipmentInput): Promise<{
     departmentId: number;
     locationId: number;
     categoryId: number;
+    serialNumber: string | null;
     description: string | null;
     status: import("../../generated/prisma/enums.js").EquipmentStatus;
     isDeactivated: boolean;
     deactivatedAt: Date | null;
 }>;
 export declare function updateEquipment(id: number, input: UpdateEquipmentInput): Promise<{
-    department: {
-        id: number;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
-    };
     location: {
         id: number;
         name: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     };
     category: {
         id: number;
         name: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    };
+    department: {
+        id: number;
+        name: string;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
     };
@@ -130,6 +158,7 @@ export declare function updateEquipment(id: number, input: UpdateEquipmentInput)
     departmentId: number;
     locationId: number;
     categoryId: number;
+    serialNumber: string | null;
     description: string | null;
     status: import("../../generated/prisma/enums.js").EquipmentStatus;
     isDeactivated: boolean;
@@ -145,6 +174,7 @@ export declare function deactivateEquipment(id: number): Promise<{
     departmentId: number;
     locationId: number;
     categoryId: number;
+    serialNumber: string | null;
     description: string | null;
     status: import("../../generated/prisma/enums.js").EquipmentStatus;
     isDeactivated: boolean;

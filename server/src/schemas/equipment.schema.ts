@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const equipmentFields = {
   code: z.string().trim().min(1).max(100),
+  serialNumber: z.string().trim().max(100).nullable(),
   name: z.string().trim().min(1).max(200),
   description: z.string().trim().max(2000).nullable(),
   status: z.enum(["ACTIVE", "INACTIVE", "UNDER_MAINTENANCE"]),
@@ -14,6 +15,7 @@ const equipmentFields = {
 export const createEquipmentSchema = z
   .object({
     code: equipmentFields.code,
+    serialNumber: equipmentFields.serialNumber.optional(),
     name: equipmentFields.name,
     description: equipmentFields.description.optional(),
     status: equipmentFields.status.optional(),
@@ -27,6 +29,7 @@ export const createEquipmentSchema = z
 export const updateEquipmentSchema = z
   .object({
     code: equipmentFields.code.optional(),
+    serialNumber: equipmentFields.serialNumber.optional(),
     name: equipmentFields.name.optional(),
     description: equipmentFields.description.optional(),
     status: equipmentFields.status.optional(),
@@ -42,5 +45,23 @@ export const updateEquipmentSchema = z
 
 export const equipmentIdSchema = z.coerce.number().int().positive();
 
+export const equipmentListQuerySchema = z
+  .object({
+    search: z.string().trim().max(200).optional().default(""),
+    status: equipmentFields.status.optional(),
+    location: z.coerce.number().int().positive().optional(),
+    category: z.coerce.number().int().positive().optional(),
+    page: z.coerce.number().int().positive().optional().default(1),
+    pageSize: z
+      .coerce.number()
+      .int()
+      .positive()
+      .optional()
+      .default(8)
+      .transform((pageSize) => Math.min(pageSize, 100)),
+  })
+  .strict();
+
 export type CreateEquipmentInput = z.infer<typeof createEquipmentSchema>;
 export type UpdateEquipmentInput = z.infer<typeof updateEquipmentSchema>;
+export type EquipmentListQuery = z.infer<typeof equipmentListQuerySchema>;
