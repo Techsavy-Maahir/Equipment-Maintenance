@@ -74,3 +74,17 @@ export const requireAdmin = (
   }
   next();
 };
+
+export const requireRole = (...roles: Role[]) => {
+  return (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+  ): void => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      throw new AppError(403, "Forbidden: Insufficient permissions");
+    }
+
+    next();
+  };
+};

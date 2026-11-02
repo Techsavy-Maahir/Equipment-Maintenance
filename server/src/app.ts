@@ -9,6 +9,7 @@ import { authService } from "./services/auth.service.js";
 import {
   authMiddleware,
   requireAdmin,
+  requireRole,
   AuthRequest,
 } from "./middleware/auth.middleware.js";
 import {
@@ -195,6 +196,7 @@ const parseMasterDataQuery = (query: unknown) => {
 
 app.get(
   "/api/equipment",
+  authMiddleware,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const parsedQuery = equipmentListQuerySchema.safeParse(req.query);
@@ -215,6 +217,8 @@ app.get(
 
 app.post(
   "/api/equipment",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
   validate(createEquipmentSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -228,6 +232,7 @@ app.post(
 
 app.get(
   "/api/equipment/:id",
+  authMiddleware,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const equipment = await getEquipment(parseEquipmentId(req.params.id));
@@ -240,6 +245,8 @@ app.get(
 
 app.put(
   "/api/equipment/:id",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
   validate(updateEquipmentSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -256,6 +263,8 @@ app.put(
 
 app.delete(
   "/api/equipment/:id",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const equipment = await deactivateEquipment(
