@@ -1,5 +1,5 @@
 import type { Prisma } from "../../generated/prisma/client.js";
-import { AppError } from "../errors.js";
+import { AppError, ValidationError } from "../errors.js";
 import { prisma } from "../prisma.js";
 import type {
   CreateEquipmentInput,
@@ -12,6 +12,55 @@ const equipmentInclude = {
   location: true,
   category: true,
 } as const;
+
+async function validateEquipmentReferences(
+  tx: Prisma.TransactionClient,
+  references: {
+    departmentId?: number;
+    locationId?: number;
+    categoryId?: number;
+  },
+) {
+  const details: Record<string, string> = {};
+
+  if (references.departmentId !== undefined) {
+    const department = await tx.department.findUnique({
+      where: { id: references.departmentId },
+      select: { isActive: true },
+    });
+
+    if (!department || !department.isActive) {
+      details.departmentId = "Department does not exist or is inactive";
+    }
+  }
+
+  if (references.locationId !== undefined) {
+    const location = await tx.location.findUnique({
+      where: { id: references.locationId },
+      select: { isActive: true },
+    });
+
+    if (!location || !location.isActive) {
+      details.locationId = "Location does not exist or is inactive";
+    }
+  }
+
+  if (references.categoryId !== undefined) {
+    const category = await tx.equipmentCategory.findUnique({
+      where: { id: references.categoryId },
+      select: { isActive: true },
+    });
+
+    if (!category || !category.isActive) {
+      details.categoryId =
+        "Equipment category does not exist or is inactive";
+    }
+  }
+
+  if (Object.keys(details).length > 0) {
+    throw new ValidationError(details);
+  }
+}
 
 export async function listEquipment(query: EquipmentListQuery) {
   const where: Prisma.EquipmentWhereInput = {
@@ -71,12 +120,20 @@ export async function getEquipment(id: number) {
 }
 
 export async function createEquipment(input: CreateEquipmentInput) {
-  return prisma.equipment.create({
-    data: {
-      ...input,
-      description: input.description ?? null,
-    },
-    include: equipmentInclude,
+  return prisma.$transaction(async (tx) => {
+    await validateEquipmentReferences(tx, {
+      departmentId: input.departmentId,
+      locationId: input.locationId,
+      categoryId: input.categoryId,
+    });
+
+    return tx.equipment.create({
+      data: {
+        ...input,
+        description: input.description ?? null,
+      },
+      include: equipmentInclude,
+    });
   });
 }
 
@@ -127,6 +184,12 @@ export async function updateEquipment(
     if (!current || current.isDeactivated) {
       throw new AppError(404, "Active equipment not found");
     }
+
+    await validateEquipmentReferences(tx, {
+  departmentId: input.departmentId,
+  locationId: input.locationId,
+  categoryId: input.categoryId,
+  });
 
     const { locationId, ...otherFields } = input;
 

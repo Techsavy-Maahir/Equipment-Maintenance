@@ -1,3 +1,4 @@
+
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { prismaMock, transactionMocks } = vi.hoisted(() => {
@@ -9,6 +10,7 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
     create: vi.fn(),
     update: vi.fn(),
   };
+
   const historyDelegates = {
     create: vi.fn(),
   };
@@ -18,8 +20,9 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
       $transaction: vi.fn(),
       equipment: equipmentDelegates,
       equipmentLocationHistory: historyDelegates,
-      location: { findMany: vi.fn() },
-      equipmentCategory: { findMany: vi.fn() },
+      department: { findUnique: vi.fn() },
+      location: { findMany: vi.fn(), findUnique: vi.fn() },
+      equipmentCategory: { findMany: vi.fn(), findUnique: vi.fn() },
     },
     transactionMocks: {
       equipment: {
@@ -27,13 +30,15 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
         findMany: vi.fn(),
         findUnique: vi.fn(),
         findUniqueOrThrow: vi.fn(),
+        create: vi.fn(),
         update: vi.fn(),
       },
       equipmentLocationHistory: {
         create: vi.fn(),
       },
-      location: { findMany: vi.fn() },
-      equipmentCategory: { findMany: vi.fn() },
+      department: { findUnique: vi.fn() },
+      location: { findMany: vi.fn(), findUnique: vi.fn() },
+      equipmentCategory: { findMany: vi.fn(), findUnique: vi.fn() },
     },
   };
 });
@@ -64,8 +69,26 @@ const equipment = {
 const transactionClient = {
   equipment: transactionMocks.equipment,
   equipmentLocationHistory: transactionMocks.equipmentLocationHistory,
+  department: transactionMocks.department,
   location: transactionMocks.location,
   equipmentCategory: transactionMocks.equipmentCategory,
+};
+
+const validReferences = () => {
+  transactionMocks.department.findUnique.mockResolvedValue({ isActive: true });
+  transactionMocks.location.findUnique.mockResolvedValue({ isActive: true });
+  transactionMocks.equipmentCategory.findUnique.mockResolvedValue({
+    isActive: true,
+  });
+};
+
+const createInput = {
+  code: "PUMP-001",
+  name: "Pump",
+  criticality: "HIGH" as const,
+  departmentId: 1,
+  locationId: 2,
+  categoryId: 3,
 };
 
 beforeEach(() => {
@@ -93,6 +116,7 @@ describe("equipment service", () => {
 
     const countArgs = transactionMocks.equipment.count.mock.calls[0][0];
     const listArgs = transactionMocks.equipment.findMany.mock.calls[0][0];
+
     expect(listArgs.where).toBe(countArgs.where);
     expect(countArgs.where).toEqual({
       isDeactivated: false,
@@ -133,23 +157,62 @@ describe("equipment service", () => {
   });
 
   it("creates equipment with a null default description", async () => {
-    prismaMock.equipment.create.mockResolvedValue(equipment);
+    validReferences();
+    transactionMocks.equipment.create.mockResolvedValue(equipment);
 
-    await createEquipment({
-      code: "PUMP-001",
-      name: "Pump",
-      criticality: "HIGH",
-      departmentId: 1,
-      locationId: 2,
-      categoryId: 3,
-    });
+    await createEquipment(createInput);
 
-    expect(prismaMock.equipment.create).toHaveBeenCalledWith(
+    expect(prismaMock.$transaction).toHaveBeenCalledOnce();
+    expect(transactionMocks.equipment.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({ description: null }),
       }),
     );
   });
+
+  it.each([
+    ["departmentId", "department"],
+    ["locationId", "location"],
+    ["categoryId", "equipmentCategory"],
+  ] as const)(
+    "rejects an unknown %s when creating equipment",
+    async (field, delegate) => {
+      validReferences();
+      transactionMocks[delegate].findUnique.mockResolvedValue(null);
+
+      await expect(createEquipment(createInput)).rejects.toMatchObject({
+        name: "ValidationError",
+        details: {
+          [field]: expect.any(String),
+        },
+      });
+
+      expect(transactionMocks.equipment.create).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    ["departmentId", "department"],
+    ["locationId", "location"],
+    ["categoryId", "equipmentCategory"],
+  ] as const)(
+    "rejects an inactive %s when creating equipment",
+    async (field, delegate) => {
+      validReferences();
+      transactionMocks[delegate].findUnique.mockResolvedValue({
+        isActive: false,
+      });
+
+      await expect(createEquipment(createInput)).rejects.toMatchObject({
+        name: "ValidationError",
+        details: {
+          [field]: expect.any(String),
+        },
+      });
+
+      expect(transactionMocks.equipment.create).not.toHaveBeenCalled();
+    },
+  );
 
   it("soft deactivates equipment without deleting it", async () => {
     transactionMocks.equipment.findUnique.mockResolvedValue(equipment);
@@ -171,6 +234,7 @@ describe("equipment service", () => {
   });
 
   it("writes exactly one history row for a location change", async () => {
+    validReferences();
     transactionMocks.equipment.findUnique.mockResolvedValue(equipment);
     transactionMocks.equipment.findUniqueOrThrow.mockResolvedValue({
       ...equipment,
@@ -201,6 +265,7 @@ describe("equipment service", () => {
   });
 
   it("does not write history when the location is unchanged", async () => {
+    validReferences();
     transactionMocks.equipment.findUnique.mockResolvedValue(equipment);
     transactionMocks.equipment.findUniqueOrThrow.mockResolvedValue(equipment);
 
@@ -211,4 +276,89 @@ describe("equipment service", () => {
     ).not.toHaveBeenCalled();
     expect(transactionMocks.equipment.update).not.toHaveBeenCalled();
   });
+
+  it("rejects an unknown reference during an equipment update", async () => {
+    transactionMocks.equipment.findUnique.mockResolvedValue(equipment);
+    transactionMocks.location.findUnique.mockResolvedValue(null);
+
+    await expect(
+      updateEquipment(equipment.id, { locationId: 999 }),
+    ).rejects.toMatchObject({
+      name: "ValidationError",
+      details: {
+        locationId: expect.any(String),
+      },
+    });
+
+    expect(transactionMocks.equipment.update).not.toHaveBeenCalled();
+    expect(
+      transactionMocks.equipmentLocationHistory.create,
+    ).not.toHaveBeenCalled();
+  });
+
+  it("rejects an inactive reference during an equipment update", async () => {
+    transactionMocks.equipment.findUnique.mockResolvedValue(equipment);
+    transactionMocks.department.findUnique.mockResolvedValue({
+      isActive: false,
+    });
+
+    await expect(
+      updateEquipment(equipment.id, { departmentId: 999 }),
+    ).rejects.toMatchObject({
+      name: "ValidationError",
+      details: {
+        departmentId: expect.any(String),
+      },
+    });
+
+    expect(transactionMocks.equipment.update).not.toHaveBeenCalled();
+  });
+
+    it.each([
+    ["departmentId", "department"],
+    ["locationId", "location"],
+    ["categoryId", "equipmentCategory"],
+  ] as const)(
+    "rejects an unknown %s during an equipment update",
+    async (field, delegate) => {
+      transactionMocks.equipment.findUnique.mockResolvedValue(equipment);
+      transactionMocks[delegate].findUnique.mockResolvedValue(null);
+
+      await expect(
+        updateEquipment(equipment.id, { [field]: 999 }),
+      ).rejects.toMatchObject({
+        name: "ValidationError",
+        details: {
+          [field]: expect.any(String),
+        },
+      });
+
+      expect(transactionMocks.equipment.update).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    ["departmentId", "department"],
+    ["locationId", "location"],
+    ["categoryId", "equipmentCategory"],
+  ] as const)(
+    "rejects an inactive %s during an equipment update",
+    async (field, delegate) => {
+      transactionMocks.equipment.findUnique.mockResolvedValue(equipment);
+      transactionMocks[delegate].findUnique.mockResolvedValue({
+        isActive: false,
+      });
+
+      await expect(
+        updateEquipment(equipment.id, { [field]: 999 }),
+      ).rejects.toMatchObject({
+        name: "ValidationError",
+        details: {
+          [field]: expect.any(String),
+        },
+      });
+
+      expect(transactionMocks.equipment.update).not.toHaveBeenCalled();
+    },
+  );
 });
