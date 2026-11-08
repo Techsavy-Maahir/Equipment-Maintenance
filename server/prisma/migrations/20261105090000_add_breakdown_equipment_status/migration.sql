@@ -1,0 +1,2 @@
+
+ALTER TYPE "EquipmentStatus" ADD VALUE 'BREAKDOWN';

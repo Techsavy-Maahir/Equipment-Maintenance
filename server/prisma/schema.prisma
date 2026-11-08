@@ -20,6 +20,7 @@ enum EquipmentStatus {
   ACTIVE
   INACTIVE
   UNDER_MAINTENANCE
+  BREAKDOWN
 }
 
 enum Criticality {
@@ -37,6 +38,7 @@ model User {
   isActive  Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  auditLogs AuditLog[]
 }
 
 model Department {
@@ -75,6 +77,10 @@ model Equipment {
   id           Int       @id @default(autoincrement())
   code         String    @unique
   serialNumber String?
+  purchaseDate        DateTime?
+  purchaseCost        Decimal?  @db.Decimal(12, 2)
+  warrantyStartDate   DateTime?
+  warrantyExpiryDate  DateTime?
   name         String
   description  String?
   status       EquipmentStatus @default(ACTIVE)
@@ -112,4 +118,20 @@ model EquipmentLocationHistory {
   @@index([equipmentId, changedAt])
   @@index([fromLocationId])
   @@index([toLocationId])
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  actorId    Int?
+  action     String
+  entityType String
+  entityId   Int
+  summary    String
+  createdAt  DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
 }

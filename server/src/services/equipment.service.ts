@@ -1,3 +1,4 @@
+
 import type { Prisma } from "../../generated/prisma/client.js";
 import { AppError, ValidationError } from "../errors.js";
 import { prisma } from "../prisma.js";
@@ -12,6 +13,21 @@ const equipmentInclude = {
   location: true,
   category: true,
 } as const;
+
+function validateCombinedWarrantyDates(
+  warrantyStartDate: Date | null,
+  warrantyExpiryDate: Date | null,
+) {
+  if (
+    warrantyStartDate &&
+    warrantyExpiryDate &&
+    warrantyExpiryDate <= warrantyStartDate
+  ) {
+    throw new ValidationError({
+      warrantyExpiryDate: "Warranty expiry must be after warranty start date",
+    });
+  }
+}
 
 async function validateEquipmentReferences(
   tx: Prisma.TransactionClient,
@@ -185,11 +201,21 @@ export async function updateEquipment(
       throw new AppError(404, "Active equipment not found");
     }
 
+    // Validate combined existing and incoming warranty dates
+    validateCombinedWarrantyDates(
+      input.warrantyStartDate !== undefined
+        ? input.warrantyStartDate
+        : current.warrantyStartDate,
+      input.warrantyExpiryDate !== undefined
+        ? input.warrantyExpiryDate
+        : current.warrantyExpiryDate,
+    );
+
     await validateEquipmentReferences(tx, {
-  departmentId: input.departmentId,
-  locationId: input.locationId,
-  categoryId: input.categoryId,
-  });
+      departmentId: input.departmentId,
+      locationId: input.locationId,
+      categoryId: input.categoryId,
+    });
 
     const { locationId, ...otherFields } = input;
 
