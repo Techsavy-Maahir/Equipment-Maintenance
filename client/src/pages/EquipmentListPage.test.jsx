@@ -115,4 +115,61 @@ describe("EquipmentListPage", () => {
     );
     expect(new URLSearchParams(window.location.search).get("page")).toBe("2");
   });
+
+  it("displays warranty status and opens details modal with full purchase & warranty info", async () => {
+    const assetWithWarranty = {
+      id: 1,
+      code: "EQ-10421",
+      name: "CNC Milling Center #04",
+      status: "ACTIVE",
+      criticality: "HIGH",
+      department: { name: "Machining" },
+      location: { name: "Line A" },
+      category: { name: "CNC Machine" },
+      purchaseDate: "2024-05-10T00:00:00.000Z",
+      purchaseCost: 145000,
+      warrantyStartDate: "2024-05-10T00:00:00.000Z",
+      warrantyExpiryDate: "2027-05-10T00:00:00.000Z",
+      warrantyStatus: "VALID",
+    };
+
+    api.getEquipment.mockResolvedValue({
+      items: [assetWithWarranty],
+      total: 1,
+      page: 1,
+      pageSize: 8,
+      locations: [{ id: 2, name: "Line A" }],
+      categories: [{ id: 3, name: "CNC Machine" }],
+    });
+
+    render(<EquipmentListPage />);
+
+    expect(await screen.findByText("EQ-10421")).toBeInTheDocument();
+    expect(screen.getByText("Warranty Active")).toBeInTheDocument();
+
+    // Click view details button
+    const viewBtn = screen.getByRole("button", {
+      name: "View details for CNC Milling Center #04",
+    });
+    fireEvent.click(viewBtn);
+
+    // Modal opens with purchase and warranty information
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: /CNC Milling Center #04 \(EQ-10421\)/i,
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByText("$145,000.00")).toBeInTheDocument();
+    expect(screen.getByText("Procurement & Warranty Details")).toBeInTheDocument();
+
+    // Close modal
+    fireEvent.click(screen.getByRole("button", { name: "Close details" }));
+    expect(
+      screen.queryByRole("heading", {
+        level: 2,
+        name: /CNC Milling Center #04 \(EQ-10421\)/i,
+      })
+    ).not.toBeInTheDocument();
+  });
 });

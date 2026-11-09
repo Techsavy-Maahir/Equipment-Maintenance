@@ -477,7 +477,7 @@ body:has(.equipment-app)::-webkit-scrollbar,
   background: var(--primary-container);
   color: #fff;
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
-  cursor: not-allowed;
+  cursor: pointer;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
@@ -493,7 +493,8 @@ body:has(.equipment-app)::-webkit-scrollbar,
 }
 
 .equipment-add-button:disabled {
-  opacity: 1;
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .equipment-alert {
@@ -761,6 +762,165 @@ body:has(.equipment-app)::-webkit-scrollbar,
   background: #825100;
 }
 
+.equipment-status--breakdown {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.equipment-status--breakdown .equipment-status-dot {
+  background: #dc2626;
+}
+
+/* Warranty status badges */
+.equipment-warranty-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.equipment-warranty-badge.valid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.equipment-warranty-badge.expiring {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.equipment-warranty-badge.expired {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.equipment-warranty-badge.not-recorded {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.equipment-warranty-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Equipment Details Modal */
+.equipment-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  z-index: 999;
+  padding: 16px;
+}
+
+.equipment-details-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+}
+
+.equipment-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.equipment-modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.equipment-modal-close {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.equipment-modal-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.equipment-modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.equipment-modal-section-title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.equipment-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 16px;
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
+}
+
+.equipment-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.equipment-detail-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.equipment-detail-value {
+  font-size: 14px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.equipment-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 .equipment-actions-heading,
 .equipment-actions-cell {
   text-align: right !important;
@@ -783,7 +943,7 @@ body:has(.equipment-app)::-webkit-scrollbar,
   border-radius: 4px;
   background: transparent;
   color: var(--secondary);
-  cursor: not-allowed;
+  cursor: pointer;
 }
 
 .equipment-actions button .material-symbols-outlined {
@@ -791,7 +951,8 @@ body:has(.equipment-app)::-webkit-scrollbar,
 }
 
 .equipment-actions button:disabled {
-  opacity: 1;
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .equipment-actions button:hover:not(:disabled) {

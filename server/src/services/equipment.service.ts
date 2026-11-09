@@ -7,6 +7,7 @@ import type {
   EquipmentListQuery,
   UpdateEquipmentInput,
 } from "../schemas/equipment.schema.js";
+import { getWarrantyStatus } from "./warranty.service.js";
 
 const equipmentInclude = {
   department: true,
@@ -110,13 +111,18 @@ export async function listEquipment(query: EquipmentListQuery) {
 
     const pageCount = Math.max(1, Math.ceil(total / query.pageSize));
     const page = Math.min(query.page, pageCount);
-    const items = await tx.equipment.findMany({
+    const rawItems = await tx.equipment.findMany({
       where,
       include: equipmentInclude,
       orderBy: { id: "asc" },
       skip: (page - 1) * query.pageSize,
       take: query.pageSize,
     });
+
+    const items = rawItems.map((item) => ({
+      ...item,
+      warrantyStatus: getWarrantyStatus(item.warrantyExpiryDate),
+    }));
 
     return { items, total, page, pageSize: query.pageSize, locations, categories };
   });
@@ -132,7 +138,10 @@ export async function getEquipment(id: number) {
     throw new AppError(404, "Equipment not found");
   }
 
-  return equipment;
+  return {
+    ...equipment,
+    warrantyStatus: getWarrantyStatus(equipment.warrantyExpiryDate),
+  };
 }
 
 export async function createEquipment(input: CreateEquipmentInput) {

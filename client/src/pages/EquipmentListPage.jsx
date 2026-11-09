@@ -57,22 +57,45 @@ function statusDetails(status) {
         label: "Under Maintenance",
         className: "equipment-status--maintenance",
       };
+    case "BREAKDOWN":
+      return { label: "Breakdown", className: "equipment-status--breakdown" };
     default:
       return { label: status || "Unknown", className: "equipment-status--inactive" };
   }
 }
 
-function AssetActions() {
+function warrantyBadge(status) {
+  switch (status) {
+    case "VALID":
+      return { label: "Warranty Active", className: "valid" };
+    case "EXPIRING_SOON":
+      return { label: "Expiring Soon", className: "expiring" };
+    case "EXPIRED":
+      return { label: "Warranty Expired", className: "expired" };
+    case "NOT_RECORDED":
+    default:
+      return { label: "No Warranty", className: "not-recorded" };
+  }
+}
+
+function AssetActions({ item, onEdit, onView }) {
   return (
     <div className="equipment-actions">
-      <button type="button" aria-label="View Details" title="View Details" disabled>
+      <button
+        type="button"
+        aria-label={`View details for ${item.name}`}
+        title={`View details for ${item.name}`}
+        onClick={() => onView && onView(item)}
+      >
         <MaterialIcon>visibility</MaterialIcon>
       </button>
-      <button type="button" aria-label="Edit" title="Edit" disabled>
+      <button
+        type="button"
+        aria-label={`Edit ${item.name}`}
+        title={`Edit ${item.name}`}
+        onClick={() => onEdit && onEdit(item)}
+      >
         <MaterialIcon>edit</MaterialIcon>
-      </button>
-      <button type="button" aria-label="More actions" title="More actions" disabled>
-        <MaterialIcon>more_vert</MaterialIcon>
       </button>
     </div>
   );
@@ -96,6 +119,7 @@ export function EquipmentListPage({
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedDetailsItem, setSelectedDetailsItem] = useState(null);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -342,7 +366,11 @@ export function EquipmentListPage({
                   <span className="sr-only">{result.total.toLocaleString()} matching assets</span>
                 </p>
               </div>
-              <button className="equipment-add-button" type="button" disabled>
+              <button
+                className="equipment-add-button"
+                type="button"
+                onClick={() => onNavigate("equipment-create")}
+              >
                 <MaterialIcon>add</MaterialIcon>
                 <span>Add Equipment</span>
               </button>
@@ -433,12 +461,14 @@ export function EquipmentListPage({
                         <th scope="col">Category</th>
                         <th scope="col">Location</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Warranty</th>
                         <th className="equipment-actions-heading" scope="col">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {result.items.map((item) => {
                         const status = statusDetails(item.status);
+                        const warranty = warrantyBadge(item.warrantyStatus);
                         return (
                           <tr key={item.id}>
                             <td>
@@ -464,7 +494,19 @@ export function EquipmentListPage({
                                 {status.label}
                               </span>
                             </td>
-                            <td className="equipment-actions-cell"><AssetActions /></td>
+                            <td>
+                              <span className={`equipment-warranty-badge ${warranty.className}`}>
+                                <span className="equipment-warranty-dot" />
+                                {warranty.label}
+                              </span>
+                            </td>
+                            <td className="equipment-actions-cell">
+                              <AssetActions
+                                item={item}
+                                onView={(asset) => setSelectedDetailsItem(asset)}
+                                onEdit={(asset) => onNavigate(`equipment-edit-${asset.id}`)}
+                              />
+                            </td>
                           </tr>
                         );
                       })}
@@ -545,6 +587,165 @@ export function EquipmentListPage({
           </div>
         </main>
       </div>
+
+      {/* Equipment Details Modal */}
+      {selectedDetailsItem && (
+        <div
+          className="equipment-modal-overlay"
+          onClick={() => setSelectedDetailsItem(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="details-modal-title"
+        >
+          <div className="equipment-details-modal" onClick={(e) => e.stopPropagation()}>
+            <header className="equipment-modal-header">
+              <h2 id="details-modal-title">
+                {selectedDetailsItem.name} ({selectedDetailsItem.code})
+              </h2>
+              <button
+                type="button"
+                className="equipment-modal-close"
+                onClick={() => setSelectedDetailsItem(null)}
+                aria-label="Close details"
+              >
+                <MaterialIcon>close</MaterialIcon>
+              </button>
+            </header>
+
+            <div className="equipment-modal-body">
+              {/* Basic & Identification */}
+              <div>
+                <h3 className="equipment-modal-section-title">
+                  <MaterialIcon>info</MaterialIcon>
+                  General & Physical Location
+                </h3>
+                <div className="equipment-details-grid">
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Equipment Code</span>
+                    <span className="equipment-detail-value">{selectedDetailsItem.code}</span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Serial Number</span>
+                    <span className="equipment-detail-value">{selectedDetailsItem.serialNumber || "—"}</span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Category</span>
+                    <span className="equipment-detail-value">{selectedDetailsItem.category?.name || "—"}</span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Location</span>
+                    <span className="equipment-detail-value">{selectedDetailsItem.location?.name || "—"}</span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Department</span>
+                    <span className="equipment-detail-value">{selectedDetailsItem.department?.name || "—"}</span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Criticality</span>
+                    <span className="equipment-detail-value">{selectedDetailsItem.criticality || "—"}</span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Operational Status</span>
+                    <span className="equipment-detail-value">
+                      {statusDetails(selectedDetailsItem.status).label}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Purchase & Warranty Details */}
+              <div>
+                <h3 className="equipment-modal-section-title">
+                  <MaterialIcon>verified_user</MaterialIcon>
+                  Procurement & Warranty Details
+                </h3>
+                <div className="equipment-details-grid">
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Purchase Date</span>
+                    <span className="equipment-detail-value">
+                      {selectedDetailsItem.purchaseDate
+                        ? new Date(selectedDetailsItem.purchaseDate).toLocaleDateString()
+                        : "—"}
+                    </span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Purchase Cost</span>
+                    <span className="equipment-detail-value">
+                      {selectedDetailsItem.purchaseCost != null
+                        ? `$${Number(selectedDetailsItem.purchaseCost).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                        : "—"}
+                    </span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Warranty Status</span>
+                    <span className="equipment-detail-value">
+                      <span
+                        className={`equipment-warranty-badge ${
+                          warrantyBadge(selectedDetailsItem.warrantyStatus).className
+                        }`}
+                      >
+                        <span className="equipment-warranty-dot" />
+                        {warrantyBadge(selectedDetailsItem.warrantyStatus).label}
+                      </span>
+                    </span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Warranty Start Date</span>
+                    <span className="equipment-detail-value">
+                      {selectedDetailsItem.warrantyStartDate
+                        ? new Date(selectedDetailsItem.warrantyStartDate).toLocaleDateString()
+                        : "—"}
+                    </span>
+                  </div>
+                  <div className="equipment-detail-item">
+                    <span className="equipment-detail-label">Warranty Expiry Date</span>
+                    <span className="equipment-detail-value">
+                      {selectedDetailsItem.warrantyExpiryDate
+                        ? new Date(selectedDetailsItem.warrantyExpiryDate).toLocaleDateString()
+                        : "—"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description & Notes */}
+              {selectedDetailsItem.description && (
+                <div>
+                  <h3 className="equipment-modal-section-title">
+                    <MaterialIcon>notes</MaterialIcon>
+                    Notes & Description
+                  </h3>
+                  <div style={{ background: "#f8fafc", padding: "12px 16px", borderRadius: "8px", fontSize: "13px", color: "#334155" }}>
+                    {selectedDetailsItem.description}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <footer className="equipment-modal-footer">
+              <button
+                type="button"
+                className="equipment-btn-secondary"
+                onClick={() => setSelectedDetailsItem(null)}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="equipment-btn-primary"
+                onClick={() => {
+                  const id = selectedDetailsItem.id;
+                  setSelectedDetailsItem(null);
+                  onNavigate(`equipment-edit-${id}`);
+                }}
+              >
+                <MaterialIcon>edit</MaterialIcon>
+                <span>Edit Asset</span>
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

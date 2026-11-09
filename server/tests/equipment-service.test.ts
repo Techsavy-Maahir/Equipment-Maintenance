@@ -133,7 +133,7 @@ describe("equipment service", () => {
       expect.objectContaining({ skip: 8, take: 8, orderBy: { id: "asc" } }),
     );
     expect(result).toEqual({
-      items: [equipment],
+      items: [{ ...equipment, warrantyStatus: "NOT_RECORDED" }],
       total: 17,
       page: 2,
       pageSize: 8,

@@ -13,11 +13,16 @@ export interface Equipment {
   serialNumber: string | null;
   name: string;
   description: string | null;
-  status: "ACTIVE" | "INACTIVE" | "UNDER_MAINTENANCE";
+  status: "ACTIVE" | "INACTIVE" | "UNDER_MAINTENANCE" | "BREAKDOWN";
   criticality: "LOW" | "MEDIUM" | "HIGH";
   departmentId: number;
   locationId: number;
   categoryId: number;
+  purchaseDate?: string | null;
+  purchaseCost?: number | string | null;
+  warrantyStartDate?: string | null;
+  warrantyExpiryDate?: string | null;
+  warrantyStatus?: "VALID" | "EXPIRING_SOON" | "EXPIRED" | "NOT_RECORDED";
   createdAt: string;
   updatedAt: string;
   department: {
@@ -132,6 +137,52 @@ export const api = {
         },
       },
     );
+    return response.data;
+  },
+
+  async getEquipmentById(id: number): Promise<Equipment> {
+    const response = await apiClient.get<Equipment>(`/equipment/${id}`);
+    return response.data;
+  },
+
+  async createEquipment(data: {
+    code: string;
+    name: string;
+    description?: string | null;
+    serialNumber?: string | null;
+    criticality: "LOW" | "MEDIUM" | "HIGH";
+    departmentId: number;
+    locationId: number;
+    categoryId: number;
+    status?: "ACTIVE" | "INACTIVE" | "UNDER_MAINTENANCE";
+    purchaseDate?: string | null;
+    purchaseCost?: number | null;
+    warrantyStartDate?: string | null;
+    warrantyExpiryDate?: string | null;
+  }): Promise<Equipment> {
+    const response = await apiClient.post<Equipment>("/equipment", data);
+    return response.data;
+  },
+
+  async updateEquipment(
+    id: number,
+    data: {
+      code?: string;
+      name?: string;
+      description?: string | null;
+      serialNumber?: string | null;
+      criticality?: "LOW" | "MEDIUM" | "HIGH";
+      departmentId?: number;
+      locationId?: number;
+      categoryId?: number;
+      status?: "ACTIVE" | "INACTIVE" | "UNDER_MAINTENANCE";
+      purchaseDate?: string | null;
+      purchaseCost?: number | null;
+      warrantyStartDate?: string | null;
+      warrantyExpiryDate?: string | null;
+    },
+  ): Promise<Equipment> {
+    const response = await apiClient.put<Equipment>(`/equipment/${id}`, data);
     return response.data;
   },
 
