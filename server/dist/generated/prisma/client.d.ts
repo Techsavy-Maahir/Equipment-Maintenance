@@ -49,4 +49,19 @@ export type Equipment = Prisma.EquipmentModel;
  *
  */
 export type EquipmentLocationHistory = Prisma.EquipmentLocationHistoryModel;
+/**
+ * Model AuditLog
+ *
+ */
+export type AuditLog = Prisma.AuditLogModel;
+/**
+ * Model MaintenanceRequest
+ *
+ */
+export type MaintenanceRequest = Prisma.MaintenanceRequestModel;
+/**
+ * Model DecisionHistory
+ *
+ */
+export type DecisionHistory = Prisma.DecisionHistoryModel;
 //# sourceMappingURL=client.d.ts.map

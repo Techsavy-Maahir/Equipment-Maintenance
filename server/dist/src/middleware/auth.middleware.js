@@ -41,4 +41,12 @@ export const requireAdmin = (req, res, next) => {
     }
     next();
 };
+export const requireRole = (...roles) => {
+    return (req, res, next) => {
+        if (!req.user || !roles.includes(req.user.role)) {
+            throw new AppError(403, "Forbidden: Insufficient permissions");
+        }
+        next();
+    };
+};
 //# sourceMappingURL=auth.middleware.js.map

@@ -16,6 +16,7 @@ import {
   createEquipment,
   deactivateEquipment,
   getEquipment,
+  getEquipmentLocationHistory,
   listEquipment,
   updateEquipment,
 } from "./services/equipment.service.js";
@@ -61,6 +62,18 @@ import {
   listUsers,
   reactivateUser,
 } from "./services/user.service.js";
+import {
+  createMaintenanceRequest,
+  getMaintenanceRequest,
+  listMaintenanceRequests,
+  transitionMaintenanceRequest,
+} from "./services/request.service.js";
+import {
+  createMaintenanceRequestSchema,
+  maintenanceRequestIdSchema,
+  maintenanceRequestListQuerySchema,
+  transitionMaintenanceRequestSchema,
+} from "./schemas/request.schema.js";
 
 const app = express();
 
@@ -180,6 +193,16 @@ const parseUserId = (rawId: string | string[]): number => {
   return result.data;
 };
 
+const parseMaintenanceRequestId = (rawId: string | string[]): number => {
+  const result = maintenanceRequestIdSchema.safeParse(rawId);
+
+  if (!result.success) {
+    throw new AppError(400, "Invalid maintenance request ID");
+  }
+
+  return result.data;
+};
+
 const parseMasterDataQuery = (query: unknown) => {
   const parsedQuery = masterDataQuerySchema.safeParse(query);
   if (!parsedQuery.success) {
@@ -271,6 +294,96 @@ app.delete(
         parseEquipmentId(req.params.id),
       );
       res.status(200).json(equipment);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/equipment/:id/location-history",
+  authMiddleware,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const history = await getEquipmentLocationHistory(
+        parseEquipmentId(req.params.id),
+      );
+      res.status(200).json(history);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+// ==================== MAINTENANCE REQUESTS ====================
+
+app.get(
+  "/api/requests",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedQuery = maintenanceRequestListQuerySchema.safeParse(req.query);
+      if (!parsedQuery.success) {
+        const details: Record<string, string> = {};
+        parsedQuery.error.issues.forEach((issue) => {
+          details[issue.path.join(".")] = issue.message;
+        });
+        throw new ValidationError(details);
+      }
+
+      const requests = await listMaintenanceRequests(
+        parsedQuery.data,
+        req.user!,
+      );
+      res.status(200).json(requests);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.post(
+  "/api/requests",
+  authMiddleware,
+  validate(createMaintenanceRequestSchema),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const request = await createMaintenanceRequest(req.body, req.user!);
+      res.status(201).json(request);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/requests/:id",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const request = await getMaintenanceRequest(
+        parseMaintenanceRequestId(req.params.id),
+        req.user!,
+      );
+      res.status(200).json(request);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.patch(
+  "/api/requests/:id/status",
+  authMiddleware,
+  validate(transitionMaintenanceRequestSchema),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const request = await transitionMaintenanceRequest(
+        parseMaintenanceRequestId(req.params.id),
+        req.user!,
+        req.body,
+      );
+      res.status(200).json(request);
     } catch (error) {
       next(error);
     }
@@ -681,7 +794,9 @@ app.use((req: Request, res: Response) => {
 
 // Global error handler
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
-  console.error("Request error:", err);
+  if (!(err instanceof AppError && err.statusCode === 401)) {
+    console.error("Request error:", err);
+  }
 
   // Zod validation error (caught by validate middleware)
   if (err instanceof ValidationError) {

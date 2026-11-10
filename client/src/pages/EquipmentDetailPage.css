@@ -1,0 +1,126 @@
+.equipment-detail-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+}
+
+.equipment-detail-header,
+.equipment-detail-actions,
+.equipment-detail-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.equipment-detail-header {
+  margin-bottom: 24px;
+}
+
+.equipment-detail-actions {
+  justify-content: flex-end;
+}
+
+.equipment-btn-danger {
+  border: 1px solid #b91c1c;
+  border-radius: 6px;
+  padding: 8px 16px;
+  color: #fff;
+  background: #b91c1c;
+  font: inherit;
+  cursor: pointer;
+}
+
+.equipment-btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.equipment-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.equipment-detail-title {
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.equipment-detail-title p {
+  margin: 0 0 4px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.equipment-detail-title h1 {
+  margin: 0 0 6px;
+  color: #0f172a;
+  font-size: 24px;
+}
+
+.equipment-detail-card {
+  padding: 20px 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.equipment-detail-card h2 {
+  margin: 0 0 16px;
+  color: #0f172a;
+  font-size: 16px;
+}
+
+.equipment-detail-card .equipment-details-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.equipment-detail-state,
+.equipment-detail-empty,
+.equipment-detail-history-note {
+  color: #64748b;
+}
+
+.equipment-detail-history-scroll {
+  overflow-x: auto;
+}
+
+.equipment-detail-history {
+  min-width: 520px;
+}
+
+.equipment-detail-history-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+}
+
+.equipment-detail-success {
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  color: #15803d;
+  background: #f0fdf4;
+}
+
+@media (max-width: 640px) {
+  .equipment-detail-page {
+    padding: 20px 16px 32px;
+  }
+
+  .equipment-detail-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .equipment-detail-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .equipment-detail-title {
+    flex-direction: column;
+  }
+}

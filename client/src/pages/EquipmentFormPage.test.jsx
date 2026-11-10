@@ -53,6 +53,22 @@ afterEach(() => {
 });
 
 describe("EquipmentFormPage", () => {
+  const renderCreateForm = () => {
+    api.getDepartments.mockResolvedValue(mockDepartments);
+    api.getLocations.mockResolvedValue(mockLocations);
+    api.getCategories.mockResolvedValue(mockCategories);
+    return render(<EquipmentFormPage user={{ name: "Alex Morgan", role: "ADMIN" }} />);
+  };
+
+  const fillRequiredEquipmentFields = () => {
+    fireEvent.change(screen.getByLabelText(/Equipment ID \/ Code/i), {
+      target: { value: "EQ-10499" },
+    });
+    fireEvent.change(screen.getByLabelText(/Equipment Name/i), {
+      target: { value: "Automated Press AP-01" },
+    });
+  };
+
   it("renders create form mode and populates master data options", async () => {
     api.getDepartments.mockResolvedValue(mockDepartments);
     api.getLocations.mockResolvedValue(mockLocations);
@@ -189,5 +205,104 @@ describe("EquipmentFormPage", () => {
         })
       );
     });
+  });
+
+  it("maps multiple server validation errors to their form fields", async () => {
+    renderCreateForm();
+    expect(await screen.findByText("Machining Division")).toBeInTheDocument();
+    fillRequiredEquipmentFields();
+    api.createEquipment.mockRejectedValue({
+      response: {
+        status: 400,
+        data: {
+          message: "Validation error",
+          details: {
+            name: "Equipment name is invalid",
+            departmentId: "Department does not exist or is inactive",
+          },
+        },
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Create Asset" }));
+
+    expect(await screen.findByText("Equipment name is invalid")).toBeInTheDocument();
+    expect(
+      screen.getByText("Department does not exist or is inactive"),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("maps duplicate equipment-code conflicts to the code field", async () => {
+    renderCreateForm();
+    expect(await screen.findByText("Machining Division")).toBeInTheDocument();
+    fillRequiredEquipmentFields();
+    api.createEquipment.mockRejectedValue({
+      response: {
+        status: 409,
+        data: {
+          error: "Conflict",
+          message: "Duplicate value for field: code",
+          statusCode: 409,
+        },
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Create Asset" }));
+
+    expect(
+      await screen.findByText("This equipment code is already in use."),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("keeps unmapped server errors in the general error banner", async () => {
+    renderCreateForm();
+    expect(await screen.findByText("Machining Division")).toBeInTheDocument();
+    fillRequiredEquipmentFields();
+    api.createEquipment.mockRejectedValue({
+      response: {
+        status: 400,
+        data: {
+          message: "Validation error",
+          details: { unsupportedField: "Unsupported input" },
+        },
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Create Asset" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Validation error");
+    expect(screen.queryByText("Unsupported input")).not.toBeInTheDocument();
+  });
+
+  it("allows a corrected field to be resubmitted successfully", async () => {
+    renderCreateForm();
+    expect(await screen.findByText("Machining Division")).toBeInTheDocument();
+    fillRequiredEquipmentFields();
+    api.createEquipment
+      .mockRejectedValueOnce({
+        response: {
+          status: 400,
+          data: { message: "Validation error", details: { name: "Name is invalid" } },
+        },
+      })
+      .mockResolvedValueOnce({ id: 999, ...mockExistingEquipment });
+
+    fireEvent.click(screen.getByRole("button", { name: "Create Asset" }));
+    expect(await screen.findByText("Name is invalid")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText(/Equipment Name/i), {
+      target: { value: "Corrected Press AP-01" },
+    });
+    expect(screen.queryByText("Name is invalid")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Create Asset" }));
+
+    await waitFor(() => {
+      expect(api.createEquipment).toHaveBeenLastCalledWith(
+        expect.objectContaining({ name: "Corrected Press AP-01" }),
+      );
+    });
+    expect(await screen.findByText("Equipment created successfully!")).toBeInTheDocument();
   });
 });

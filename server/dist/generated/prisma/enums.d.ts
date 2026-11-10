@@ -9,6 +9,7 @@ export declare const EquipmentStatus: {
     readonly ACTIVE: "ACTIVE";
     readonly INACTIVE: "INACTIVE";
     readonly UNDER_MAINTENANCE: "UNDER_MAINTENANCE";
+    readonly BREAKDOWN: "BREAKDOWN";
 };
 export type EquipmentStatus = (typeof EquipmentStatus)[keyof typeof EquipmentStatus];
 export declare const Criticality: {
@@ -17,4 +18,20 @@ export declare const Criticality: {
     readonly HIGH: "HIGH";
 };
 export type Criticality = (typeof Criticality)[keyof typeof Criticality];
+export declare const MaintenanceRequestType: {
+    readonly BREAKDOWN: "BREAKDOWN";
+    readonly PREVENTIVE: "PREVENTIVE";
+    readonly IMPROVEMENT: "IMPROVEMENT";
+};
+export type MaintenanceRequestType = (typeof MaintenanceRequestType)[keyof typeof MaintenanceRequestType];
+export declare const MaintenanceRequestStatus: {
+    readonly SUBMITTED: "SUBMITTED";
+    readonly UNDER_REVIEW: "UNDER_REVIEW";
+    readonly APPROVED: "APPROVED";
+    readonly REJECTED: "REJECTED";
+    readonly IN_PROGRESS: "IN_PROGRESS";
+    readonly COMPLETED: "COMPLETED";
+    readonly CANCELLED: "CANCELLED";
+};
+export type MaintenanceRequestStatus = (typeof MaintenanceRequestStatus)[keyof typeof MaintenanceRequestStatus];
 //# sourceMappingURL=enums.d.ts.map

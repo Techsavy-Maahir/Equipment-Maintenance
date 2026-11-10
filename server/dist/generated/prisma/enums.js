@@ -16,11 +16,26 @@ export const Role = {
 export const EquipmentStatus = {
     ACTIVE: 'ACTIVE',
     INACTIVE: 'INACTIVE',
-    UNDER_MAINTENANCE: 'UNDER_MAINTENANCE'
+    UNDER_MAINTENANCE: 'UNDER_MAINTENANCE',
+    BREAKDOWN: 'BREAKDOWN'
 };
 export const Criticality = {
     LOW: 'LOW',
     MEDIUM: 'MEDIUM',
     HIGH: 'HIGH'
+};
+export const MaintenanceRequestType = {
+    BREAKDOWN: 'BREAKDOWN',
+    PREVENTIVE: 'PREVENTIVE',
+    IMPROVEMENT: 'IMPROVEMENT'
+};
+export const MaintenanceRequestStatus = {
+    SUBMITTED: 'SUBMITTED',
+    UNDER_REVIEW: 'UNDER_REVIEW',
+    APPROVED: 'APPROVED',
+    REJECTED: 'REJECTED',
+    IN_PROGRESS: 'IN_PROGRESS',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED'
 };
 //# sourceMappingURL=enums.js.map

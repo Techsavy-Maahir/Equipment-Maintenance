@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -29,6 +28,22 @@ enum Criticality {
   HIGH
 }
 
+enum MaintenanceRequestType {
+  BREAKDOWN
+  PREVENTIVE
+  IMPROVEMENT
+}
+
+enum MaintenanceRequestStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
 model User {
   id        Int     @id @default(autoincrement())
   email     String  @unique
@@ -39,6 +54,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   auditLogs AuditLog[]
+  requestedMaintenanceRequests MaintenanceRequest[] @relation("MaintenanceRequestRequester")
+  reviewedMaintenanceRequests  MaintenanceRequest[] @relation("MaintenanceRequestReviewer")
+  decisionHistoryEntries       DecisionHistory[]
 }
 
 model Department {
@@ -97,6 +115,7 @@ model Equipment {
   location     Location @relation(fields: [locationId], references: [id])
   category     EquipmentCategory @relation(fields: [categoryId], references: [id])
   locationHistory EquipmentLocationHistory[]
+  maintenanceRequests MaintenanceRequest[]
 
   @@index([departmentId])
   @@index([locationId])
@@ -134,4 +153,49 @@ model AuditLog {
   @@index([actorId])
   @@index([entityType, entityId])
   @@index([createdAt])
+}
+
+model MaintenanceRequest {
+  id                   Int                      @id @default(autoincrement())
+  requestType          MaintenanceRequestType
+  status               MaintenanceRequestStatus @default(SUBMITTED)
+  equipmentId          Int
+  requesterId          Int
+  description          String
+  criticality          Criticality
+  reviewerId           Int?
+  decisionReason       String?
+  problem              String?
+  proposedSolution     String?
+  expectedBenefit      String?
+  outcome              String?
+  implementationStatus String?
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+
+  equipment       Equipment         @relation(fields: [equipmentId], references: [id], onDelete: Restrict)
+  requester       User              @relation("MaintenanceRequestRequester", fields: [requesterId], references: [id], onDelete: Restrict)
+  reviewer        User?             @relation("MaintenanceRequestReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  decisionHistory DecisionHistory[]
+
+  @@index([equipmentId, createdAt])
+  @@index([requesterId, createdAt])
+  @@index([reviewerId])
+  @@index([status, createdAt])
+}
+
+model DecisionHistory {
+  id             Int                      @id @default(autoincrement())
+  requestId      Int
+  previousStatus MaintenanceRequestStatus
+  newStatus      MaintenanceRequestStatus
+  actorId        Int
+  comment        String?
+  createdAt      DateTime                 @default(now())
+
+  request MaintenanceRequest @relation(fields: [requestId], references: [id], onDelete: Restrict)
+  actor   User               @relation(fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([requestId, createdAt])
+  @@index([actorId])
 }

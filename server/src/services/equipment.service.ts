@@ -270,3 +270,35 @@ export async function deactivateEquipment(id: number) {
     });
   });
 }
+
+/**
+ * Retrieves the location history for a specific equipment.
+ * Returns records in reverse chronological order (newest first).
+ * Throws AppError(404) if the equipment does not exist.
+ */
+export async function getEquipmentLocationHistory(equipmentId: number) {
+  const equipment = await prisma.equipment.findUnique({
+    where: { id: equipmentId },
+    select: { id: true },
+  });
+
+  if (!equipment) {
+    throw new AppError(404, "Equipment not found");
+  }
+
+  return prisma.equipmentLocationHistory.findMany({
+    where: { equipmentId },
+    include: {
+      fromLocation: {
+        select: { id: true, name: true },
+      },
+      toLocation: {
+        select: { id: true, name: true },
+      },
+    },
+    orderBy: [
+      { changedAt: "desc" },
+      { id: "desc" },
+    ],
+  });
+}

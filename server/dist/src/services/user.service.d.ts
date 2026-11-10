@@ -1,4 +1,4 @@
-import type { Role } from "../../generated/prisma/client.js";
+import { type Role } from "../../generated/prisma/client.js";
 import type { CreateUserInput, UserListQuery } from "../schemas/user.schema.js";
 export declare function listUsers(query: UserListQuery): Promise<{
     items: {

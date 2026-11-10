@@ -17,6 +17,10 @@ export declare const createEquipmentSchema: z.ZodObject<{
     departmentId: z.ZodNumber;
     locationId: z.ZodNumber;
     categoryId: z.ZodNumber;
+    purchaseDate: z.ZodOptional<z.ZodNullable<z.ZodCoercedDate<unknown>>>;
+    purchaseCost: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    warrantyStartDate: z.ZodOptional<z.ZodNullable<z.ZodCoercedDate<unknown>>>;
+    warrantyExpiryDate: z.ZodOptional<z.ZodNullable<z.ZodCoercedDate<unknown>>>;
 }, z.core.$strict>;
 export declare const updateEquipmentSchema: z.ZodObject<{
     code: z.ZodOptional<z.ZodString>;
@@ -36,6 +40,10 @@ export declare const updateEquipmentSchema: z.ZodObject<{
     departmentId: z.ZodOptional<z.ZodNumber>;
     locationId: z.ZodOptional<z.ZodNumber>;
     categoryId: z.ZodOptional<z.ZodNumber>;
+    purchaseDate: z.ZodOptional<z.ZodNullable<z.ZodCoercedDate<unknown>>>;
+    purchaseCost: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    warrantyStartDate: z.ZodOptional<z.ZodNullable<z.ZodCoercedDate<unknown>>>;
+    warrantyExpiryDate: z.ZodOptional<z.ZodNullable<z.ZodCoercedDate<unknown>>>;
 }, z.core.$strict>;
 export declare const equipmentIdSchema: z.ZodCoercedNumber<unknown>;
 export declare const equipmentListQuerySchema: z.ZodObject<{

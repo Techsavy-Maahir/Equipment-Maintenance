@@ -153,33 +153,52 @@ export async function createLocation(input) {
     });
 }
 export async function updateLocation(id, input) {
-    const location = await prisma.location.findUnique({ where: { id } });
-    if (!location) {
-        throw new NotFoundError("Location not found");
-    }
-    if (input.name && input.name.toLowerCase() !== location.name.toLowerCase()) {
-        const existing = await prisma.location.findFirst({
-            where: {
-                name: { equals: input.name, mode: "insensitive" },
-                NOT: { id },
+    return prisma.$transaction(async (tx) => {
+        const location = await tx.location.findUnique({ where: { id } });
+        if (!location) {
+            throw new NotFoundError("Location not found");
+        }
+        if (input.name && input.name.toLowerCase() !== location.name.toLowerCase()) {
+            const existing = await tx.location.findFirst({
+                where: {
+                    name: { equals: input.name, mode: "insensitive" },
+                    NOT: { id },
+                },
+            });
+            if (existing) {
+                throw new ConflictError(`Location '${input.name}' already exists`);
+            }
+        }
+        if (input.isActive === false && location.isActive) {
+            await assertLocationCanBeDeactivated(tx, id, location.name);
+        }
+        return tx.location.update({
+            where: { id },
+            data: {
+                ...(input.name !== undefined ? { name: input.name } : {}),
+                ...(input.isActive !== undefined ? { isActive: input.isActive } : {}),
+            },
+            include: {
+                _count: {
+                    select: { equipment: true },
+                },
             },
         });
-        if (existing) {
-            throw new ConflictError(`Location '${input.name}' already exists`);
-        }
-    }
-    return prisma.location.update({
-        where: { id },
-        data: {
-            ...(input.name !== undefined ? { name: input.name } : {}),
-            ...(input.isActive !== undefined ? { isActive: input.isActive } : {}),
-        },
-        include: {
-            _count: {
-                select: { equipment: true },
-            },
-        },
     });
+}
+async function assertLocationCanBeDeactivated(tx, id, locationName) {
+    const assignedEquipmentCount = await tx.equipment.count({
+        where: { locationId: id },
+    });
+    if (assignedEquipmentCount > 0) {
+        throw new ConflictError(`Cannot deactivate location '${locationName}': ${assignedEquipmentCount} equipment item(s) are currently assigned to it.`);
+    }
+    const historyCount = await tx.equipmentLocationHistory.count({
+        where: { toLocationId: id },
+    });
+    if (historyCount > 0) {
+        throw new ConflictError(`Cannot deactivate location '${locationName}': location is referenced as a destination in relocation history.`);
+    }
 }
 /**
  * Deactivates a location with strict safety validation:
@@ -196,20 +215,7 @@ export async function deactivateLocation(id) {
         if (!location.isActive) {
             throw new AppError(400, "Location is already inactive");
         }
-        // 1. Check if equipment is currently assigned
-        const assignedEquipmentCount = await tx.equipment.count({
-            where: { locationId: id },
-        });
-        if (assignedEquipmentCount > 0) {
-            throw new ConflictError(`Cannot deactivate location '${location.name}': ${assignedEquipmentCount} equipment item(s) are currently assigned to it.`);
-        }
-        // 2. Check if referenced as destination in relocation history
-        const historyCount = await tx.equipmentLocationHistory.count({
-            where: { toLocationId: id },
-        });
-        if (historyCount > 0) {
-            throw new ConflictError(`Cannot deactivate location '${location.name}': location is referenced as a destination in relocation history.`);
-        }
+        await assertLocationCanBeDeactivated(tx, id, location.name);
         // 3. Neither restriction applies: safely soft deactivate
         return tx.location.update({
             where: { id },

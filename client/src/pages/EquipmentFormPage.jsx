@@ -11,6 +11,51 @@ function formatDateForInput(dateVal) {
   return d.toISOString().split("T")[0];
 }
 
+const EQUIPMENT_FIELDS = new Set([
+  "code",
+  "serialNumber",
+  "name",
+  "description",
+  "criticality",
+  "status",
+  "departmentId",
+  "locationId",
+  "categoryId",
+  "purchaseDate",
+  "purchaseCost",
+  "warrantyStartDate",
+  "warrantyExpiryDate",
+]);
+
+function getServerValidationErrors(error) {
+  const data = error?.response?.data;
+  const status = error?.response?.status;
+  const fieldErrors = {};
+  let hasUnmappedDetails = false;
+
+  if (data?.details && typeof data.details === "object") {
+    for (const [field, message] of Object.entries(data.details)) {
+      if (EQUIPMENT_FIELDS.has(field) && typeof message === "string") {
+        fieldErrors[field] = message;
+      } else {
+        hasUnmappedDetails = true;
+      }
+    }
+  }
+
+  if (status === 409 && /\bcode\b/i.test(data?.message || "")) {
+    fieldErrors.code = "This equipment code is already in use.";
+  }
+
+  return {
+    fieldErrors,
+    generalError:
+      hasUnmappedDetails || Object.keys(fieldErrors).length === 0
+        ? handleApiError(error)
+        : "",
+  };
+}
+
 export function EquipmentFormPage({
   user,
   equipmentId = null,
@@ -178,6 +223,7 @@ export function EquipmentFormPage({
     e.preventDefault();
     setGeneralError("");
     setSuccessMsg("");
+    setFieldErrors({});
 
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
@@ -217,8 +263,10 @@ export function EquipmentFormPage({
         onNavigate("equipment");
       }, 800);
     } catch (err) {
-      const msg = handleApiError(err);
-      setGeneralError(msg);
+      const { fieldErrors: serverFieldErrors, generalError: serverGeneralError } =
+        getServerValidationErrors(err);
+      setFieldErrors(serverFieldErrors);
+      setGeneralError(serverGeneralError);
     } finally {
       setSubmitting(false);
     }
@@ -433,6 +481,7 @@ export function EquipmentFormPage({
                         value={formData.code}
                         onChange={handleChange}
                         required
+                        aria-invalid={Boolean(fieldErrors.code)}
                       />
                       {fieldErrors.code && (
                         <span className="equipment-form-field-error">{fieldErrors.code}</span>
@@ -449,7 +498,11 @@ export function EquipmentFormPage({
                         className="equipment-form-input"
                         value={formData.serialNumber}
                         onChange={handleChange}
+                        aria-invalid={Boolean(fieldErrors.serialNumber)}
                       />
+                      {fieldErrors.serialNumber && (
+                        <span className="equipment-form-field-error">{fieldErrors.serialNumber}</span>
+                      )}
                     </div>
 
                     <div className="equipment-form-field equipment-form-field-full">
@@ -465,6 +518,7 @@ export function EquipmentFormPage({
                         value={formData.name}
                         onChange={handleChange}
                         required
+                        aria-invalid={Boolean(fieldErrors.name)}
                       />
                       {fieldErrors.name && (
                         <span className="equipment-form-field-error">{fieldErrors.name}</span>
@@ -480,7 +534,11 @@ export function EquipmentFormPage({
                         className="equipment-form-textarea"
                         value={formData.description}
                         onChange={handleChange}
+                        aria-invalid={Boolean(fieldErrors.description)}
                       />
+                      {fieldErrors.description && (
+                        <span className="equipment-form-field-error">{fieldErrors.description}</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -509,6 +567,7 @@ export function EquipmentFormPage({
                         value={formData.departmentId}
                         onChange={handleChange}
                         required
+                        aria-invalid={Boolean(fieldErrors.departmentId)}
                       >
                         <option value="">Select Department</option>
                         {departments.map((d) => (
@@ -533,6 +592,7 @@ export function EquipmentFormPage({
                         value={formData.locationId}
                         onChange={handleChange}
                         required
+                        aria-invalid={Boolean(fieldErrors.locationId)}
                       >
                         <option value="">Select Location</option>
                         {locations.map((l) => (
@@ -557,6 +617,7 @@ export function EquipmentFormPage({
                         value={formData.categoryId}
                         onChange={handleChange}
                         required
+                        aria-invalid={Boolean(fieldErrors.categoryId)}
                       >
                         <option value="">Select Category</option>
                         {categories.map((c) => (
@@ -578,11 +639,15 @@ export function EquipmentFormPage({
                         className="equipment-form-select"
                         value={formData.criticality}
                         onChange={handleChange}
+                        aria-invalid={Boolean(fieldErrors.criticality)}
                       >
                         <option value="LOW">Low</option>
                         <option value="MEDIUM">Medium</option>
                         <option value="HIGH">High</option>
                       </select>
+                      {fieldErrors.criticality && (
+                        <span className="equipment-form-field-error">{fieldErrors.criticality}</span>
+                      )}
                     </div>
 
                     <div className="equipment-form-field">
@@ -593,11 +658,15 @@ export function EquipmentFormPage({
                         className="equipment-form-select"
                         value={formData.status}
                         onChange={handleChange}
+                        aria-invalid={Boolean(fieldErrors.status)}
                       >
                         <option value="ACTIVE">Operational (Active)</option>
                         <option value="UNDER_MAINTENANCE">Under Maintenance</option>
                         <option value="INACTIVE">Inactive</option>
                       </select>
+                      {fieldErrors.status && (
+                        <span className="equipment-form-field-error">{fieldErrors.status}</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -642,7 +711,11 @@ export function EquipmentFormPage({
                         className="equipment-form-input"
                         value={formData.purchaseDate}
                         onChange={handleChange}
+                        aria-invalid={Boolean(fieldErrors.purchaseDate)}
                       />
+                      {fieldErrors.purchaseDate && (
+                        <span className="equipment-form-field-error">{fieldErrors.purchaseDate}</span>
+                      )}
                     </div>
 
                     <div className="equipment-form-field">
@@ -657,6 +730,7 @@ export function EquipmentFormPage({
                         className="equipment-form-input"
                         value={formData.purchaseCost}
                         onChange={handleChange}
+                        aria-invalid={Boolean(fieldErrors.purchaseCost)}
                       />
                       {fieldErrors.purchaseCost && (
                         <span className="equipment-form-field-error">{fieldErrors.purchaseCost}</span>
@@ -672,7 +746,11 @@ export function EquipmentFormPage({
                         className="equipment-form-input"
                         value={formData.warrantyStartDate}
                         onChange={handleChange}
+                        aria-invalid={Boolean(fieldErrors.warrantyStartDate)}
                       />
+                      {fieldErrors.warrantyStartDate && (
+                        <span className="equipment-form-field-error">{fieldErrors.warrantyStartDate}</span>
+                      )}
                     </div>
 
                     <div className="equipment-form-field">
@@ -684,6 +762,7 @@ export function EquipmentFormPage({
                         className="equipment-form-input"
                         value={formData.warrantyExpiryDate}
                         onChange={handleChange}
+                        aria-invalid={Boolean(fieldErrors.warrantyExpiryDate)}
                       />
                       {fieldErrors.warrantyExpiryDate && (
                         <span className="equipment-form-field-error">{fieldErrors.warrantyExpiryDate}</span>

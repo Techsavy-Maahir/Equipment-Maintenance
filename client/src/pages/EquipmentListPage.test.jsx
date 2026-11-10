@@ -172,4 +172,18 @@ describe("EquipmentListPage", () => {
       })
     ).not.toBeInTheDocument();
   });
+
+  it("navigates from the existing details modal to the dedicated detail page", async () => {
+    api.getEquipment.mockResolvedValue(createResponse());
+    const onNavigate = vi.fn();
+
+    render(<EquipmentListPage onNavigate={onNavigate} />);
+    fireEvent.click(await screen.findByRole("button", { name: "View details for Equipment 1" }));
+    fireEvent.click(screen.getByRole("button", { name: "Open full details" }));
+
+    expect(onNavigate).toHaveBeenCalledWith("equipment-detail-1");
+    expect(
+      screen.queryByRole("heading", { name: /Equipment 1 \(ASSET-1\)/i }),
+    ).not.toBeInTheDocument();
+  });
 });

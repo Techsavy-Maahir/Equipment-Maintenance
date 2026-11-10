@@ -177,6 +177,39 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get equipmentLocationHistory(): Prisma.EquipmentLocationHistoryDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    /**
+     * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more AuditLogs
+      * const auditLogs = await prisma.auditLog.findMany()
+      * ```
+      */
+    get auditLog(): Prisma.AuditLogDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.maintenanceRequest`: Exposes CRUD operations for the **MaintenanceRequest** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more MaintenanceRequests
+      * const maintenanceRequests = await prisma.maintenanceRequest.findMany()
+      * ```
+      */
+    get maintenanceRequest(): Prisma.MaintenanceRequestDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.decisionHistory`: Exposes CRUD operations for the **DecisionHistory** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more DecisionHistories
+      * const decisionHistories = await prisma.decisionHistory.findMany()
+      * ```
+      */
+    get decisionHistory(): Prisma.DecisionHistoryDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
 }
 export declare function getPrismaClientClass(dirname: string): PrismaClientConstructor;
 //# sourceMappingURL=class.d.ts.map

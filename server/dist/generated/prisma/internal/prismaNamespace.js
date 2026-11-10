@@ -72,7 +72,10 @@ export const ModelName = {
     Location: 'Location',
     EquipmentCategory: 'EquipmentCategory',
     Equipment: 'Equipment',
-    EquipmentLocationHistory: 'EquipmentLocationHistory'
+    EquipmentLocationHistory: 'EquipmentLocationHistory',
+    AuditLog: 'AuditLog',
+    MaintenanceRequest: 'MaintenanceRequest',
+    DecisionHistory: 'DecisionHistory'
 };
 /**
  * Enums
@@ -118,6 +121,10 @@ export const EquipmentScalarFieldEnum = {
     id: 'id',
     code: 'code',
     serialNumber: 'serialNumber',
+    purchaseDate: 'purchaseDate',
+    purchaseCost: 'purchaseCost',
+    warrantyStartDate: 'warrantyStartDate',
+    warrantyExpiryDate: 'warrantyExpiryDate',
     name: 'name',
     description: 'description',
     status: 'status',
@@ -136,6 +143,42 @@ export const EquipmentLocationHistoryScalarFieldEnum = {
     fromLocationId: 'fromLocationId',
     toLocationId: 'toLocationId',
     changedAt: 'changedAt'
+};
+export const AuditLogScalarFieldEnum = {
+    id: 'id',
+    actorId: 'actorId',
+    action: 'action',
+    entityType: 'entityType',
+    entityId: 'entityId',
+    summary: 'summary',
+    createdAt: 'createdAt'
+};
+export const MaintenanceRequestScalarFieldEnum = {
+    id: 'id',
+    requestType: 'requestType',
+    status: 'status',
+    equipmentId: 'equipmentId',
+    requesterId: 'requesterId',
+    description: 'description',
+    criticality: 'criticality',
+    reviewerId: 'reviewerId',
+    decisionReason: 'decisionReason',
+    problem: 'problem',
+    proposedSolution: 'proposedSolution',
+    expectedBenefit: 'expectedBenefit',
+    outcome: 'outcome',
+    implementationStatus: 'implementationStatus',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const DecisionHistoryScalarFieldEnum = {
+    id: 'id',
+    requestId: 'requestId',
+    previousStatus: 'previousStatus',
+    newStatus: 'newStatus',
+    actorId: 'actorId',
+    comment: 'comment',
+    createdAt: 'createdAt'
 };
 export const SortOrder = {
     asc: 'asc',

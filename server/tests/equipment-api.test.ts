@@ -6,6 +6,7 @@ import app from "../src/app.js";
 const equipmentService = vi.hoisted(() => ({
   listEquipment: vi.fn(),
   getEquipment: vi.fn(),
+  getEquipmentLocationHistory: vi.fn(),
   createEquipment: vi.fn(),
   updateEquipment: vi.fn(),
   deactivateEquipment: vi.fn(),
@@ -246,6 +247,42 @@ describe("equipment API", () => {
 
     expect(invalidIdResponse.status).toBe(400);
     expect(equipmentService.getEquipment).not.toHaveBeenCalled();
+  });
+
+  it("returns location history for authenticated users and rejects invalid IDs", async () => {
+    const history = [{
+      id: 1,
+      equipmentId: 1,
+      fromLocation: { id: 2, name: "Plant A" },
+      toLocation: { id: 3, name: "Plant B" },
+      changedAt: "2026-11-01T00:00:00.000Z",
+    }];
+    equipmentService.getEquipmentLocationHistory.mockResolvedValue(history);
+
+    const response = await fetch(
+      `${baseUrl}/api/equipment/1/location-history`,
+      { headers: { Cookie: authCookie } },
+    );
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual(history);
+    expect(equipmentService.getEquipmentLocationHistory).toHaveBeenCalledWith(1);
+
+    const invalidIdResponse = await fetch(
+      `${baseUrl}/api/equipment/invalid/location-history`,
+      { headers: { Cookie: authCookie } },
+    );
+    expect(invalidIdResponse.status).toBe(400);
+    expect(equipmentService.getEquipmentLocationHistory).toHaveBeenCalledOnce();
+  });
+
+  it("requires authentication to read equipment location history", async () => {
+    const response = await fetch(
+      `${baseUrl}/api/equipment/1/location-history`,
+    );
+
+    expect(response.status).toBe(401);
+    expect(equipmentService.getEquipmentLocationHistory).not.toHaveBeenCalled();
   });
 
     it("enforces authentication and equipment role permissions", async () => {

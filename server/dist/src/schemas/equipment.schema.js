@@ -1,4 +1,5 @@
 import { z } from "zod";
+const optionalDate = z.coerce.date().nullable().optional();
 const equipmentFields = {
     code: z.string().trim().min(1).max(100),
     serialNumber: z.string().trim().max(100).nullable(),
@@ -9,7 +10,19 @@ const equipmentFields = {
     departmentId: z.number().int().positive(),
     locationId: z.number().int().positive(),
     categoryId: z.number().int().positive(),
+    purchaseDate: optionalDate,
+    purchaseCost: z.number().nonnegative().nullable().optional(),
+    warrantyStartDate: optionalDate,
+    warrantyExpiryDate: optionalDate,
 };
+function validateWarrantyDates(data) {
+    if (data.warrantyStartDate &&
+        data.warrantyExpiryDate &&
+        data.warrantyExpiryDate <= data.warrantyStartDate) {
+        return false;
+    }
+    return true;
+}
 export const createEquipmentSchema = z
     .object({
     code: equipmentFields.code,
@@ -21,8 +34,16 @@ export const createEquipmentSchema = z
     departmentId: equipmentFields.departmentId,
     locationId: equipmentFields.locationId,
     categoryId: equipmentFields.categoryId,
+    purchaseDate: equipmentFields.purchaseDate,
+    purchaseCost: equipmentFields.purchaseCost,
+    warrantyStartDate: equipmentFields.warrantyStartDate,
+    warrantyExpiryDate: equipmentFields.warrantyExpiryDate,
 })
-    .strict();
+    .strict()
+    .refine(validateWarrantyDates, {
+    message: "Warranty expiry must be after warranty start date",
+    path: ["warrantyExpiryDate"],
+});
 export const updateEquipmentSchema = z
     .object({
     code: equipmentFields.code.optional(),
@@ -34,8 +55,16 @@ export const updateEquipmentSchema = z
     departmentId: equipmentFields.departmentId.optional(),
     locationId: equipmentFields.locationId.optional(),
     categoryId: equipmentFields.categoryId.optional(),
+    purchaseDate: equipmentFields.purchaseDate,
+    purchaseCost: equipmentFields.purchaseCost,
+    warrantyStartDate: equipmentFields.warrantyStartDate,
+    warrantyExpiryDate: equipmentFields.warrantyExpiryDate,
 })
     .strict()
+    .refine(validateWarrantyDates, {
+    message: "Warranty expiry must be after warranty start date",
+    path: ["warrantyExpiryDate"],
+})
     .refine((data) => Object.keys(data).length > 0, {
     message: "At least one field must be provided",
 });

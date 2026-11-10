@@ -732,6 +732,17 @@ export function EquipmentListPage({
               </button>
               <button
                 type="button"
+                className="equipment-btn-secondary"
+                onClick={() => {
+                  const id = selectedDetailsItem.id;
+                  setSelectedDetailsItem(null);
+                  onNavigate(`equipment-detail-${id}`);
+                }}
+              >
+                Open full details
+              </button>
+              <button
+                type="button"
                 className="equipment-btn-primary"
                 onClick={() => {
                   const id = selectedDetailsItem.id;

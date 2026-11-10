@@ -14,4 +14,5 @@ export interface AuthRequest extends Request {
 }
 export declare const authMiddleware: (req: AuthRequest, res: Response, next: NextFunction) => Promise<void>;
 export declare const requireAdmin: (req: AuthRequest, res: Response, next: NextFunction) => void;
+export declare const requireRole: (...roles: Role[]) => (req: AuthRequest, res: Response, next: NextFunction) => void;
 //# sourceMappingURL=auth.middleware.d.ts.map

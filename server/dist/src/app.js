@@ -6,13 +6,15 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js
 import { env } from "./env.js";
 import cookieParser from "cookie-parser";
 import { authService } from "./services/auth.service.js";
-import { authMiddleware, requireAdmin, } from "./middleware/auth.middleware.js";
-import { createEquipment, deactivateEquipment, getEquipment, listEquipment, updateEquipment, } from "./services/equipment.service.js";
+import { authMiddleware, requireAdmin, requireRole, } from "./middleware/auth.middleware.js";
+import { createEquipment, deactivateEquipment, getEquipment, getEquipmentLocationHistory, listEquipment, updateEquipment, } from "./services/equipment.service.js";
 import { createEquipmentSchema, equipmentListQuerySchema, equipmentIdSchema, updateEquipmentSchema, } from "./schemas/equipment.schema.js";
 import { createMasterDataSchema, masterDataIdSchema, masterDataQuerySchema, updateMasterDataSchema, } from "./schemas/master-data.schema.js";
 import { createDepartment, deactivateDepartment, listDepartments, reactivateDepartment, updateDepartment, createLocation, deactivateLocation, listLocations, reactivateLocation, updateLocation, createCategory, deactivateCategory, listCategories, reactivateCategory, updateCategory, } from "./services/master-data.service.js";
 import { createUserSchema, updateUserRoleSchema, userIdSchema, userListQuerySchema, } from "./schemas/user.schema.js";
 import { changeUserRole, createUser, deactivateUser, listUsers, reactivateUser, } from "./services/user.service.js";
+import { createMaintenanceRequest, getMaintenanceRequest, listMaintenanceRequests, transitionMaintenanceRequest, } from "./services/request.service.js";
+import { createMaintenanceRequestSchema, maintenanceRequestIdSchema, maintenanceRequestListQuerySchema, transitionMaintenanceRequestSchema, } from "./schemas/request.schema.js";
 const app = express();
 app.use(cookieParser());
 // CORS middleware
@@ -110,6 +112,13 @@ const parseUserId = (rawId) => {
     }
     return result.data;
 };
+const parseMaintenanceRequestId = (rawId) => {
+    const result = maintenanceRequestIdSchema.safeParse(rawId);
+    if (!result.success) {
+        throw new AppError(400, "Invalid maintenance request ID");
+    }
+    return result.data;
+};
 const parseMasterDataQuery = (query) => {
     const parsedQuery = masterDataQuerySchema.safeParse(query);
     if (!parsedQuery.success) {
@@ -122,7 +131,7 @@ const parseMasterDataQuery = (query) => {
     return parsedQuery.data;
 };
 // ==================== EQUIPMENT ROUTES ====================
-app.get("/api/equipment", async (req, res, next) => {
+app.get("/api/equipment", authMiddleware, async (req, res, next) => {
     try {
         const parsedQuery = equipmentListQuerySchema.safeParse(req.query);
         if (!parsedQuery.success) {
@@ -138,7 +147,7 @@ app.get("/api/equipment", async (req, res, next) => {
         next(error);
     }
 });
-app.post("/api/equipment", validate(createEquipmentSchema), async (req, res, next) => {
+app.post("/api/equipment", authMiddleware, requireRole("ADMIN", "MANAGER"), validate(createEquipmentSchema), async (req, res, next) => {
     try {
         const equipment = await createEquipment(req.body);
         res.status(201).json(equipment);
@@ -147,7 +156,7 @@ app.post("/api/equipment", validate(createEquipmentSchema), async (req, res, nex
         next(error);
     }
 });
-app.get("/api/equipment/:id", async (req, res, next) => {
+app.get("/api/equipment/:id", authMiddleware, async (req, res, next) => {
     try {
         const equipment = await getEquipment(parseEquipmentId(req.params.id));
         res.status(200).json(equipment);
@@ -156,7 +165,7 @@ app.get("/api/equipment/:id", async (req, res, next) => {
         next(error);
     }
 });
-app.put("/api/equipment/:id", validate(updateEquipmentSchema), async (req, res, next) => {
+app.put("/api/equipment/:id", authMiddleware, requireRole("ADMIN", "MANAGER"), validate(updateEquipmentSchema), async (req, res, next) => {
     try {
         const equipment = await updateEquipment(parseEquipmentId(req.params.id), req.body);
         res.status(200).json(equipment);
@@ -165,10 +174,64 @@ app.put("/api/equipment/:id", validate(updateEquipmentSchema), async (req, res, 
         next(error);
     }
 });
-app.delete("/api/equipment/:id", async (req, res, next) => {
+app.delete("/api/equipment/:id", authMiddleware, requireRole("ADMIN", "MANAGER"), async (req, res, next) => {
     try {
         const equipment = await deactivateEquipment(parseEquipmentId(req.params.id));
         res.status(200).json(equipment);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.get("/api/equipment/:id/location-history", authMiddleware, async (req, res, next) => {
+    try {
+        const history = await getEquipmentLocationHistory(parseEquipmentId(req.params.id));
+        res.status(200).json(history);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// ==================== MAINTENANCE REQUESTS ====================
+app.get("/api/requests", authMiddleware, async (req, res, next) => {
+    try {
+        const parsedQuery = maintenanceRequestListQuerySchema.safeParse(req.query);
+        if (!parsedQuery.success) {
+            const details = {};
+            parsedQuery.error.issues.forEach((issue) => {
+                details[issue.path.join(".")] = issue.message;
+            });
+            throw new ValidationError(details);
+        }
+        const requests = await listMaintenanceRequests(parsedQuery.data, req.user);
+        res.status(200).json(requests);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.post("/api/requests", authMiddleware, validate(createMaintenanceRequestSchema), async (req, res, next) => {
+    try {
+        const request = await createMaintenanceRequest(req.body, req.user);
+        res.status(201).json(request);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.get("/api/requests/:id", authMiddleware, async (req, res, next) => {
+    try {
+        const request = await getMaintenanceRequest(parseMaintenanceRequestId(req.params.id), req.user);
+        res.status(200).json(request);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+app.patch("/api/requests/:id/status", authMiddleware, validate(transitionMaintenanceRequestSchema), async (req, res, next) => {
+    try {
+        const request = await transitionMaintenanceRequest(parseMaintenanceRequestId(req.params.id), req.user, req.body);
+        res.status(200).json(request);
     }
     catch (error) {
         next(error);
@@ -441,7 +504,9 @@ app.use((req, res) => {
 });
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error("Request error:", err);
+    if (!(err instanceof AppError && err.statusCode === 401)) {
+        console.error("Request error:", err);
+    }
     // Zod validation error (caught by validate middleware)
     if (err instanceof ValidationError) {
         return res.status(400).json({

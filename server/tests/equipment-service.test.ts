@@ -13,6 +13,7 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
 
   const historyDelegates = {
     create: vi.fn(),
+    findMany: vi.fn(),
   };
 
   return {
@@ -48,6 +49,7 @@ vi.mock("../src/prisma.js", () => ({ prisma: prismaMock }));
 import {
   createEquipment,
   deactivateEquipment,
+  getEquipmentLocationHistory,
   listEquipment,
   updateEquipment,
 } from "../src/services/equipment.service.js";
@@ -231,6 +233,62 @@ describe("equipment service", () => {
         data: expect.objectContaining({ isDeactivated: true }),
       }),
     );
+  });
+
+  it("returns location history newest first with location names", async () => {
+    const history = [
+      {
+        id: 2,
+        equipmentId: equipment.id,
+        fromLocationId: 3,
+        toLocationId: 4,
+        changedAt: new Date("2026-11-02T00:00:00.000Z"),
+        fromLocation: { id: 3, name: "Plant A" },
+        toLocation: { id: 4, name: "Plant B" },
+      },
+      {
+        id: 1,
+        equipmentId: equipment.id,
+        fromLocationId: null,
+        toLocationId: 3,
+        changedAt: new Date("2026-11-01T00:00:00.000Z"),
+        fromLocation: null,
+        toLocation: { id: 3, name: "Plant A" },
+      },
+    ];
+    prismaMock.equipment.findUnique.mockResolvedValue({ id: equipment.id });
+    prismaMock.equipmentLocationHistory.findMany.mockResolvedValue(history);
+
+    await expect(getEquipmentLocationHistory(equipment.id)).resolves.toEqual(
+      history,
+    );
+    expect(prismaMock.equipmentLocationHistory.findMany).toHaveBeenCalledWith({
+      where: { equipmentId: equipment.id },
+      include: {
+        fromLocation: { select: { id: true, name: true } },
+        toLocation: { select: { id: true, name: true } },
+      },
+      orderBy: [{ changedAt: "desc" }, { id: "desc" }],
+    });
+  });
+
+  it("returns an empty array when equipment has no location history", async () => {
+    prismaMock.equipment.findUnique.mockResolvedValue({ id: equipment.id });
+    prismaMock.equipmentLocationHistory.findMany.mockResolvedValue([]);
+
+    await expect(getEquipmentLocationHistory(equipment.id)).resolves.toEqual(
+      [],
+    );
+  });
+
+  it("returns 404 when location history is requested for missing equipment", async () => {
+    prismaMock.equipment.findUnique.mockResolvedValue(null);
+
+    await expect(getEquipmentLocationHistory(999)).rejects.toMatchObject({
+      statusCode: 404,
+      message: "Equipment not found",
+    });
+    expect(prismaMock.equipmentLocationHistory.findMany).not.toHaveBeenCalled();
   });
 
   it("writes exactly one history row for a location change", async () => {

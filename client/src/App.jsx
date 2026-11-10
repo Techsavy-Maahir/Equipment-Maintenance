@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, handleApiError, isUnauthorizedError } from "./api";
 import { EquipmentListPage } from "./pages/EquipmentListPage";
+import { EquipmentDetailPage } from "./pages/EquipmentDetailPage";
 import { EquipmentFormPage } from "./pages/EquipmentFormPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MasterDataPage } from "./pages/MasterDataPage";
@@ -13,6 +14,7 @@ function getInitialPage() {
   if (hash === "#user-management") return "user-management";
   if (hash === "#equipment-create") return "equipment-create";
   if (hash.startsWith("#equipment-edit-")) return hash.slice(1);
+  if (hash.startsWith("#equipment-detail-")) return hash.slice(1);
   return "equipment";
 }
 
@@ -33,6 +35,8 @@ function App() {
       } else if (hash === "#equipment-create") {
         setCurrentPage("equipment-create");
       } else if (hash.startsWith("#equipment-edit-")) {
+        setCurrentPage(hash.slice(1));
+      } else if (hash.startsWith("#equipment-detail-")) {
         setCurrentPage(hash.slice(1));
       } else if (hash === "#equipment" || !hash) {
         setCurrentPage("equipment");
@@ -189,6 +193,19 @@ function App() {
           equipmentId={editId}
           onNavigate={handleNavigate}
           onSuccess={() => handleNavigate("equipment")}
+        />
+      </main>
+    );
+  }
+
+  if (currentPage.startsWith("equipment-detail-")) {
+    const equipmentId = currentPage.slice("equipment-detail-".length);
+    return (
+      <main className="app-shell app-shell-equipment">
+        <EquipmentDetailPage
+          user={user}
+          equipmentId={equipmentId}
+          onNavigate={handleNavigate}
         />
       </main>
     );

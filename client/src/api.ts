@@ -57,6 +57,16 @@ export interface EquipmentListResponse {
   categories: Array<{ id: number; name: string }>;
 }
 
+export interface EquipmentLocationHistory {
+  id: number;
+  equipmentId: number;
+  fromLocationId: number | null;
+  toLocationId: number;
+  changedAt: string;
+  fromLocation: { id: number; name: string } | null;
+  toLocation: { id: number; name: string };
+}
+
 export interface User {
   id: number;
   email: string;
@@ -142,6 +152,20 @@ export const api = {
 
   async getEquipmentById(id: number): Promise<Equipment> {
     const response = await apiClient.get<Equipment>(`/equipment/${id}`);
+    return response.data;
+  },
+
+  async getEquipmentLocationHistory(
+    id: number,
+  ): Promise<EquipmentLocationHistory[]> {
+    const response = await apiClient.get<EquipmentLocationHistory[]>(
+      `/equipment/${id}/location-history`,
+    );
+    return response.data;
+  },
+
+  async deactivateEquipment(id: number): Promise<Equipment> {
+    const response = await apiClient.delete<Equipment>(`/equipment/${id}`);
     return response.data;
   },
 

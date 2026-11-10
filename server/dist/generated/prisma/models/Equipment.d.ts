@@ -15,12 +15,14 @@ export type AggregateEquipment = {
 };
 export type EquipmentAvgAggregateOutputType = {
     id: number | null;
+    purchaseCost: runtime.Decimal | null;
     departmentId: number | null;
     locationId: number | null;
     categoryId: number | null;
 };
 export type EquipmentSumAggregateOutputType = {
     id: number | null;
+    purchaseCost: runtime.Decimal | null;
     departmentId: number | null;
     locationId: number | null;
     categoryId: number | null;
@@ -29,6 +31,10 @@ export type EquipmentMinAggregateOutputType = {
     id: number | null;
     code: string | null;
     serialNumber: string | null;
+    purchaseDate: Date | null;
+    purchaseCost: runtime.Decimal | null;
+    warrantyStartDate: Date | null;
+    warrantyExpiryDate: Date | null;
     name: string | null;
     description: string | null;
     status: $Enums.EquipmentStatus | null;
@@ -45,6 +51,10 @@ export type EquipmentMaxAggregateOutputType = {
     id: number | null;
     code: string | null;
     serialNumber: string | null;
+    purchaseDate: Date | null;
+    purchaseCost: runtime.Decimal | null;
+    warrantyStartDate: Date | null;
+    warrantyExpiryDate: Date | null;
     name: string | null;
     description: string | null;
     status: $Enums.EquipmentStatus | null;
@@ -61,6 +71,10 @@ export type EquipmentCountAggregateOutputType = {
     id: number;
     code: number;
     serialNumber: number;
+    purchaseDate: number;
+    purchaseCost: number;
+    warrantyStartDate: number;
+    warrantyExpiryDate: number;
     name: number;
     description: number;
     status: number;
@@ -76,12 +90,14 @@ export type EquipmentCountAggregateOutputType = {
 };
 export type EquipmentAvgAggregateInputType = {
     id?: true;
+    purchaseCost?: true;
     departmentId?: true;
     locationId?: true;
     categoryId?: true;
 };
 export type EquipmentSumAggregateInputType = {
     id?: true;
+    purchaseCost?: true;
     departmentId?: true;
     locationId?: true;
     categoryId?: true;
@@ -90,6 +106,10 @@ export type EquipmentMinAggregateInputType = {
     id?: true;
     code?: true;
     serialNumber?: true;
+    purchaseDate?: true;
+    purchaseCost?: true;
+    warrantyStartDate?: true;
+    warrantyExpiryDate?: true;
     name?: true;
     description?: true;
     status?: true;
@@ -106,6 +126,10 @@ export type EquipmentMaxAggregateInputType = {
     id?: true;
     code?: true;
     serialNumber?: true;
+    purchaseDate?: true;
+    purchaseCost?: true;
+    warrantyStartDate?: true;
+    warrantyExpiryDate?: true;
     name?: true;
     description?: true;
     status?: true;
@@ -122,6 +146,10 @@ export type EquipmentCountAggregateInputType = {
     id?: true;
     code?: true;
     serialNumber?: true;
+    purchaseDate?: true;
+    purchaseCost?: true;
+    warrantyStartDate?: true;
+    warrantyExpiryDate?: true;
     name?: true;
     description?: true;
     status?: true;
@@ -215,6 +243,10 @@ export type EquipmentGroupByOutputType = {
     id: number;
     code: string;
     serialNumber: string | null;
+    purchaseDate: Date | null;
+    purchaseCost: runtime.Decimal | null;
+    warrantyStartDate: Date | null;
+    warrantyExpiryDate: Date | null;
     name: string;
     description: string | null;
     status: $Enums.EquipmentStatus;
@@ -242,6 +274,10 @@ export type EquipmentWhereInput = {
     id?: Prisma.IntFilter<"Equipment"> | number;
     code?: Prisma.StringFilter<"Equipment"> | string;
     serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null;
+    purchaseDate?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
+    purchaseCost?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
+    warrantyExpiryDate?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
     name?: Prisma.StringFilter<"Equipment"> | string;
     description?: Prisma.StringNullableFilter<"Equipment"> | string | null;
     status?: Prisma.EnumEquipmentStatusFilter<"Equipment"> | $Enums.EquipmentStatus;
@@ -257,11 +293,16 @@ export type EquipmentWhereInput = {
     location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>;
     category?: Prisma.XOR<Prisma.EquipmentCategoryScalarRelationFilter, Prisma.EquipmentCategoryWhereInput>;
     locationHistory?: Prisma.EquipmentLocationHistoryListRelationFilter;
+    maintenanceRequests?: Prisma.MaintenanceRequestListRelationFilter;
 };
 export type EquipmentOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
     serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder;
+    purchaseDate?: Prisma.SortOrderInput | Prisma.SortOrder;
+    purchaseCost?: Prisma.SortOrderInput | Prisma.SortOrder;
+    warrantyStartDate?: Prisma.SortOrderInput | Prisma.SortOrder;
+    warrantyExpiryDate?: Prisma.SortOrderInput | Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrderInput | Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -277,6 +318,7 @@ export type EquipmentOrderByWithRelationInput = {
     location?: Prisma.LocationOrderByWithRelationInput;
     category?: Prisma.EquipmentCategoryOrderByWithRelationInput;
     locationHistory?: Prisma.EquipmentLocationHistoryOrderByRelationAggregateInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestOrderByRelationAggregateInput;
 };
 export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
     id?: number;
@@ -285,6 +327,10 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
     OR?: Prisma.EquipmentWhereInput[];
     NOT?: Prisma.EquipmentWhereInput | Prisma.EquipmentWhereInput[];
     serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null;
+    purchaseDate?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
+    purchaseCost?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
+    warrantyExpiryDate?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
     name?: Prisma.StringFilter<"Equipment"> | string;
     description?: Prisma.StringNullableFilter<"Equipment"> | string | null;
     status?: Prisma.EnumEquipmentStatusFilter<"Equipment"> | $Enums.EquipmentStatus;
@@ -300,11 +346,16 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
     location?: Prisma.XOR<Prisma.LocationScalarRelationFilter, Prisma.LocationWhereInput>;
     category?: Prisma.XOR<Prisma.EquipmentCategoryScalarRelationFilter, Prisma.EquipmentCategoryWhereInput>;
     locationHistory?: Prisma.EquipmentLocationHistoryListRelationFilter;
+    maintenanceRequests?: Prisma.MaintenanceRequestListRelationFilter;
 }, "id" | "code">;
 export type EquipmentOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
     serialNumber?: Prisma.SortOrderInput | Prisma.SortOrder;
+    purchaseDate?: Prisma.SortOrderInput | Prisma.SortOrder;
+    purchaseCost?: Prisma.SortOrderInput | Prisma.SortOrder;
+    warrantyStartDate?: Prisma.SortOrderInput | Prisma.SortOrder;
+    warrantyExpiryDate?: Prisma.SortOrderInput | Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrderInput | Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -329,6 +380,10 @@ export type EquipmentScalarWhereWithAggregatesInput = {
     id?: Prisma.IntWithAggregatesFilter<"Equipment"> | number;
     code?: Prisma.StringWithAggregatesFilter<"Equipment"> | string;
     serialNumber?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null;
+    purchaseDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Equipment"> | Date | string | null;
+    purchaseCost?: Prisma.DecimalNullableWithAggregatesFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Equipment"> | Date | string | null;
+    warrantyExpiryDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Equipment"> | Date | string | null;
     name?: Prisma.StringWithAggregatesFilter<"Equipment"> | string;
     description?: Prisma.StringNullableWithAggregatesFilter<"Equipment"> | string | null;
     status?: Prisma.EnumEquipmentStatusWithAggregatesFilter<"Equipment"> | $Enums.EquipmentStatus;
@@ -344,6 +399,10 @@ export type EquipmentScalarWhereWithAggregatesInput = {
 export type EquipmentCreateInput = {
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -356,11 +415,16 @@ export type EquipmentCreateInput = {
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
     locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateInput = {
     id?: number;
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -373,10 +437,15 @@ export type EquipmentUncheckedCreateInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUpdateInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -389,11 +458,16 @@ export type EquipmentUpdateInput = {
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
     locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -406,11 +480,16 @@ export type EquipmentUncheckedUpdateInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentCreateManyInput = {
     id?: number;
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -426,6 +505,10 @@ export type EquipmentCreateManyInput = {
 export type EquipmentUpdateManyMutationInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -439,6 +522,10 @@ export type EquipmentUncheckedUpdateManyInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -463,6 +550,10 @@ export type EquipmentCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
     serialNumber?: Prisma.SortOrder;
+    purchaseDate?: Prisma.SortOrder;
+    purchaseCost?: Prisma.SortOrder;
+    warrantyStartDate?: Prisma.SortOrder;
+    warrantyExpiryDate?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -477,6 +568,7 @@ export type EquipmentCountOrderByAggregateInput = {
 };
 export type EquipmentAvgOrderByAggregateInput = {
     id?: Prisma.SortOrder;
+    purchaseCost?: Prisma.SortOrder;
     departmentId?: Prisma.SortOrder;
     locationId?: Prisma.SortOrder;
     categoryId?: Prisma.SortOrder;
@@ -485,6 +577,10 @@ export type EquipmentMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
     serialNumber?: Prisma.SortOrder;
+    purchaseDate?: Prisma.SortOrder;
+    purchaseCost?: Prisma.SortOrder;
+    warrantyStartDate?: Prisma.SortOrder;
+    warrantyExpiryDate?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -501,6 +597,10 @@ export type EquipmentMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     code?: Prisma.SortOrder;
     serialNumber?: Prisma.SortOrder;
+    purchaseDate?: Prisma.SortOrder;
+    purchaseCost?: Prisma.SortOrder;
+    warrantyStartDate?: Prisma.SortOrder;
+    warrantyExpiryDate?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
     description?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
@@ -515,6 +615,7 @@ export type EquipmentMinOrderByAggregateInput = {
 };
 export type EquipmentSumOrderByAggregateInput = {
     id?: Prisma.SortOrder;
+    purchaseCost?: Prisma.SortOrder;
     departmentId?: Prisma.SortOrder;
     locationId?: Prisma.SortOrder;
     categoryId?: Prisma.SortOrder;
@@ -637,14 +738,21 @@ export type EquipmentUncheckedUpdateManyWithoutCategoryNestedInput = {
     updateMany?: Prisma.EquipmentUpdateManyWithWhereWithoutCategoryInput | Prisma.EquipmentUpdateManyWithWhereWithoutCategoryInput[];
     deleteMany?: Prisma.EquipmentScalarWhereInput | Prisma.EquipmentScalarWhereInput[];
 };
+export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null;
+};
+export type NullableDecimalFieldUpdateOperationsInput = {
+    set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    increment?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+    decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+    multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+    divide?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+};
 export type EnumEquipmentStatusFieldUpdateOperationsInput = {
     set?: $Enums.EquipmentStatus;
 };
 export type EnumCriticalityFieldUpdateOperationsInput = {
     set?: $Enums.Criticality;
-};
-export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null;
 };
 export type EquipmentCreateNestedOneWithoutLocationHistoryInput = {
     create?: Prisma.XOR<Prisma.EquipmentCreateWithoutLocationHistoryInput, Prisma.EquipmentUncheckedCreateWithoutLocationHistoryInput>;
@@ -658,9 +766,25 @@ export type EquipmentUpdateOneRequiredWithoutLocationHistoryNestedInput = {
     connect?: Prisma.EquipmentWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.EquipmentUpdateToOneWithWhereWithoutLocationHistoryInput, Prisma.EquipmentUpdateWithoutLocationHistoryInput>, Prisma.EquipmentUncheckedUpdateWithoutLocationHistoryInput>;
 };
+export type EquipmentCreateNestedOneWithoutMaintenanceRequestsInput = {
+    create?: Prisma.XOR<Prisma.EquipmentCreateWithoutMaintenanceRequestsInput, Prisma.EquipmentUncheckedCreateWithoutMaintenanceRequestsInput>;
+    connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutMaintenanceRequestsInput;
+    connect?: Prisma.EquipmentWhereUniqueInput;
+};
+export type EquipmentUpdateOneRequiredWithoutMaintenanceRequestsNestedInput = {
+    create?: Prisma.XOR<Prisma.EquipmentCreateWithoutMaintenanceRequestsInput, Prisma.EquipmentUncheckedCreateWithoutMaintenanceRequestsInput>;
+    connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutMaintenanceRequestsInput;
+    upsert?: Prisma.EquipmentUpsertWithoutMaintenanceRequestsInput;
+    connect?: Prisma.EquipmentWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.EquipmentUpdateToOneWithWhereWithoutMaintenanceRequestsInput, Prisma.EquipmentUpdateWithoutMaintenanceRequestsInput>, Prisma.EquipmentUncheckedUpdateWithoutMaintenanceRequestsInput>;
+};
 export type EquipmentCreateWithoutDepartmentInput = {
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -672,11 +796,16 @@ export type EquipmentCreateWithoutDepartmentInput = {
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
     locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutDepartmentInput = {
     id?: number;
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -688,6 +817,7 @@ export type EquipmentUncheckedCreateWithoutDepartmentInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutDepartmentInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -717,6 +847,10 @@ export type EquipmentScalarWhereInput = {
     id?: Prisma.IntFilter<"Equipment"> | number;
     code?: Prisma.StringFilter<"Equipment"> | string;
     serialNumber?: Prisma.StringNullableFilter<"Equipment"> | string | null;
+    purchaseDate?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
+    purchaseCost?: Prisma.DecimalNullableFilter<"Equipment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
+    warrantyExpiryDate?: Prisma.DateTimeNullableFilter<"Equipment"> | Date | string | null;
     name?: Prisma.StringFilter<"Equipment"> | string;
     description?: Prisma.StringNullableFilter<"Equipment"> | string | null;
     status?: Prisma.EnumEquipmentStatusFilter<"Equipment"> | $Enums.EquipmentStatus;
@@ -732,6 +866,10 @@ export type EquipmentScalarWhereInput = {
 export type EquipmentCreateWithoutLocationInput = {
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -743,11 +881,16 @@ export type EquipmentCreateWithoutLocationInput = {
     department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
     locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutLocationInput = {
     id?: number;
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -759,6 +902,7 @@ export type EquipmentUncheckedCreateWithoutLocationInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutLocationInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -784,6 +928,10 @@ export type EquipmentUpdateManyWithWhereWithoutLocationInput = {
 export type EquipmentCreateWithoutCategoryInput = {
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -795,11 +943,16 @@ export type EquipmentCreateWithoutCategoryInput = {
     department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
     locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutCategoryInput = {
     id?: number;
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -811,6 +964,7 @@ export type EquipmentUncheckedCreateWithoutCategoryInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutCategoryInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -836,6 +990,10 @@ export type EquipmentUpdateManyWithWhereWithoutCategoryInput = {
 export type EquipmentCreateWithoutLocationHistoryInput = {
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -847,11 +1005,16 @@ export type EquipmentCreateWithoutLocationHistoryInput = {
     department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutLocationHistoryInput = {
     id?: number;
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -863,6 +1026,7 @@ export type EquipmentUncheckedCreateWithoutLocationHistoryInput = {
     deactivatedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutLocationHistoryInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -880,6 +1044,10 @@ export type EquipmentUpdateToOneWithWhereWithoutLocationHistoryInput = {
 export type EquipmentUpdateWithoutLocationHistoryInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -891,11 +1059,16 @@ export type EquipmentUpdateWithoutLocationHistoryInput = {
     department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutLocationHistoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -907,11 +1080,111 @@ export type EquipmentUncheckedUpdateWithoutLocationHistoryInput = {
     deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
+};
+export type EquipmentCreateWithoutMaintenanceRequestsInput = {
+    code: string;
+    serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
+    name: string;
+    description?: string | null;
+    status?: $Enums.EquipmentStatus;
+    criticality: $Enums.Criticality;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
+    location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
+    category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
+};
+export type EquipmentUncheckedCreateWithoutMaintenanceRequestsInput = {
+    id?: number;
+    code: string;
+    serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
+    name: string;
+    description?: string | null;
+    status?: $Enums.EquipmentStatus;
+    criticality: $Enums.Criticality;
+    departmentId: number;
+    locationId: number;
+    categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
+};
+export type EquipmentCreateOrConnectWithoutMaintenanceRequestsInput = {
+    where: Prisma.EquipmentWhereUniqueInput;
+    create: Prisma.XOR<Prisma.EquipmentCreateWithoutMaintenanceRequestsInput, Prisma.EquipmentUncheckedCreateWithoutMaintenanceRequestsInput>;
+};
+export type EquipmentUpsertWithoutMaintenanceRequestsInput = {
+    update: Prisma.XOR<Prisma.EquipmentUpdateWithoutMaintenanceRequestsInput, Prisma.EquipmentUncheckedUpdateWithoutMaintenanceRequestsInput>;
+    create: Prisma.XOR<Prisma.EquipmentCreateWithoutMaintenanceRequestsInput, Prisma.EquipmentUncheckedCreateWithoutMaintenanceRequestsInput>;
+    where?: Prisma.EquipmentWhereInput;
+};
+export type EquipmentUpdateToOneWithWhereWithoutMaintenanceRequestsInput = {
+    where?: Prisma.EquipmentWhereInput;
+    data: Prisma.XOR<Prisma.EquipmentUpdateWithoutMaintenanceRequestsInput, Prisma.EquipmentUncheckedUpdateWithoutMaintenanceRequestsInput>;
+};
+export type EquipmentUpdateWithoutMaintenanceRequestsInput = {
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
+    location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
+    category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
+};
+export type EquipmentUncheckedUpdateWithoutMaintenanceRequestsInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
+    locationId?: Prisma.IntFieldUpdateOperationsInput | number;
+    categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentCreateManyDepartmentInput = {
     id?: number;
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -926,6 +1199,10 @@ export type EquipmentCreateManyDepartmentInput = {
 export type EquipmentUpdateWithoutDepartmentInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -937,11 +1214,16 @@ export type EquipmentUpdateWithoutDepartmentInput = {
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
     locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutDepartmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -953,11 +1235,16 @@ export type EquipmentUncheckedUpdateWithoutDepartmentInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateManyWithoutDepartmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -973,6 +1260,10 @@ export type EquipmentCreateManyLocationInput = {
     id?: number;
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -987,6 +1278,10 @@ export type EquipmentCreateManyLocationInput = {
 export type EquipmentUpdateWithoutLocationInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -998,11 +1293,16 @@ export type EquipmentUpdateWithoutLocationInput = {
     department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
     locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutLocationInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -1014,11 +1314,16 @@ export type EquipmentUncheckedUpdateWithoutLocationInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateManyWithoutLocationInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -1034,6 +1339,10 @@ export type EquipmentCreateManyCategoryInput = {
     id?: number;
     code: string;
     serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
     name: string;
     description?: string | null;
     status?: $Enums.EquipmentStatus;
@@ -1048,6 +1357,10 @@ export type EquipmentCreateManyCategoryInput = {
 export type EquipmentUpdateWithoutCategoryInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -1059,11 +1372,16 @@ export type EquipmentUpdateWithoutCategoryInput = {
     department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
     locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutCategoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -1075,11 +1393,16 @@ export type EquipmentUncheckedUpdateWithoutCategoryInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateManyWithoutCategoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
     code?: Prisma.StringFieldUpdateOperationsInput | string;
     serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
     description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
@@ -1096,9 +1419,11 @@ export type EquipmentUncheckedUpdateManyWithoutCategoryInput = {
  */
 export type EquipmentCountOutputType = {
     locationHistory: number;
+    maintenanceRequests: number;
 };
 export type EquipmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     locationHistory?: boolean | EquipmentCountOutputTypeCountLocationHistoryArgs;
+    maintenanceRequests?: boolean | EquipmentCountOutputTypeCountMaintenanceRequestsArgs;
 };
 /**
  * EquipmentCountOutputType without action
@@ -1115,10 +1440,20 @@ export type EquipmentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ex
 export type EquipmentCountOutputTypeCountLocationHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.EquipmentLocationHistoryWhereInput;
 };
+/**
+ * EquipmentCountOutputType without action
+ */
+export type EquipmentCountOutputTypeCountMaintenanceRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.MaintenanceRequestWhereInput;
+};
 export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     code?: boolean;
     serialNumber?: boolean;
+    purchaseDate?: boolean;
+    purchaseCost?: boolean;
+    warrantyStartDate?: boolean;
+    warrantyExpiryDate?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -1134,12 +1469,17 @@ export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
     location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>;
     category?: boolean | Prisma.EquipmentCategoryDefaultArgs<ExtArgs>;
     locationHistory?: boolean | Prisma.Equipment$locationHistoryArgs<ExtArgs>;
+    maintenanceRequests?: boolean | Prisma.Equipment$maintenanceRequestsArgs<ExtArgs>;
     _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["equipment"]>;
 export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     code?: boolean;
     serialNumber?: boolean;
+    purchaseDate?: boolean;
+    purchaseCost?: boolean;
+    warrantyStartDate?: boolean;
+    warrantyExpiryDate?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -1159,6 +1499,10 @@ export type EquipmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
     id?: boolean;
     code?: boolean;
     serialNumber?: boolean;
+    purchaseDate?: boolean;
+    purchaseCost?: boolean;
+    warrantyStartDate?: boolean;
+    warrantyExpiryDate?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -1178,6 +1522,10 @@ export type EquipmentSelectScalar = {
     id?: boolean;
     code?: boolean;
     serialNumber?: boolean;
+    purchaseDate?: boolean;
+    purchaseCost?: boolean;
+    warrantyStartDate?: boolean;
+    warrantyExpiryDate?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -1190,12 +1538,13 @@ export type EquipmentSelectScalar = {
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "serialNumber" | "name" | "description" | "status" | "criticality" | "departmentId" | "locationId" | "categoryId" | "isDeactivated" | "deactivatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>;
+export type EquipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "serialNumber" | "purchaseDate" | "purchaseCost" | "warrantyStartDate" | "warrantyExpiryDate" | "name" | "description" | "status" | "criticality" | "departmentId" | "locationId" | "categoryId" | "isDeactivated" | "deactivatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>;
 export type EquipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>;
     location?: boolean | Prisma.LocationDefaultArgs<ExtArgs>;
     category?: boolean | Prisma.EquipmentCategoryDefaultArgs<ExtArgs>;
     locationHistory?: boolean | Prisma.Equipment$locationHistoryArgs<ExtArgs>;
+    maintenanceRequests?: boolean | Prisma.Equipment$maintenanceRequestsArgs<ExtArgs>;
     _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type EquipmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1215,11 +1564,16 @@ export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
         location: Prisma.$LocationPayload<ExtArgs>;
         category: Prisma.$EquipmentCategoryPayload<ExtArgs>;
         locationHistory: Prisma.$EquipmentLocationHistoryPayload<ExtArgs>[];
+        maintenanceRequests: Prisma.$MaintenanceRequestPayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: number;
         code: string;
         serialNumber: string | null;
+        purchaseDate: Date | null;
+        purchaseCost: runtime.Decimal | null;
+        warrantyStartDate: Date | null;
+        warrantyExpiryDate: Date | null;
         name: string;
         description: string | null;
         status: $Enums.EquipmentStatus;
@@ -1564,6 +1918,7 @@ export interface Prisma__EquipmentClient<T, Null = never, ExtArgs extends runtim
     location<T extends Prisma.LocationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LocationDefaultArgs<ExtArgs>>): Prisma.Prisma__LocationClient<runtime.Types.Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
     category<T extends Prisma.EquipmentCategoryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EquipmentCategoryDefaultArgs<ExtArgs>>): Prisma.Prisma__EquipmentCategoryClient<runtime.Types.Result.GetResult<Prisma.$EquipmentCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
     locationHistory<T extends Prisma.Equipment$locationHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$locationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentLocationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    maintenanceRequests<T extends Prisma.Equipment$maintenanceRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$maintenanceRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1592,6 +1947,10 @@ export interface EquipmentFieldRefs {
     readonly id: Prisma.FieldRef<"Equipment", 'Int'>;
     readonly code: Prisma.FieldRef<"Equipment", 'String'>;
     readonly serialNumber: Prisma.FieldRef<"Equipment", 'String'>;
+    readonly purchaseDate: Prisma.FieldRef<"Equipment", 'DateTime'>;
+    readonly purchaseCost: Prisma.FieldRef<"Equipment", 'Decimal'>;
+    readonly warrantyStartDate: Prisma.FieldRef<"Equipment", 'DateTime'>;
+    readonly warrantyExpiryDate: Prisma.FieldRef<"Equipment", 'DateTime'>;
     readonly name: Prisma.FieldRef<"Equipment", 'String'>;
     readonly description: Prisma.FieldRef<"Equipment", 'String'>;
     readonly status: Prisma.FieldRef<"Equipment", 'EquipmentStatus'>;
@@ -2003,6 +2362,29 @@ export type Equipment$locationHistoryArgs<ExtArgs extends runtime.Types.Extensio
     take?: number;
     skip?: number;
     distinct?: Prisma.EquipmentLocationHistoryScalarFieldEnum | Prisma.EquipmentLocationHistoryScalarFieldEnum[];
+};
+/**
+ * Equipment.maintenanceRequests
+ */
+export type Equipment$maintenanceRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaintenanceRequest
+     */
+    select?: Prisma.MaintenanceRequestSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MaintenanceRequest
+     */
+    omit?: Prisma.MaintenanceRequestOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.MaintenanceRequestInclude<ExtArgs> | null;
+    where?: Prisma.MaintenanceRequestWhereInput;
+    orderBy?: Prisma.MaintenanceRequestOrderByWithRelationInput | Prisma.MaintenanceRequestOrderByWithRelationInput[];
+    cursor?: Prisma.MaintenanceRequestWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.MaintenanceRequestScalarFieldEnum | Prisma.MaintenanceRequestScalarFieldEnum[];
 };
 /**
  * Equipment without action

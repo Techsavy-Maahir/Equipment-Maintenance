@@ -47,6 +47,9 @@ export declare const ModelName: {
     readonly EquipmentCategory: "EquipmentCategory";
     readonly Equipment: "Equipment";
     readonly EquipmentLocationHistory: "EquipmentLocationHistory";
+    readonly AuditLog: "AuditLog";
+    readonly MaintenanceRequest: "MaintenanceRequest";
+    readonly DecisionHistory: "DecisionHistory";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -95,6 +98,10 @@ export declare const EquipmentScalarFieldEnum: {
     readonly id: "id";
     readonly code: "code";
     readonly serialNumber: "serialNumber";
+    readonly purchaseDate: "purchaseDate";
+    readonly purchaseCost: "purchaseCost";
+    readonly warrantyStartDate: "warrantyStartDate";
+    readonly warrantyExpiryDate: "warrantyExpiryDate";
     readonly name: "name";
     readonly description: "description";
     readonly status: "status";
@@ -116,6 +123,45 @@ export declare const EquipmentLocationHistoryScalarFieldEnum: {
     readonly changedAt: "changedAt";
 };
 export type EquipmentLocationHistoryScalarFieldEnum = (typeof EquipmentLocationHistoryScalarFieldEnum)[keyof typeof EquipmentLocationHistoryScalarFieldEnum];
+export declare const AuditLogScalarFieldEnum: {
+    readonly id: "id";
+    readonly actorId: "actorId";
+    readonly action: "action";
+    readonly entityType: "entityType";
+    readonly entityId: "entityId";
+    readonly summary: "summary";
+    readonly createdAt: "createdAt";
+};
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum];
+export declare const MaintenanceRequestScalarFieldEnum: {
+    readonly id: "id";
+    readonly requestType: "requestType";
+    readonly status: "status";
+    readonly equipmentId: "equipmentId";
+    readonly requesterId: "requesterId";
+    readonly description: "description";
+    readonly criticality: "criticality";
+    readonly reviewerId: "reviewerId";
+    readonly decisionReason: "decisionReason";
+    readonly problem: "problem";
+    readonly proposedSolution: "proposedSolution";
+    readonly expectedBenefit: "expectedBenefit";
+    readonly outcome: "outcome";
+    readonly implementationStatus: "implementationStatus";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type MaintenanceRequestScalarFieldEnum = (typeof MaintenanceRequestScalarFieldEnum)[keyof typeof MaintenanceRequestScalarFieldEnum];
+export declare const DecisionHistoryScalarFieldEnum: {
+    readonly id: "id";
+    readonly requestId: "requestId";
+    readonly previousStatus: "previousStatus";
+    readonly newStatus: "newStatus";
+    readonly actorId: "actorId";
+    readonly comment: "comment";
+    readonly createdAt: "createdAt";
+};
+export type DecisionHistoryScalarFieldEnum = (typeof DecisionHistoryScalarFieldEnum)[keyof typeof DecisionHistoryScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
