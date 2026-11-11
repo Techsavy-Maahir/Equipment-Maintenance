@@ -1,0 +1,733 @@
+/* ============================================================
+   RequestsPage.css — Maintenance Requests Dashboard
+   Extends the existing equipment-app design system.
+   All base layout classes (.equipment-app, .equipment-sidebar,
+   .equipment-main, .equipment-topbar, etc.) live in
+   EquipmentListPage.css and are reused here.
+   ============================================================ */
+
+/* ── Page-level scope helper (avoids touching EquipmentListPage) ── */
+.rq-app {
+  /* Inherits --primary, --primary-container, --secondary, etc.
+     from .equipment-app via cascade. */
+}
+
+/* ============================================================
+   Success banner
+   ============================================================ */
+.rq-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.rq-success-banner .material-symbols-outlined {
+  font-size: 18px;
+  flex: 0 0 18px;
+}
+
+/* ============================================================
+   Request-type tabs
+   ============================================================ */
+.rq-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: 0;
+}
+
+.rq-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+}
+
+.rq-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--secondary);
+  cursor: pointer;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.rq-tab:hover:not(.is-active) {
+  color: var(--on-surface);
+}
+
+.rq-tab.is-active {
+  border-bottom-color: var(--primary-container);
+  color: var(--primary-container);
+  font-weight: 600;
+}
+
+.rq-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.rq-tab.is-active .rq-tab-count {
+  background: var(--primary-container);
+  color: #fff;
+}
+
+.rq-last-updated {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--secondary);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.rq-last-updated .material-symbols-outlined {
+  font-size: 14px;
+}
+
+/* ============================================================
+   Table header strip
+   ============================================================ */
+.rq-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--surface-low);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.rq-record-count {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ============================================================
+   Request type badge
+   ============================================================ */
+.rq-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rq-type-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.rq-type--breakdown {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.rq-type--preventive {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.rq-type--improvement {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+/* ============================================================
+   Request status badge (pill style)
+   ============================================================ */
+.rq-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.rq-status--submitted {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.rq-status--review {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fef08a;
+}
+
+.rq-status--approved {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.rq-status--rejected {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.rq-status--inprogress {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.rq-status--completed {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.rq-status--cancelled {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  text-decoration: line-through;
+}
+
+/* ============================================================
+   Criticality / Priority badge
+   ============================================================ */
+.rq-crit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rq-crit-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: 0 0 7px;
+  background: currentColor;
+}
+
+.rq-crit--high {
+  color: #dc2626;
+}
+
+.rq-crit--medium {
+  color: #d97706;
+}
+
+.rq-crit--low {
+  color: #64748b;
+}
+
+/* ============================================================
+   Requester cell
+   ============================================================ */
+.rq-requester-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rq-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  user-select: none;
+}
+
+.rq-requester-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface);
+  line-height: 18px;
+}
+
+.rq-requester-role {
+  font-size: 11px;
+  color: var(--secondary);
+  line-height: 14px;
+  text-transform: capitalize;
+}
+
+/* ============================================================
+   Request ID
+   ============================================================ */
+.rq-id {
+  /* inherits equipment-code for monospace blue style */
+}
+
+/* ============================================================
+   Date cell
+   ============================================================ */
+.rq-date-cell {
+  font-size: 12px !important;
+  color: var(--secondary) !important;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Empty state icon
+   ============================================================ */
+.rq-empty-icon {
+  font-size: 36px !important;
+  color: var(--outline-variant);
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* ============================================================
+   Spin animation (loading icon)
+   ============================================================ */
+@keyframes rq-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.rq-spin {
+  display: inline-block;
+  animation: rq-spin 1s linear infinite;
+}
+
+/* ============================================================
+   Breakdown Modal
+   ============================================================ */
+.rq-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 28, 48, 0.5);
+  backdrop-filter: blur(3px);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.rq-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.12),
+              0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+}
+
+.rq-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--outline-variant);
+  flex: 0 0 auto;
+}
+
+.rq-modal-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.rq-modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #dc2626;
+  margin-top: 2px;
+}
+
+.rq-modal-icon .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.rq-modal-header h2 {
+  margin: 0 0 2px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--on-surface);
+  line-height: 24px;
+}
+
+.rq-modal-header p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--secondary);
+  line-height: 16px;
+}
+
+.rq-modal-close {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--secondary);
+  cursor: pointer;
+  flex: 0 0 28px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.rq-modal-close:hover:not(:disabled) {
+  background: var(--surface-low);
+  color: var(--on-surface);
+}
+
+.rq-modal-close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rq-modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.rq-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--outline-variant);
+  flex: 0 0 auto;
+}
+
+/* ── Form elements ── */
+.rq-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rq-form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface);
+  line-height: 18px;
+}
+
+.rq-required {
+  color: #dc2626;
+  margin-left: 2px;
+}
+
+.rq-form-hint {
+  font-weight: 400;
+  color: var(--secondary);
+}
+
+.rq-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rq-select-wrap select {
+  width: 100%;
+  height: 40px;
+  padding: 0 36px 0 12px;
+  border: 1px solid var(--outline-variant);
+  border-radius: 6px;
+  outline: 0;
+  appearance: none;
+  background: #fff;
+  color: var(--on-surface);
+  cursor: pointer;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.rq-select-wrap select:focus {
+  border-color: var(--primary-container);
+  box-shadow: 0 0 0 2px rgb(29 78 216 / 15%);
+}
+
+.rq-select-wrap > .material-symbols-outlined {
+  position: absolute;
+  right: 10px;
+  color: var(--outline);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.rq-form-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--outline-variant);
+  border-radius: 6px;
+  outline: 0;
+  background: #fff;
+  color: var(--on-surface);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.rq-form-input:focus {
+  border-color: var(--primary-container);
+  box-shadow: 0 0 0 2px rgb(29 78 216 / 15%);
+}
+
+.rq-form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--outline-variant);
+  border-radius: 6px;
+  outline: 0;
+  background: #fff;
+  color: var(--on-surface);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  resize: vertical;
+  min-height: 110px;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.rq-form-textarea:focus {
+  border-color: var(--primary-container);
+  box-shadow: 0 0 0 2px rgb(29 78 216 / 15%);
+}
+
+.rq-char-count {
+  font-size: 11px;
+  color: var(--outline);
+  text-align: right;
+  margin-top: 2px;
+}
+
+.rq-field-error {
+  font-size: 12px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.rq-form-field.has-error .rq-form-input,
+.rq-form-field.has-error .rq-form-textarea,
+.rq-form-field.has-error .rq-select-wrap select {
+  border-color: #dc2626;
+}
+
+.rq-form-error-banner {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  background: #fff5f4;
+  color: #991b1b;
+  font-size: 13px;
+  margin: 0;
+}
+
+.rq-form-loading,
+.rq-form-load-error {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--surface-low);
+  color: var(--secondary);
+  font-size: 13px;
+}
+
+.rq-form-load-error {
+  background: #fff5f4;
+  color: #991b1b;
+}
+
+/* ── Modal buttons ── */
+.rq-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+.rq-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.rq-btn-secondary {
+  background: var(--surface-low);
+  color: var(--on-surface);
+  border: 1px solid var(--outline-variant);
+}
+
+.rq-btn-secondary:hover:not(:disabled) {
+  background: var(--surface-container);
+}
+
+.rq-btn-primary {
+  background: var(--primary-container);
+  color: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+}
+
+.rq-btn-primary:hover:not(:disabled) {
+  background: var(--primary);
+}
+
+.rq-btn-danger {
+  background: #dc2626;
+}
+
+.rq-btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.rq-btn .material-symbols-outlined {
+  font-size: 16px;
+}
+
+/* ============================================================
+   Table tweaks specific to requests table
+   ============================================================ */
+.rq-table th:nth-child(1) { min-width: 110px; }
+.rq-table th:nth-child(3) { min-width: 180px; }
+.rq-table th:nth-child(5) { min-width: 120px; }
+
+.rq-row td:first-child {
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 900px) {
+  .rq-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .rq-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rq-last-updated {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .rq-modal {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  .rq-modal-body {
+    padding: 16px;
+  }
+
+  .rq-modal-header {
+    padding: 16px;
+  }
+
+  .rq-modal-footer {
+    padding: 12px 16px;
+  }
+
+  .rq-tabs-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .rq-tab {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+

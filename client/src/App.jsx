@@ -5,11 +5,13 @@ import { EquipmentDetailPage } from "./pages/EquipmentDetailPage";
 import { EquipmentFormPage } from "./pages/EquipmentFormPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MasterDataPage } from "./pages/MasterDataPage";
+import { RequestsPage } from "./pages/RequestsPage";
 import { UserManagementPage } from "./pages/UserManagementPage";
 import "./App.css";
 
 function getInitialPage() {
   const hash = window.location.hash.toLowerCase();
+  if (hash === "#requests") return "requests";
   if (hash === "#master-data") return "master-data";
   if (hash === "#user-management") return "user-management";
   if (hash === "#equipment-create") return "equipment-create";
@@ -28,7 +30,9 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.toLowerCase();
-      if (hash === "#master-data") {
+      if (hash === "#requests") {
+        setCurrentPage("requests");
+      } else if (hash === "#master-data") {
         setCurrentPage("master-data");
       } else if (hash === "#user-management") {
         setCurrentPage("user-management");
@@ -140,6 +144,21 @@ function App() {
 
   if (authStatus === "unauthenticated") {
     return <LoginPage onLogin={handleLogin} />;
+  }
+
+  if (currentPage === "requests") {
+    return (
+      <main className="app-shell app-shell-equipment">
+        <RequestsPage
+          user={user}
+          authError={authError}
+          onLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+        />
+      </main>
+    );
   }
 
   if (currentPage === "master-data") {

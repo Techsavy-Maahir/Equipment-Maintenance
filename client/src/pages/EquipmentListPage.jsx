@@ -251,7 +251,12 @@ export function EquipmentListPage({
             >
               <MaterialIcon>precision_manufacturing</MaterialIcon><span>Equipment</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button
+              type="button"
+              className={`equipment-nav-item ${currentPage === "requests" ? "is-active" : ""}`}
+              onClick={() => onNavigate("requests")}
+              aria-current={currentPage === "requests" ? "page" : undefined}
+            >
               <MaterialIcon>build_circle</MaterialIcon><span>Maintenance Requests</span>
             </button>
             <button type="button" className="equipment-nav-item" disabled>

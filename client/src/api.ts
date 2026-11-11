@@ -124,6 +124,74 @@ export interface MasterDataListResponse {
   pageSize: number;
 }
 
+// ─── Maintenance Requests ────────────────────────────────────────────────────
+
+export type MaintenanceRequestType = "BREAKDOWN" | "PREVENTIVE" | "IMPROVEMENT";
+export type MaintenanceRequestStatus =
+  | "SUBMITTED"
+  | "UNDER_REVIEW"
+  | "APPROVED"
+  | "REJECTED"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "CANCELLED";
+
+export interface MaintenanceRequest {
+  id: number;
+  requestType: MaintenanceRequestType;
+  status: MaintenanceRequestStatus;
+  equipmentId: number;
+  requesterId: number;
+  description: string;
+  criticality: "LOW" | "MEDIUM" | "HIGH";
+  reviewerId: number | null;
+  decisionReason: string | null;
+  problem: string | null;
+  proposedSolution: string | null;
+  expectedBenefit: string | null;
+  outcome: string | null;
+  implementationStatus: string | null;
+  createdAt: string;
+  updatedAt: string;
+  equipment: { id: number; code: string; name: string; isDeactivated: boolean } | null;
+  requester: { id: number; name: string; email: string; role: string } | null;
+  reviewer: { id: number; name: string; email: string; role: string } | null;
+}
+
+export interface MaintenanceRequestListResponse {
+  items: MaintenanceRequest[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface MaintenanceRequestFilters {
+  requestType?: MaintenanceRequestType | "";
+  status?: MaintenanceRequestStatus | "";
+  equipmentId?: number;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface CreateMaintenanceRequestInput {
+  requestType: MaintenanceRequestType;
+  equipmentId: number;
+  description: string;
+  criticality: "LOW" | "MEDIUM" | "HIGH";
+  problem?: string;
+  proposedSolution?: string;
+  expectedBenefit?: string;
+  implementationStatus?: string;
+}
+
+export interface TransitionMaintenanceRequestInput {
+  status: MaintenanceRequestStatus;
+  comment?: string | null;
+  outcome?: string | null;
+}
+
+// ─── Generic API response ─────────────────────────────────────────────────────
+
 export interface ApiResponse<T> {
   data: T | null;
   error: string | null;
@@ -354,6 +422,42 @@ export const api = {
 
   async reactivateUser(id: number): Promise<ManagedUser> {
     const response = await apiClient.patch<ManagedUser>(`/users/${id}/reactivate`);
+    return response.data;
+  },
+
+  // Maintenance Requests
+  async listMaintenanceRequests(
+    filters: MaintenanceRequestFilters = {},
+  ): Promise<MaintenanceRequestListResponse> {
+    const response = await apiClient.get<MaintenanceRequestListResponse>("/requests", {
+      params: {
+        requestType: filters.requestType || undefined,
+        status: filters.status || undefined,
+        equipmentId: filters.equipmentId || undefined,
+        page: filters.page ?? 1,
+        pageSize: filters.pageSize ?? 10,
+      },
+    });
+    return response.data;
+  },
+
+  async getMaintenanceRequest(id: number): Promise<MaintenanceRequest> {
+    const response = await apiClient.get<MaintenanceRequest>(`/requests/${id}`);
+    return response.data;
+  },
+
+  async createMaintenanceRequest(
+    data: CreateMaintenanceRequestInput,
+  ): Promise<MaintenanceRequest> {
+    const response = await apiClient.post<MaintenanceRequest>("/requests", data);
+    return response.data;
+  },
+
+  async transitionMaintenanceRequest(
+    id: number,
+    data: TransitionMaintenanceRequestInput,
+  ): Promise<MaintenanceRequest> {
+    const response = await apiClient.patch<MaintenanceRequest>(`/requests/${id}/status`, data);
     return response.data;
   },
 };

@@ -315,7 +315,11 @@ export function EquipmentFormPage({
             >
               <MaterialIcon>precision_manufacturing</MaterialIcon><span>Equipment</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button
+              type="button"
+              className="equipment-nav-item"
+              onClick={() => onNavigate("requests")}
+            >
               <MaterialIcon>build_circle</MaterialIcon><span>Maintenance Requests</span>
             </button>
             <button type="button" className="equipment-nav-item" disabled>
