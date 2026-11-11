@@ -414,6 +414,306 @@ function BreakdownModal({ onClose, onSuccess }) {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
+// ─── Request Details and Review Modal ────────────────────────────────────────
+
+function RequestDetailModal({ requestId, user, onClose, onUpdated }) {
+  const [request, setRequest] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [showRejection, setShowRejection] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+
+  const canReview = ["ADMIN", "MANAGER"].includes(user?.role);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadRequest() {
+      try {
+        setLoading(true);
+        setError("");
+        const data = await api.getMaintenanceRequest(requestId);
+        if (!cancelled) setRequest(data);
+      } catch (err) {
+        if (!cancelled) setError(handleApiError(err));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadRequest();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [requestId]);
+
+  async function handleTransition(status, comment) {
+    if (submitting) return;
+
+    setSubmitting(true);
+    setActionError("");
+
+    try {
+      await api.transitionMaintenanceRequest(requestId, {
+        status,
+        ...(comment ? { comment } : {}),
+      });
+
+      const updated = await api.getMaintenanceRequest(requestId);
+      setRequest(updated);
+      setShowRejection(false);
+      setRejectionReason("");
+      onUpdated();
+    } catch (err) {
+      setActionError(handleApiError(err));
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  function handleReject() {
+    const reason = rejectionReason.trim();
+
+    if (!reason) {
+      setActionError("Please enter a rejection reason.");
+      return;
+    }
+
+    handleTransition("REJECTED", reason);
+  }
+
+  const status = request ? requestStatusDetails(request.status) : null;
+  const history = request?.decisionHistory || [];
+
+  return (
+    <div
+      className="rq-modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rq-detail-title"
+    >
+      <div className="rq-modal rq-detail-modal">
+        <header className="rq-modal-header">
+          <div className="rq-modal-header-left">
+            <span className="rq-modal-icon">
+              <MaterialIcon>description</MaterialIcon>
+            </span>
+            <div>
+              <h2 id="rq-detail-title">
+                {formatRequestId(requestId, request?.createdAt)}
+              </h2>
+              <p>Maintenance request details and review history</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="rq-modal-close"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <MaterialIcon>close</MaterialIcon>
+          </button>
+        </header>
+
+        <div className="rq-modal-body">
+          {loading && (
+            <div className="equipment-state" role="status">
+              <MaterialIcon className="rq-spin">progress_activity</MaterialIcon>
+              &nbsp;Loading request details…
+            </div>
+          )}
+
+          {error && <p className="rq-form-error-banner" role="alert">{error}</p>}
+
+          {request && !loading && (
+            <>
+              <section className="rq-detail-section">
+                <h3>Request information</h3>
+                <div className="rq-detail-grid">
+                  <div>
+                    <span className="rq-detail-label">Request type</span>
+                    <strong>{requestTypeDetails(request.requestType).label}</strong>
+                  </div>
+                  <div>
+                    <span className="rq-detail-label">Status</span>
+                    <span className={`rq-status-badge ${status.className}`}>
+                      {status.label}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="rq-detail-label">Priority</span>
+                    <strong>{criticalityDetails(request.criticality).label}</strong>
+                  </div>
+                  <div>
+                    <span className="rq-detail-label">Submitted</span>
+                    <strong>{formatDate(request.createdAt)}</strong>
+                  </div>
+                  <div>
+                    <span className="rq-detail-label">Equipment</span>
+                    <strong>{request.equipment?.name || "—"}</strong>
+                    <small>{request.equipment?.code || ""}</small>
+                  </div>
+                  <div>
+                    <span className="rq-detail-label">Requested by</span>
+                    <strong>{request.requester?.name || "—"}</strong>
+                    <small>{request.requester?.role || ""}</small>
+                  </div>
+                  <div>
+                    <span className="rq-detail-label">Reviewer</span>
+                    <strong>{request.reviewer?.name || "Not assigned"}</strong>
+                  </div>
+                </div>
+
+                <div className="rq-detail-description">
+                  <span className="rq-detail-label">Description</span>
+                  <p>{request.description || "No description provided."}</p>
+                </div>
+
+                {request.problem && (
+                  <div className="rq-detail-description">
+                    <span className="rq-detail-label">Problem title</span>
+                    <p>{request.problem}</p>
+                  </div>
+                )}
+
+                {request.decisionReason && (
+                  <div className="rq-detail-description">
+                    <span className="rq-detail-label">Decision reason</span>
+                    <p>{request.decisionReason}</p>
+                  </div>
+                )}
+              </section>
+
+              <section className="rq-detail-section">
+                <h3>Decision history</h3>
+                {history.length === 0 ? (
+                  <p className="rq-detail-empty">No decision history recorded yet.</p>
+                ) : (
+                  <ol className="rq-history-list">
+                    {history.map((entry) => (
+                      <li key={entry.id} className="rq-history-item">
+                        <div>
+                          <strong>
+                            {requestStatusDetails(entry.previousStatus).label}
+                            {" → "}
+                            {requestStatusDetails(entry.newStatus).label}
+                          </strong>
+                          <span>
+                            {entry.actor?.name || "System"} · {formatDate(entry.createdAt)}
+                          </span>
+                          {entry.comment && <p>{entry.comment}</p>}
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </section>
+
+              {canReview && (
+                <section className="rq-detail-section rq-review-actions">
+                  <h3>Review actions</h3>
+
+                  {request.status === "SUBMITTED" && (
+                    <button
+                      type="button"
+                      className="rq-btn rq-btn-primary"
+                      disabled={submitting}
+                      onClick={() => handleTransition("UNDER_REVIEW")}
+                    >
+                      {submitting ? "Processing…" : "Start Review"}
+                    </button>
+                  )}
+
+                  {request.status === "UNDER_REVIEW" && !showRejection && (
+                    <div className="rq-review-buttons">
+                      <button
+                        type="button"
+                        className="rq-btn rq-btn-primary"
+                        disabled={submitting}
+                        onClick={() => handleTransition("APPROVED")}
+                      >
+                        {submitting ? "Processing…" : "Approve"}
+                      </button>
+                      <button
+                        type="button"
+                        className="rq-btn rq-btn-secondary rq-btn-danger"
+                        disabled={submitting}
+                        onClick={() => {
+                          setShowRejection(true);
+                          setActionError("");
+                        }}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+
+                  {showRejection && request.status === "UNDER_REVIEW" && (
+                    <div className="rq-rejection-form">
+                      <label htmlFor="rq-rejection-reason">
+                        Rejection reason <span className="rq-required">*</span>
+                      </label>
+                      <textarea
+                        id="rq-rejection-reason"
+                        aria-label="Rejection reason"
+                        className="rq-form-textarea"
+                        rows={3}
+                        value={rejectionReason}
+                        onChange={(e) => {
+                          setRejectionReason(e.target.value);
+                          setActionError("");
+                        }}
+                        placeholder="Explain why this request is being rejected…"
+                      />
+                      <div className="rq-review-buttons">
+                        <button
+                          type="button"
+                          className="rq-btn rq-btn-secondary"
+                          disabled={submitting}
+                          onClick={() => {
+                            setShowRejection(false);
+                            setRejectionReason("");
+                            setActionError("");
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          className="rq-btn rq-btn-primary rq-btn-danger"
+                          disabled={submitting}
+                          onClick={handleReject}
+                        >
+                          {submitting ? "Processing…" : "Confirm Rejection"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {actionError && (
+                <p className="rq-form-error-banner" role="alert">
+                  {actionError}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+
+        <footer className="rq-modal-footer">
+          <button type="button" className="rq-btn rq-btn-secondary" onClick={onClose}>
+            Close
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
 export function RequestsPage({
   user,
   authError = "",
@@ -438,6 +738,7 @@ export function RequestsPage({
 
   const [showModal, setShowModal] = useState(false);
   const [successBanner, setSuccessBanner] = useState("");
+  const [selectedRequestId, setSelectedRequestId] = useState(null);
 
   const userName = user?.name || "Maintenance User";
   const userRole = user?.role
@@ -832,9 +1133,14 @@ export function RequestsPage({
                         return (
                           <tr key={req.id} className="rq-row">
                             <td>
-                              <span className="rq-id equipment-code">
-                                {formatRequestId(req.id, req.createdAt)}
-                              </span>
+                              <button
+  type="button"
+  className="rq-id equipment-code rq-detail-trigger"
+  onClick={() => setSelectedRequestId(req.id)}
+  aria-label={`View request ${formatRequestId(req.id, req.createdAt)}`}
+>
+  {formatRequestId(req.id, req.createdAt)}
+</button>
                             </td>
                             <td>
                               <span className={`rq-type-badge ${type.className}`}>
@@ -959,6 +1265,14 @@ export function RequestsPage({
           onSuccess={handleModalSuccess}
         />
       )}
+      {selectedRequestId !== null && (
+  <RequestDetailModal
+    requestId={selectedRequestId}
+    user={user}
+    onClose={() => setSelectedRequestId(null)}
+    onUpdated={() => setRefreshKey((key) => key + 1)}
+  />
+)}
     </div>
   );
 }

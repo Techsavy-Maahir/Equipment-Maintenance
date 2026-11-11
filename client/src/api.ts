@@ -136,6 +136,23 @@ export type MaintenanceRequestStatus =
   | "COMPLETED"
   | "CANCELLED";
 
+
+export interface MaintenanceRequestHistoryEntry {
+  id: number;
+  requestId: number;
+  previousStatus: MaintenanceRequestStatus;
+  newStatus: MaintenanceRequestStatus;
+  actorId: number | null;
+  comment: string | null;
+  createdAt: string;
+  actor: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+}
+
 export interface MaintenanceRequest {
   id: number;
   requestType: MaintenanceRequestType;
@@ -153,9 +170,25 @@ export interface MaintenanceRequest {
   implementationStatus: string | null;
   createdAt: string;
   updatedAt: string;
-  equipment: { id: number; code: string; name: string; isDeactivated: boolean } | null;
-  requester: { id: number; name: string; email: string; role: string } | null;
-  reviewer: { id: number; name: string; email: string; role: string } | null;
+  equipment: {
+    id: number;
+    code: string;
+    name: string;
+    isDeactivated: boolean;
+  } | null;
+  requester: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+  reviewer: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+  decisionHistory?: MaintenanceRequestHistoryEntry[];
 }
 
 export interface MaintenanceRequestListResponse {
@@ -164,6 +197,8 @@ export interface MaintenanceRequestListResponse {
   page: number;
   pageSize: number;
 }
+
+
 
 export interface MaintenanceRequestFilters {
   requestType?: MaintenanceRequestType | "";

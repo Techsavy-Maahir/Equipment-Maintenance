@@ -6,7 +6,9 @@ import { RequestsPage } from "./RequestsPage";
 vi.mock("../api", () => ({
   api: {
     listMaintenanceRequests: vi.fn(),
+    getMaintenanceRequest: vi.fn(),
     createMaintenanceRequest: vi.fn(),
+    transitionMaintenanceRequest: vi.fn(),
     getEquipment: vi.fn(),
   },
   handleApiError: (error) =>
@@ -87,7 +89,39 @@ const mockEquipmentList = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+
   api.listMaintenanceRequests.mockResolvedValue(mockRequestsResponse);
+
+  api.getMaintenanceRequest.mockResolvedValue({
+    ...mockRequestsResponse.items[0],
+    equipmentId: 1,
+    requesterId: 2,
+    reviewerId: null,
+    decisionReason: null,
+    decisionHistory: [
+      {
+        id: 1,
+        requestId: 412,
+        previousStatus: "SUBMITTED",
+        newStatus: "UNDER_REVIEW",
+        actorId: 3,
+        comment: "Review started",
+        createdAt: "2026-11-10T10:30:00.000Z",
+        actor: {
+          id: 3,
+          name: "Alex Morgan",
+          email: "alex@example.com",
+          role: "MANAGER",
+        },
+      },
+    ],
+  });
+
+  api.transitionMaintenanceRequest.mockResolvedValue({
+    ...mockRequestsResponse.items[0],
+    status: "UNDER_REVIEW",
+  });
+
   api.getEquipment.mockResolvedValue(mockEquipmentList);
 });
 
@@ -262,6 +296,81 @@ describe("RequestsPage", () => {
     await waitFor(() => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
+  });
+    it("opens request details and displays decision history", async () => {
+    render(<RequestsPage user={{ role: "MANAGER", name: "Alex Morgan" }} />);
+
+    await screen.findByText("REQ-2026-0412");
+    fireEvent.click(screen.getByText("REQ-2026-0412"));
+
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByText("Hydraulic pump pressure dropped significantly")).toBeInTheDocument();
+    expect(screen.getByText("Review started")).toBeInTheDocument();
+    expect(api.getMaintenanceRequest).toHaveBeenCalledWith(412);
+  });
+
+  it("allows a manager to start reviewing a submitted request", async () => {
+    api.getMaintenanceRequest.mockResolvedValue({
+      ...mockRequestsResponse.items[0],
+      status: "SUBMITTED",
+      decisionHistory: [],
+    });
+
+    render(<RequestsPage user={{ role: "MANAGER", name: "Alex Morgan" }} />);
+
+    await screen.findByText("REQ-2026-0412");
+    fireEvent.click(screen.getByText("REQ-2026-0412"));
+
+    fireEvent.click(await screen.findByRole("button", { name: /Start Review/i }));
+
+    await waitFor(() => {
+      expect(api.transitionMaintenanceRequest).toHaveBeenCalledWith(412, {
+        status: "UNDER_REVIEW",
+      });
+    });
+  });
+
+  it("allows a manager to approve a request under review", async () => {
+    render(<RequestsPage user={{ role: "MANAGER", name: "Alex Morgan" }} />);
+
+    await screen.findByText("REQ-2026-0412");
+    fireEvent.click(screen.getByText("REQ-2026-0412"));
+
+    fireEvent.click(await screen.findByRole("button", { name: /^Approve$/i }));
+
+    await waitFor(() => {
+      expect(api.transitionMaintenanceRequest).toHaveBeenCalledWith(412, {
+        status: "APPROVED",
+      });
+    });
+  });
+
+  it("requires a reason before rejecting a request", async () => {
+    render(<RequestsPage user={{ role: "MANAGER", name: "Alex Morgan" }} />);
+
+    await screen.findByText("REQ-2026-0412");
+    fireEvent.click(screen.getByText("REQ-2026-0412"));
+
+    fireEvent.click(await screen.findByRole("button", { name: /^Reject$/i }));
+
+    expect(await screen.findByRole("textbox", { name: /rejection reason/i })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /Confirm Rejection/i }));
+
+    expect(api.transitionMaintenanceRequest).not.toHaveBeenCalled();
+  });
+
+  it("does not show review controls to a technician", async () => {
+    render(<RequestsPage user={{ role: "TECHNICIAN", name: "Carlos Mendez" }} />);
+
+    await screen.findByText("REQ-2026-0412");
+    fireEvent.click(screen.getByText("REQ-2026-0412"));
+
+    await screen.findByRole("dialog");
+
+    expect(screen.queryByRole("button", { name: /Start Review/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^Approve$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^Reject$/i })).not.toBeInTheDocument();
   });
 });
 
