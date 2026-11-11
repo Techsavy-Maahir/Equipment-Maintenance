@@ -1,3 +1,4 @@
+
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { prismaMock, transactionMocks } = vi.hoisted(() => {
@@ -9,8 +10,14 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
     create: vi.fn(),
     updateMany: vi.fn(),
   };
-  const equipment = { findUnique: vi.fn() };
+
+  const equipment = {
+    findUnique: vi.fn(),
+    update: vi.fn(),
+  };
+
   const decisionHistory = { create: vi.fn() };
+  const auditLog = { create: vi.fn() };
 
   return {
     prismaMock: {
@@ -18,8 +25,14 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
       maintenanceRequest,
       equipment,
       decisionHistory,
+      auditLog,
     },
-    transactionMocks: { maintenanceRequest, equipment, decisionHistory },
+    transactionMocks: {
+      maintenanceRequest,
+      equipment,
+      decisionHistory,
+      auditLog,
+    },
   };
 });
 
@@ -63,6 +76,7 @@ const transactionClient = {
   maintenanceRequest: transactionMocks.maintenanceRequest,
   equipment: transactionMocks.equipment,
   decisionHistory: transactionMocks.decisionHistory,
+  auditLog: transactionMocks.auditLog,
 };
 
 const allowedTransitions = [
@@ -120,6 +134,7 @@ const statusValues = [
 const allowedPairs = new Set(
   allowedTransitions.map(({ previous, next }) => `${previous}:${next}`),
 );
+
 const unapprovedTransitions = statusValues.flatMap((previous) =>
   statusValues
     .filter((next) => !allowedPairs.has(`${previous}:${next}`))
@@ -128,13 +143,19 @@ const unapprovedTransitions = statusValues.flatMap((previous) =>
 
 beforeEach(() => {
   vi.clearAllMocks();
+
   prismaMock.$transaction.mockImplementation(async (callback) =>
     callback(transactionClient),
   );
+
   transactionMocks.equipment.findUnique.mockResolvedValue({
     id: 7,
     isDeactivated: false,
+    status: "ACTIVE",
   });
+
+  transactionMocks.equipment.update.mockResolvedValue({});
+  transactionMocks.auditLog.create.mockResolvedValue({});
 });
 
 describe("maintenance request service", () => {
@@ -165,6 +186,7 @@ describe("maintenance request service", () => {
         }),
       }),
     );
+
     expect(transactionMocks.decisionHistory.create).not.toHaveBeenCalled();
   });
 
@@ -186,6 +208,7 @@ describe("maintenance request service", () => {
     transactionMocks.equipment.findUnique.mockResolvedValue({
       id: 7,
       isDeactivated: true,
+      status: "ACTIVE",
     });
 
     await expect(
@@ -217,13 +240,16 @@ describe("maintenance request service", () => {
     );
 
     expect(result).toMatchObject({ total: 10, page: 2, pageSize: 8 });
+
     const args = transactionMocks.maintenanceRequest.findMany.mock.calls[0][0];
+
     expect(args.where).toEqual({
       requesterId: 2,
       status: "SUBMITTED",
       requestType: "BREAKDOWN",
       equipmentId: 7,
     });
+
     expect(args).toEqual(expect.objectContaining({ skip: 8, take: 8 }));
   });
 
@@ -294,6 +320,7 @@ describe("maintenance request service", () => {
     "allows $previous to $next for the approved role and records history",
     async ({ previous, next, role, actorId, comment }) => {
       const current = request(previous, 2);
+
       transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(current);
       transactionMocks.maintenanceRequest.updateMany.mockResolvedValue({ count: 1 });
       transactionMocks.decisionHistory.create.mockResolvedValue({});
@@ -309,12 +336,14 @@ describe("maintenance request service", () => {
       );
 
       expect(result.status).toBe(next);
+
       expect(transactionMocks.maintenanceRequest.updateMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 44, status: previous },
           data: expect.objectContaining({ status: next }),
         }),
       );
+
       expect(transactionMocks.decisionHistory.create).toHaveBeenCalledWith({
         data: {
           requestId: 44,
@@ -341,6 +370,7 @@ describe("maintenance request service", () => {
             next === "REJECTED" || next === "CANCELLED" ? "Reason" : undefined,
         }),
       ).rejects.toMatchObject({ statusCode: 400 });
+
       expect(transactionMocks.maintenanceRequest.updateMany).not.toHaveBeenCalled();
       expect(transactionMocks.decisionHistory.create).not.toHaveBeenCalled();
     },
@@ -384,6 +414,7 @@ describe("maintenance request service", () => {
           { status: next, comment },
         ),
       ).rejects.toMatchObject({ statusCode: 403 });
+
       expect(transactionMocks.maintenanceRequest.updateMany).not.toHaveBeenCalled();
     },
   );
@@ -401,14 +432,20 @@ describe("maintenance request service", () => {
         }),
       ).rejects.toMatchObject({
         statusCode: 400,
-        details: { comment: expect.stringContaining(status === "REJECTED" ? "rejection" : "cancellation") },
+        details: {
+          comment: expect.stringContaining(
+            status === "REJECTED" ? "rejection" : "cancellation",
+          ),
+        },
       });
+
       expect(prismaMock.$transaction).not.toHaveBeenCalled();
     },
   );
 
   it("allows optional comments and stores completion outcome", async () => {
     const current = request("IN_PROGRESS");
+
     transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(current);
     transactionMocks.maintenanceRequest.updateMany.mockResolvedValue({ count: 1 });
     transactionMocks.decisionHistory.create.mockResolvedValue({});
@@ -431,6 +468,7 @@ describe("maintenance request service", () => {
         }),
       }),
     );
+
     expect(transactionMocks.decisionHistory.create).toHaveBeenCalledWith({
       data: expect.objectContaining({ comment: null }),
     });
@@ -459,6 +497,7 @@ describe("maintenance request service", () => {
     transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(
       request("SUBMITTED"),
     );
+
     transactionMocks.maintenanceRequest.updateMany.mockResolvedValue({ count: 0 });
 
     await expect(
@@ -466,11 +505,13 @@ describe("maintenance request service", () => {
         status: "UNDER_REVIEW",
       }),
     ).rejects.toMatchObject({ statusCode: 409 });
+
     expect(transactionMocks.decisionHistory.create).not.toHaveBeenCalled();
   });
 
   it("rolls back the status update when history creation fails", async () => {
     let storedStatus = "APPROVED";
+
     const transactionalClient = {
       ...transactionClient,
       maintenanceRequest: {
@@ -486,6 +527,7 @@ describe("maintenance request service", () => {
 
     prismaMock.$transaction.mockImplementation(async (callback) => {
       const beforeTransaction = storedStatus;
+
       try {
         return await callback(transactionalClient);
       } catch (error) {
@@ -493,9 +535,11 @@ describe("maintenance request service", () => {
         throw error;
       }
     });
+
     transactionalClient.maintenanceRequest.findUniqueOrThrow.mockResolvedValue(
       request("IN_PROGRESS"),
     );
+
     transactionalClient.decisionHistory.create.mockRejectedValue(
       new Error("History write failed"),
     );
@@ -505,8 +549,142 @@ describe("maintenance request service", () => {
         status: "IN_PROGRESS",
       }),
     ).rejects.toThrow("History write failed");
+
     expect(storedStatus).toBe("APPROVED");
     expect(transactionalClient.maintenanceRequest.updateMany).toHaveBeenCalledOnce();
     expect(transactionalClient.decisionHistory.create).toHaveBeenCalledOnce();
   });
 });
+
+
+describe("Breakdown approval and audit logging", () => {
+  it("changes equipment status to BREAKDOWN when a Breakdown request is approved", async () => {
+    const current = request("UNDER_REVIEW");
+
+    transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(current);
+    transactionMocks.maintenanceRequest.updateMany.mockResolvedValue({ count: 1 });
+    transactionMocks.decisionHistory.create.mockResolvedValue({});
+    transactionMocks.maintenanceRequest.findUniqueOrThrow.mockResolvedValue({
+      ...current,
+      status: "APPROVED",
+    });
+
+    await transitionMaintenanceRequest(44, actor("MANAGER"), {
+      status: "APPROVED",
+    });
+
+    expect(transactionMocks.equipment.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 7 },
+        select: {
+          id: true,
+          isDeactivated: true,
+          status: true,
+        },
+      }),
+    );
+
+    expect(transactionMocks.equipment.update).toHaveBeenCalledWith({
+      where: {
+        id: 7,
+        isDeactivated: false,
+        status: "ACTIVE",
+      },
+      data: {
+        status: "BREAKDOWN",
+      },
+    });
+  });
+
+  it("does not change equipment status for a Preventive request", async () => {
+    const current = {
+      ...request("UNDER_REVIEW"),
+      requestType: "PREVENTIVE",
+    };
+
+    transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(current);
+    transactionMocks.maintenanceRequest.updateMany.mockResolvedValue({ count: 1 });
+    transactionMocks.decisionHistory.create.mockResolvedValue({});
+    transactionMocks.maintenanceRequest.findUniqueOrThrow.mockResolvedValue({
+      ...current,
+      status: "APPROVED",
+    });
+
+    await transitionMaintenanceRequest(44, actor("MANAGER"), {
+      status: "APPROVED",
+    });
+
+    expect(transactionMocks.equipment.findUnique).not.toHaveBeenCalled();
+    expect(transactionMocks.equipment.update).not.toHaveBeenCalled();
+  });
+
+  it("rejects Breakdown approval when equipment is not ACTIVE", async () => {
+    transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(
+      request("UNDER_REVIEW"),
+    );
+
+    transactionMocks.equipment.findUnique.mockResolvedValue({
+      id: 7,
+      isDeactivated: false,
+      status: "UNDER_MAINTENANCE",
+    });
+
+    await expect(
+      transitionMaintenanceRequest(44, actor("MANAGER"), {
+        status: "APPROVED",
+      }),
+    ).rejects.toMatchObject({ statusCode: 409 });
+
+    expect(transactionMocks.equipment.update).not.toHaveBeenCalled();
+    expect(transactionMocks.maintenanceRequest.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("rejects Breakdown approval when equipment is deactivated", async () => {
+    transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(
+      request("UNDER_REVIEW"),
+    );
+
+    transactionMocks.equipment.findUnique.mockResolvedValue({
+      id: 7,
+      isDeactivated: true,
+      status: "ACTIVE",
+    });
+
+    await expect(
+      transitionMaintenanceRequest(44, actor("MANAGER"), {
+        status: "APPROVED",
+      }),
+    ).rejects.toMatchObject({ statusCode: 409 });
+
+    expect(transactionMocks.equipment.update).not.toHaveBeenCalled();
+    expect(transactionMocks.maintenanceRequest.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("writes an AuditLog entry for a successful status transition", async () => {
+    const current = request("UNDER_REVIEW");
+
+    transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(current);
+    transactionMocks.maintenanceRequest.updateMany.mockResolvedValue({ count: 1 });
+    transactionMocks.decisionHistory.create.mockResolvedValue({});
+    transactionMocks.maintenanceRequest.findUniqueOrThrow.mockResolvedValue({
+      ...current,
+      status: "APPROVED",
+    });
+
+    await transitionMaintenanceRequest(44, actor("MANAGER", 1), {
+      status: "APPROVED",
+    });
+
+    expect(transactionMocks.auditLog.create).toHaveBeenCalledWith({
+      data: {
+        actorId: 1,
+        action: "MAINTENANCE_REQUEST_STATUS_CHANGED",
+        entityType: "MaintenanceRequest",
+        entityId: 44,
+        summary:
+          "Maintenance request #44 status changed from UNDER_REVIEW to APPROVED.",
+      },
+    });
+  });
+});
+

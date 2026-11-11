@@ -1,3 +1,4 @@
+
 import {
   Prisma,
   type MaintenanceRequestStatus,
@@ -6,6 +7,7 @@ import {
 import { AppError, ConflictError, NotFoundError, ValidationError } from "../errors.js";
 import type { AuthenticatedUser } from "../middleware/auth.middleware.js";
 import { prisma } from "../prisma.js";
+import { createAuditLog } from "./audit.service.js";
 import type {
   CreateMaintenanceRequestInput,
   MaintenanceRequestListQuery,
@@ -244,6 +246,49 @@ export async function transitionMaintenanceRequest(
       throw new AppError(403, "Forbidden: You cannot perform this request transition");
     }
 
+    // A Breakdown request can only be approved if its equipment is
+    // still active and has not already been assigned another status.
+    const isBreakdownApproval =
+      current.requestType === "BREAKDOWN" &&
+      current.status === "UNDER_REVIEW" &&
+      input.status === "APPROVED";
+
+    if (isBreakdownApproval) {
+      const equipment = await tx.equipment.findUnique({
+        where: { id: current.equipmentId },
+        select: {
+          id: true,
+          isDeactivated: true,
+          status: true,
+        },
+      });
+
+      if (!equipment || equipment.isDeactivated) {
+        throw new ConflictError(
+          "The equipment is missing or deactivated. This breakdown request cannot be approved.",
+        );
+      }
+
+      if (equipment.status !== "ACTIVE") {
+        throw new ConflictError(
+          `The equipment is currently ${equipment.status}. Only ACTIVE equipment can be marked as BREAKDOWN.`,
+        );
+      }
+
+      // The additional conditions protect against a status change
+      // occurring after the equipment was checked above.
+      await tx.equipment.update({
+        where: {
+          id: current.equipmentId,
+          isDeactivated: false,
+          status: "ACTIVE",
+        },
+        data: {
+          status: "BREAKDOWN",
+        },
+      });
+    }
+
     const updates: Prisma.MaintenanceRequestUncheckedUpdateManyInput = {
       status: input.status,
       updatedAt: new Date(),
@@ -286,6 +331,14 @@ export async function transitionMaintenanceRequest(
         actorId: actor.id,
         comment,
       },
+    });
+
+    await createAuditLog(tx, {
+      actorId: actor.id,
+      action: "MAINTENANCE_REQUEST_STATUS_CHANGED",
+      entityType: "MaintenanceRequest",
+      entityId: requestId,
+      summary: `Maintenance request #${requestId} status changed from ${current.status} to ${input.status}.`,
     });
 
     return tx.maintenanceRequest.findUniqueOrThrow({
