@@ -44,19 +44,30 @@ enum MaintenanceRequestStatus {
   CANCELLED
 }
 
+enum WorkOrderStatus {
+  OPEN
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CLOSED
+}
+
 model User {
-  id        Int     @id @default(autoincrement())
-  email     String  @unique
-  name      String
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  name          String
   password_hash String?
-  role      Role
-  isActive  Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  auditLogs AuditLog[]
+  role          Role
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  auditLogs                    AuditLog[]
   requestedMaintenanceRequests MaintenanceRequest[] @relation("MaintenanceRequestRequester")
   reviewedMaintenanceRequests  MaintenanceRequest[] @relation("MaintenanceRequestReviewer")
   decisionHistoryEntries       DecisionHistory[]
+  assignedWorkOrders           WorkOrder[]          @relation("WorkOrderTechnician")
+  createdWorkOrders            WorkOrder[]          @relation("WorkOrderAssigner")
 }
 
 model Department {
@@ -70,11 +81,11 @@ model Department {
 }
 
 model Location {
-  id          Int                        @id @default(autoincrement())
-  name        String                     @unique
-  isActive    Boolean                    @default(true)
-  createdAt   DateTime                   @default(now())
-  updatedAt   DateTime                   @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   equipment   Equipment[]
   historyFrom EquipmentLocationHistory[] @relation("HistoryFromLocation")
@@ -92,30 +103,31 @@ model EquipmentCategory {
 }
 
 model Equipment {
-  id           Int       @id @default(autoincrement())
-  code         String    @unique
-  serialNumber String?
-  purchaseDate        DateTime?
-  purchaseCost        Decimal?  @db.Decimal(12, 2)
-  warrantyStartDate   DateTime?
-  warrantyExpiryDate  DateTime?
-  name         String
-  description  String?
-  status       EquipmentStatus @default(ACTIVE)
-  criticality  Criticality
-  departmentId Int
-  locationId   Int
-  categoryId   Int
-  isDeactivated Boolean   @default(false)
-  deactivatedAt DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id                 Int             @id @default(autoincrement())
+  code               String          @unique
+  serialNumber       String?
+  purchaseDate       DateTime?
+  purchaseCost       Decimal?        @db.Decimal(12, 2)
+  warrantyStartDate  DateTime?
+  warrantyExpiryDate DateTime?
+  name               String
+  description        String?
+  status             EquipmentStatus @default(ACTIVE)
+  criticality        Criticality
+  departmentId       Int
+  locationId         Int
+  categoryId         Int
+  isDeactivated      Boolean         @default(false)
+  deactivatedAt      DateTime?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
 
-  department   Department @relation(fields: [departmentId], references: [id])
-  location     Location @relation(fields: [locationId], references: [id])
-  category     EquipmentCategory @relation(fields: [categoryId], references: [id])
-  locationHistory EquipmentLocationHistory[]
+  department          Department                 @relation(fields: [departmentId], references: [id])
+  location            Location                   @relation(fields: [locationId], references: [id])
+  category            EquipmentCategory          @relation(fields: [categoryId], references: [id])
+  locationHistory     EquipmentLocationHistory[]
   maintenanceRequests MaintenanceRequest[]
+  workOrders          WorkOrder[]
 
   @@index([departmentId])
   @@index([locationId])
@@ -130,9 +142,9 @@ model EquipmentLocationHistory {
   toLocationId   Int
   changedAt      DateTime @default(now())
 
-  equipment    Equipment  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
-  fromLocation Location?  @relation("HistoryFromLocation", fields: [fromLocationId], references: [id])
-  toLocation   Location   @relation("HistoryToLocation", fields: [toLocationId], references: [id])
+  equipment    Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  fromLocation Location? @relation("HistoryFromLocation", fields: [fromLocationId], references: [id])
+  toLocation   Location  @relation("HistoryToLocation", fields: [toLocationId], references: [id])
 
   @@index([equipmentId, changedAt])
   @@index([fromLocationId])
@@ -177,6 +189,7 @@ model MaintenanceRequest {
   requester       User              @relation("MaintenanceRequestRequester", fields: [requesterId], references: [id], onDelete: Restrict)
   reviewer        User?             @relation("MaintenanceRequestReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
   decisionHistory DecisionHistory[]
+  workOrder       WorkOrder?
 
   @@index([equipmentId, createdAt])
   @@index([requesterId, createdAt])
@@ -198,4 +211,37 @@ model DecisionHistory {
 
   @@index([requestId, createdAt])
   @@index([actorId])
+}
+
+model WorkOrder {
+  id                   Int             @id @default(autoincrement())
+  workOrderNumber      String          @unique
+  maintenanceRequestId Int             @unique
+  equipmentId          Int
+  status               WorkOrderStatus @default(OPEN)
+
+  assignedTechnicianId Int?
+  assignedById         Int?
+  assignedAt           DateTime?
+  startedAt            DateTime?
+  completedAt          DateTime?
+  closedAt             DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  maintenanceRequest MaintenanceRequest @relation(fields: [maintenanceRequestId], references: [id], onDelete: Restrict)
+  equipment          Equipment          @relation(fields: [equipmentId], references: [id], onDelete: Restrict)
+  assignedTechnician User?              @relation("WorkOrderTechnician", fields: [assignedTechnicianId], references: [id], onDelete: SetNull)
+  assignedBy         User?              @relation("WorkOrderAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
+
+  @@index([equipmentId, createdAt])
+  @@index([assignedTechnicianId, status])
+  @@index([status, createdAt])
+}
+
+model WorkOrderNumberCounter {
+  year       Int      @id
+  lastNumber Int      @default(0)
+  updatedAt  DateTime @updatedAt
 }

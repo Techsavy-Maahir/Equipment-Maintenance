@@ -322,6 +322,34 @@ export async function transitionMaintenanceRequest(
     if (updateResult.count !== 1) {
       throw new ConflictError("Request status changed; reload and try again");
     }
+    if (
+  current.status === "UNDER_REVIEW" &&
+  input.status === "APPROVED"
+) {
+  const year = new Date().getFullYear();
+
+  const counter = await tx.workOrderNumberCounter.upsert({
+    where: { year },
+    create: {
+      year,
+      lastNumber: 1,
+    },
+    update: {
+      lastNumber: { increment: 1 },
+    },
+  });
+
+  const workOrderNumber = `WO-${year}-${String(counter.lastNumber).padStart(4, "0")}`;
+
+  await tx.workOrder.create({
+    data: {
+      workOrderNumber,
+      maintenanceRequestId: current.id,
+      equipmentId: current.equipmentId,
+      status: "OPEN",
+    },
+  });
+}
 
     await tx.decisionHistory.create({
       data: {

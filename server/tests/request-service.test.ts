@@ -18,6 +18,8 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
 
   const decisionHistory = { create: vi.fn() };
   const auditLog = { create: vi.fn() };
+  const workOrder = { create: vi.fn() };
+const workOrderNumberCounter = { upsert: vi.fn() };
 
   return {
     prismaMock: {
@@ -26,12 +28,16 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
       equipment,
       decisionHistory,
       auditLog,
+      workOrder,
+workOrderNumberCounter,
     },
     transactionMocks: {
       maintenanceRequest,
       equipment,
       decisionHistory,
       auditLog,
+      workOrder,
+workOrderNumberCounter,
     },
   };
 });
@@ -77,6 +83,8 @@ const transactionClient = {
   equipment: transactionMocks.equipment,
   decisionHistory: transactionMocks.decisionHistory,
   auditLog: transactionMocks.auditLog,
+  workOrder: transactionMocks.workOrder,
+workOrderNumberCounter: transactionMocks.workOrderNumberCounter,
 };
 
 const allowedTransitions = [
@@ -156,6 +164,12 @@ beforeEach(() => {
 
   transactionMocks.equipment.update.mockResolvedValue({});
   transactionMocks.auditLog.create.mockResolvedValue({});
+  transactionMocks.workOrderNumberCounter.upsert.mockResolvedValue({
+  year: new Date().getFullYear(),
+  lastNumber: 1,
+});
+
+transactionMocks.workOrder.create.mockResolvedValue({});
 });
 
 describe("maintenance request service", () => {
@@ -686,5 +700,59 @@ describe("Breakdown approval and audit logging", () => {
       },
     });
   });
+  it("creates a Work Order when a maintenance request is approved", async () => {
+  const current = {
+    ...request("UNDER_REVIEW"),
+    requestType: "PREVENTIVE",
+  };
+
+  transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(current);
+  transactionMocks.maintenanceRequest.updateMany.mockResolvedValue({ count: 1 });
+  transactionMocks.decisionHistory.create.mockResolvedValue({});
+  transactionMocks.maintenanceRequest.findUniqueOrThrow.mockResolvedValue({
+    ...current,
+    status: "APPROVED",
+  });
+
+  await transitionMaintenanceRequest(44, actor("MANAGER"), {
+    status: "APPROVED",
+  });
+
+  const year = new Date().getFullYear();
+
+  expect(transactionMocks.workOrderNumberCounter.upsert).toHaveBeenCalledWith({
+    where: { year },
+    create: { year, lastNumber: 1 },
+    update: { lastNumber: { increment: 1 } },
+  });
+
+  expect(transactionMocks.workOrder.create).toHaveBeenCalledWith({
+    data: {
+      workOrderNumber: `WO-${year}-0001`,
+      maintenanceRequestId: 44,
+      equipmentId: 7,
+      status: "OPEN",
+    },
+  });
 });
+it("does not create a Work Order when a request enters review or is rejected", async () => {
+  const current = request("SUBMITTED");
+
+  transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(current);
+  transactionMocks.maintenanceRequest.updateMany.mockResolvedValue({ count: 1 });
+  transactionMocks.decisionHistory.create.mockResolvedValue({});
+  transactionMocks.maintenanceRequest.findUniqueOrThrow.mockResolvedValue({
+    ...current,
+    status: "UNDER_REVIEW",
+  });
+
+  await transitionMaintenanceRequest(44, actor("MANAGER"), {
+    status: "UNDER_REVIEW",
+  });
+
+  expect(transactionMocks.workOrderNumberCounter.upsert).not.toHaveBeenCalled();
+  expect(transactionMocks.workOrder.create).not.toHaveBeenCalled();
+});
+});
+
 
