@@ -41,33 +41,31 @@ export function LoginPage({ onLogin }) {
 
   return (
     <main className="imms-login">
-      <section className="imms-brand-panel" aria-label="IMMS introduction">
+      <section className="imms-brand-panel" aria-label="Zamil Steel introduction">
         <div className="imms-brand-content">
-          <a className="imms-brand" href="#login" aria-label="IMMS home">
-            <span className="imms-brand-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 2.8 20 7.4v9.2L12 21.2 4 16.6V7.4L12 2.8Z"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                />
-                <path
-                  d="m4.4 7.6 7.6 4.5 7.6-4.5M12 12.1v8.5"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                />
-              </svg>
-            </span>
-            <span>IMMS</span>
+          <a className="imms-brand" href="#login" aria-label="Zamil Steel Equipment Maintenance home">
+            <img
+              src="/assets/zamil-steel-logo.png"
+              alt="Zamil Steel Logo"
+              style={{
+                height: "44px",
+                width: "auto",
+                objectFit: "contain",
+                borderRadius: "8px",
+                background: "#ffffff",
+                padding: "4px 8px"
+              }}
+            />
+            <span>Zamil Steel</span>
           </a>
 
           <div className="imms-brand-message">
             <span className="imms-badge">
               <span className="imms-badge-dot" />
-              Built for Industrial Operations
+              Corporate Equipment Maintenance
             </span>
 
-            <h1>Industrial Maintenance Management System</h1>
+            <h1>Zamil Steel Equipment Maintenance</h1>
 
             <p className="imms-brand-tagline">
               Smarter Maintenance.
@@ -106,25 +104,23 @@ export function LoginPage({ onLogin }) {
       <section className="imms-form-panel" id="login">
         <div className="imms-form-wrap">
           <div className="imms-mobile-brand">
-            <span className="imms-brand-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 2.8 20 7.4v9.2L12 21.2 4 16.6V7.4L12 2.8Z"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                />
-                <path
-                  d="m4.4 7.6 7.6 4.5 7.6-4.5M12 12.1v8.5"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                />
-              </svg>
-            </span>
-            <span>IMMS</span>
+            <img
+              src="/assets/zamil-steel-logo.png"
+              alt="Zamil Steel Logo"
+              style={{
+                height: "36px",
+                width: "auto",
+                objectFit: "contain",
+                borderRadius: "6px",
+                background: "#ffffff",
+                padding: "3px 6px"
+              }}
+            />
+            <span>Zamil Steel</span>
           </div>
 
           <div className="imms-form-heading">
-            <span className="imms-form-eyebrow">Maintenance portal</span>
+            <span className="imms-form-eyebrow">Equipment Maintenance Portal</span>
             <h2>Welcome Back</h2>
             <p>Sign in to access your maintenance dashboard.</p>
           </div>
@@ -288,7 +284,7 @@ export function LoginPage({ onLogin }) {
           </p>
 
           <footer className="imms-copyright">
-            © 2026 IMMS. All rights reserved.
+            © 2026 Zamil Steel. All rights reserved.
           </footer>
         </div>
       </section>

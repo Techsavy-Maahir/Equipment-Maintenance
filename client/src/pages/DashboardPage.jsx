@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { api, handleApiError } from "../api";
 import NotificationBell from "../components/NotificationBell";
 import "./DashboardPage.css";
@@ -32,6 +32,7 @@ function getInitials(name) {
 
 export function DashboardPage({ user, onNavigate = () => {} }) {
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -51,33 +52,42 @@ export function DashboardPage({ user, onNavigate = () => {} }) {
     recentWorkOrders: [],
   });
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadStats() {
-      try {
+  const loadStats = useCallback(async (isSilent = false) => {
+    try {
+      if (!isSilent) {
         setLoading(true);
-        setError("");
-        const data = await api.getDashboardStats();
-        if (!cancelled) {
-          setStats(data);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(handleApiError(err));
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+      } else {
+        setRefreshing(true);
       }
+      setError("");
+      const data = await api.getDashboardStats();
+      setStats(data);
+    } catch (err) {
+      setError(handleApiError(err));
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
     }
-
-    void loadStats();
-    return () => {
-      cancelled = true;
-    };
   }, []);
+
+  useEffect(() => {
+    void loadStats(false);
+  }, [loadStats]);
+
+  // Auto-refresh when tab/window regains focus or visibility (Task 5)
+  useEffect(() => {
+    const handleActive = () => {
+      if (document.visibilityState === "visible") {
+        void loadStats(true);
+      }
+    };
+    window.addEventListener("focus", handleActive);
+    document.addEventListener("visibilitychange", handleActive);
+    return () => {
+      window.removeEventListener("focus", handleActive);
+      document.removeEventListener("visibilitychange", handleActive);
+    };
+  }, [loadStats]);
 
   const todayFormatted = useMemo(() => {
     return new Date().toLocaleDateString("en-US", {
@@ -122,14 +132,18 @@ export function DashboardPage({ user, onNavigate = () => {} }) {
               e.preventDefault();
               onNavigate("dashboard");
             }}
-            aria-label="IMMS dashboard"
+            aria-label="Zamil Steel Equipment Maintenance"
           >
-            <span className="equipment-brand-mark">
-              <MaterialIcon>precision_manufacturing</MaterialIcon>
+            <span className="equipment-brand-mark" style={{ background: "#ffffff", padding: "2px", overflow: "hidden" }}>
+              <img
+                src="/assets/zamil-steel-logo.png"
+                alt="Zamil Steel"
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
             </span>
             <span className="equipment-brand-copy">
-              <strong>IMMS</strong>
-              <small>OPS CORE</small>
+              <strong>Zamil Steel</strong>
+              <small>Maintenance</small>
             </span>
           </a>
 
@@ -247,7 +261,7 @@ export function DashboardPage({ user, onNavigate = () => {} }) {
             <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981", display: "inline-block" }}></span>
             <span>All systems operational</span>
           </div>
-          <small style={{ color: "#64748b", fontSize: "10px", display: "block", marginTop: "4px" }}>v2.4.0 © 2026 IMMS Engine</small>
+          <small style={{ color: "#64748b", fontSize: "10px", display: "block", marginTop: "4px" }}>v2.4.0 © 2026 Zamil Steel Maintenance</small>
         </div>
       </aside>
 
@@ -306,6 +320,31 @@ export function DashboardPage({ user, onNavigate = () => {} }) {
                 <span>{todayFormatted}</span>
                 <MaterialIcon style={{ fontSize: "16px", color: "#94a3b8" }}>expand_more</MaterialIcon>
               </div>
+
+              <button
+                type="button"
+                className="dash-btn-refresh"
+                onClick={() => void loadStats(true)}
+                disabled={loading || refreshing}
+                title="Refresh dashboard metrics"
+                aria-label="Refresh dashboard data"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "8px 12px",
+                  borderRadius: "9px",
+                  border: "1px solid #e2e8f0",
+                  background: "#ffffff",
+                  color: "#475569",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                <MaterialIcon style={{ fontSize: "16px" }}>sync</MaterialIcon>
+                <span>{refreshing ? "Refreshing…" : "Refresh"}</span>
+              </button>
 
               <button
                 type="button"
@@ -419,14 +458,26 @@ export function DashboardPage({ user, onNavigate = () => {} }) {
                 <span className="dash-kpi-title">
                   Overdue PM <MaterialIcon style={{ fontSize: "16px" }}>chevron_right</MaterialIcon>
                 </span>
-                <span className="dash-kpi-icon-wrap dash-kpi-icon-amber">
-                  <MaterialIcon style={{ fontSize: "20px" }}>event_busy</MaterialIcon>
+                <span
+                  className={`dash-kpi-icon-wrap ${
+                    stats.kpis.overduePm > 0 ? "dash-kpi-icon-red" : "dash-kpi-icon-green"
+                  }`}
+                >
+                  <MaterialIcon style={{ fontSize: "20px" }}>
+                    {stats.kpis.overduePm > 0 ? "warning" : "check_circle"}
+                  </MaterialIcon>
                 </span>
               </div>
               <div>
                 <div className="dash-kpi-value">{loading ? "—" : stats.kpis.overduePm}</div>
-                <div className="dash-kpi-subtext is-amber">
-                  {stats.kpis.overduePm > 0 ? "Action required" : "All PM on schedule"}
+                <div
+                  className={`dash-kpi-subtext ${
+                    stats.kpis.overduePm > 0 ? "is-red" : "is-green"
+                  }`}
+                >
+                  {stats.kpis.overduePm > 0
+                    ? `${stats.kpis.overduePm} require immediate attention (Red)`
+                    : "0 Overdue · All PM on schedule (Green – Okay)"}
                 </div>
               </div>
             </div>
@@ -546,7 +597,12 @@ export function DashboardPage({ user, onNavigate = () => {} }) {
               <div className="dash-card-header">
                 <div>
                   <h2 className="dash-card-title">Upcoming Preventive Maintenance</h2>
-                  <p className="dash-card-sub">Next 7 days scheduled tasks</p>
+                  <p className="dash-card-sub">
+                    Overdue &amp; next 7 days
+                    {stats.upcomingPm.length > 0
+                      ? ` · ${stats.upcomingPm.length} occurrence${stats.upcomingPm.length !== 1 ? "s" : ""}`
+                      : ""}
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -558,33 +614,91 @@ export function DashboardPage({ user, onNavigate = () => {} }) {
               </div>
 
               <div className="dash-pm-list">
-                {stats.upcomingPm.length === 0 ? (
+                {loading ? (
                   <div style={{ color: "#94a3b8", fontSize: "13px", textAlign: "center", padding: "24px 0" }}>
-                    No preventive maintenance scheduled for the next 7 days.
+                    Loading upcoming maintenance…
+                  </div>
+                ) : stats.upcomingPm.length === 0 ? (
+                  <div
+                    className="dash-pm-empty-green"
+                    style={{
+                      textAlign: "center",
+                      padding: "24px 16px",
+                      background: "#f0fdf4",
+                      borderRadius: "10px",
+                      border: "1px solid #bbf7d0",
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 40,
+                        height: 40,
+                        borderRadius: "50%",
+                        background: "#dcfce7",
+                        color: "#15803d",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      <MaterialIcon style={{ fontSize: "24px" }}>check_circle</MaterialIcon>
+                    </span>
+                    <div style={{ fontWeight: 700, fontSize: "13px", color: "#166534" }}>
+                      All maintenance on schedule
+                    </div>
+                    <div style={{ color: "#4b5563", fontSize: "11px", marginTop: "3px" }}>
+                      No overdue or upcoming PM tasks due in the next 7 days.
+                    </div>
+                    <div style={{ marginTop: "6px" }}>
+                      <span className="dash-status-badge dash-status-completed">
+                        Green – Okay (Normal)
+                      </span>
+                    </div>
                   </div>
                 ) : (
-                  stats.upcomingPm.map((pm) => (
-                    <div className="dash-pm-item" key={pm.id}>
-                      <div className="dash-pm-item-left">
-                        <span className="dash-pm-code">{pm.equipmentCode}</span>
-                        <span className="dash-pm-name">{pm.equipmentName}</span>
-                      </div>
-                      <div className="dash-pm-item-right">
-                        <span className="dash-pm-date">{formatDate(pm.dueDate)}</span>
-                        <span
-                          className={`dash-status-badge ${
-                            pm.status === "Due today"
-                              ? "dash-status-due-today"
-                              : pm.status === "Overdue"
-                              ? "dash-status-overdue"
-                              : "dash-status-scheduled"
-                          }`}
-                        >
-                          {pm.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))
+                  stats.upcomingPm.map((pm) => {
+                    const isOverdue = pm.status === "Overdue";
+                    const isDueToday = pm.status === "Due today";
+                    return (
+                      <button
+                        key={pm.id}
+                        type="button"
+                        className={`dash-pm-item dash-pm-item-btn${isOverdue ? " dash-pm-item-overdue" : ""}`}
+                        onClick={() => onNavigate("preventive-maintenance")}
+                        aria-label={`${pm.equipmentCode} – ${pm.activity || pm.equipmentName}, status: ${pm.status}`}
+                      >
+                        <div className="dash-pm-item-left">
+                          <span className="dash-pm-code">{pm.equipmentCode}</span>
+                          <span className="dash-pm-name">{pm.equipmentName}</span>
+                          {pm.activity && (
+                            <span className="dash-pm-activity">{pm.activity}</span>
+                          )}
+                          <span className="dash-pm-tech">
+                            <MaterialIcon style={{ fontSize: "11px", verticalAlign: "middle" }}>person</MaterialIcon>
+                            {" "}{pm.assignedTechnicianName || "Unassigned"}
+                          </span>
+                        </div>
+                        <div className="dash-pm-item-right">
+                          <span className="dash-pm-date">{formatDate(pm.dueDate)}</span>
+                          <span
+                            className={`dash-status-badge ${
+                              isOverdue
+                                ? "dash-status-overdue"
+                                : isDueToday
+                                ? "dash-status-due-today"
+                                : "dash-status-scheduled"
+                            }`}
+                          >
+                            {isOverdue && (
+                              <MaterialIcon style={{ fontSize: "11px", marginRight: "2px" }}>warning</MaterialIcon>
+                            )}
+                            {pm.status}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })
                 )}
               </div>
             </div>
@@ -741,9 +855,28 @@ export function DashboardPage({ user, onNavigate = () => {} }) {
 
             <div className="dash-table-footer">
               <span>Showing {filteredWorkOrders.length} of {stats.recentWorkOrders.length} open and recent work orders</span>
-              <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                <MaterialIcon style={{ fontSize: "16px" }}>sync</MaterialIcon> Updated just now
-              </span>
+              <button
+                type="button"
+                className="dash-refresh-link"
+                onClick={() => void loadStats(true)}
+                disabled={loading || refreshing}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  background: "transparent",
+                  border: 0,
+                  color: "#64748b",
+                  cursor: "pointer",
+                  fontSize: "11px",
+                  padding: "4px 8px",
+                  borderRadius: "6px",
+                }}
+                aria-label="Refresh work orders and maintenance data"
+              >
+                <MaterialIcon style={{ fontSize: "16px" }}>sync</MaterialIcon>
+                <span>{refreshing ? "Refreshing data…" : "Updated just now · Click to refresh"}</span>
+              </button>
             </div>
           </div>
         </div>

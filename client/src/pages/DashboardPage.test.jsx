@@ -7,7 +7,8 @@ import { api } from "../api";
 vi.mock("../api", () => ({
   api: {
     getDashboardStats: vi.fn(),
-    getNotificationsForUser: vi.fn().mockResolvedValue({ items: [], unreadCount: 0 }),
+    getNotifications: vi.fn().mockResolvedValue({ items: [], unreadCount: 0 }),
+    markNotificationRead: vi.fn().mockResolvedValue({ id: 1, isRead: true, readAt: null }),
   },
   handleApiError: (err) => err?.message || "API Error",
 }));
@@ -37,6 +38,7 @@ describe("DashboardPage", () => {
         activity: "Seal inspection",
         dueDate: "2026-10-12T00:00:00.000Z",
         status: "Overdue",
+        assignedTechnicianName: "Michael Chen",
       },
       {
         id: 2,
@@ -45,6 +47,7 @@ describe("DashboardPage", () => {
         activity: "Filter change",
         dueDate: "2026-10-13T00:00:00.000Z",
         status: "Due today",
+        assignedTechnicianName: null,
       },
     ],
     recentWorkOrders: [
@@ -73,12 +76,88 @@ describe("DashboardPage", () => {
       expect(screen.getByText("248")).toBeInTheDocument();
       expect(screen.getByText("221")).toBeInTheDocument();
       expect(screen.getByText("WO-2026-0841")).toBeInTheDocument();
-      expect(screen.getByText("Hydraulic Press HP-02", { selector: ".dash-pm-name" })).toBeInTheDocument();
     });
+
+    // PM items are now rendered as buttons with aria-label — check equipment code
+    await waitFor(() => {
+      expect(screen.getAllByText("EQ-0042").length).toBeGreaterThanOrEqual(1);
+    });
+
+    // Overdue badge appears in the PM section
+    expect(screen.getByText("Overdue")).toBeInTheDocument();
+
+    // Activity name is shown
+    expect(screen.getByText("Seal inspection")).toBeInTheDocument();
+
+    // Technician name is shown for the overdue item (and recent work order)
+    expect(screen.getAllByText("Michael Chen").length).toBeGreaterThanOrEqual(1);
 
     // Test clicking navigation buttons
     const newWoBtn = screen.getByRole("button", { name: /New Work Order/i });
     await userEvent.click(newWoBtn);
     expect(onNavigate).toHaveBeenCalledWith("work-orders");
+  });
+
+  it("shows empty state when no upcoming PM", async () => {
+    vi.mocked(api.getDashboardStats).mockResolvedValue({
+      ...mockStats,
+      upcomingPm: [],
+      kpis: { ...mockStats.kpis, overduePm: 0 },
+    });
+
+    render(<DashboardPage user={{ name: "James Davis", role: "MANAGER" }} onNavigate={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/All maintenance on schedule/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Green – Okay/i).length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  it("shows error state when API fails", async () => {
+    vi.mocked(api.getDashboardStats).mockRejectedValue(new Error("Network error"));
+
+    render(<DashboardPage user={{ name: "Admin" }} onNavigate={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Network error/i)).toBeInTheDocument();
+    });
+  });
+
+  it("notification bell renders without crashing", async () => {
+    vi.mocked(api.getDashboardStats).mockResolvedValue(mockStats);
+    vi.mocked(api.getNotifications).mockResolvedValue({
+      items: [
+        {
+          id: 1,
+          key: "overdue-1",
+          kind: "OVERDUE",
+          dueDate: "2026-10-10T00:00:00.000Z",
+          title: "Overdue: Seal inspection",
+          message: "EQ-0042 is overdue for Seal inspection",
+          createdAt: "2026-10-11T09:00:00.000Z",
+          occurrenceId: 1,
+          isRead: false,
+          readAt: null,
+          recipientId: 10,
+          occurrence: null,
+        },
+      ],
+      unreadCount: 1,
+    });
+
+    const onNavigate = vi.fn();
+    render(<DashboardPage user={{ name: "James Davis", role: "MANAGER" }} onNavigate={onNavigate} />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /Notifications/i })).toBeInTheDocument();
+    });
+
+    // Open the notification panel
+    const bellBtn = screen.getByRole("button", { name: /Notifications/i });
+    await userEvent.click(bellBtn);
+
+    await waitFor(() => {
+      expect(screen.getByRole("dialog", { name: "Notifications panel" })).toBeInTheDocument();
+    });
   });
 });

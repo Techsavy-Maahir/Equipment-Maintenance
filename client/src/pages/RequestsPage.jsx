@@ -1039,13 +1039,17 @@ export function RequestsPage({
       {/* ── Sidebar (reuses existing design) ── */}
       <aside className="equipment-sidebar">
         <div className="equipment-sidebar-top">
-          <a className="equipment-brand" href="#equipment" aria-label="IMMS Plant Engine">
-            <span className="equipment-brand-mark">
-              <MaterialIcon>precision_manufacturing</MaterialIcon>
+          <a className="equipment-brand" href="#equipment" aria-label="Zamil Steel Equipment Maintenance">
+            <span className="equipment-brand-mark" style={{ background: "#ffffff", padding: "2px", overflow: "hidden" }}>
+              <img
+                src="/assets/zamil-steel-logo.png"
+                alt="Zamil Steel"
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
             </span>
             <span className="equipment-brand-copy">
-              <strong>IMMS</strong>
-              <small>Plant Engine</small>
+              <strong>Zamil Steel</strong>
+              <small>Maintenance</small>
             </span>
           </a>
 

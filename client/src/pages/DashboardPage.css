@@ -525,16 +525,36 @@
   transition: border-color var(--dash-transition), background var(--dash-transition);
 }
 
-.dash-pm-item:hover {
+/* When rendered as a button for interactivity */
+.dash-pm-item-btn {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.dash-pm-item:hover,
+.dash-pm-item-btn:hover {
   background: #fff;
   border-color: var(--dash-border-strong);
+}
+
+/* Overdue items get a subtle red left border */
+.dash-pm-item-overdue {
+  border-left: 3px solid #fca5a5;
+  background: #fff9f9;
+}
+
+.dash-pm-item-overdue:hover {
+  border-left-color: #ef4444;
+  background: #fff5f5;
 }
 
 .dash-pm-item-left {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
 .dash-pm-code {
@@ -549,6 +569,26 @@
   font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Activity description row */
+.dash-pm-activity {
+  overflow: hidden;
+  color: var(--dash-text);
+  font-size: 11px;
+  font-weight: 550;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Assigned technician row */
+.dash-pm-tech {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: #64748b;
+  font-size: 10px;
+  margin-top: 1px;
 }
 
 .dash-pm-item-right {
@@ -595,6 +635,23 @@
   color: #1d4ed8;
   background: var(--dash-primary-soft);
   border-color: #bfdbfe;
+}
+
+.dash-status-completed {
+  color: #15803d;
+  background: var(--dash-green-soft, #f0fdf4);
+  border-color: #bbf7d0;
+}
+
+.dash-btn-refresh:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+.dash-refresh-link:hover {
+  background: #f1f5f9 !important;
+  color: #1e293b !important;
 }
 
 /* Recent work orders table */

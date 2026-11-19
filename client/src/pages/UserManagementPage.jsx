@@ -268,13 +268,17 @@ export function UserManagementPage({
       <div className="equipment-app">
         <aside className="equipment-sidebar">
           <div className="equipment-sidebar-top">
-            <a className="equipment-brand" href="#equipment" onClick={() => onNavigate("equipment")}>
-              <span className="equipment-brand-mark">
-                <MaterialIcon>precision_manufacturing</MaterialIcon>
+            <a className="equipment-brand" href="#equipment" onClick={() => onNavigate("equipment")} aria-label="Zamil Steel Equipment Maintenance">
+              <span className="equipment-brand-mark" style={{ background: "#ffffff", padding: "2px", overflow: "hidden" }}>
+                <img
+                  src="/assets/zamil-steel-logo.png"
+                  alt="Zamil Steel"
+                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                />
               </span>
               <span className="equipment-brand-copy">
-                <strong>IMMS</strong>
-                <small>Plant Engine</small>
+                <strong>Zamil Steel</strong>
+                <small>Maintenance</small>
               </span>
             </a>
             <nav className="equipment-nav">
@@ -329,14 +333,18 @@ export function UserManagementPage({
               e.preventDefault();
               onNavigate("equipment");
             }}
-            aria-label="IMMS Plant Engine"
+            aria-label="Zamil Steel Equipment Maintenance"
           >
-            <span className="equipment-brand-mark">
-              <MaterialIcon>precision_manufacturing</MaterialIcon>
+            <span className="equipment-brand-mark" style={{ background: "#ffffff", padding: "2px", overflow: "hidden" }}>
+              <img
+                src="/assets/zamil-steel-logo.png"
+                alt="Zamil Steel"
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
             </span>
             <span className="equipment-brand-copy">
-              <strong>IMMS</strong>
-              <small>Plant Engine</small>
+              <strong>Zamil Steel</strong>
+              <small>Maintenance</small>
             </span>
           </a>
 
@@ -699,7 +707,7 @@ export function UserManagementPage({
 
               {/* Disclaimer Footnote */}
               <div className="user-mgmt-footnote">
-                IMMS Plant Engine • Security & User Access Control
+                Zamil Steel Equipment Maintenance • Security & User Access Control
               </div>
             </div>
           </div>
@@ -735,7 +743,7 @@ export function UserManagementPage({
                   id="user-create-email"
                   type="email"
                   required
-                  placeholder="e.g. alex.morgan@plant.imms"
+                  placeholder="e.g. alex.morgan@zamilsteel.com"
                   value={createForm.email}
                   onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
                 />

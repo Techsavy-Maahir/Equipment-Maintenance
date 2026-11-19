@@ -927,6 +927,7 @@ export const api = {
       activity: string;
       dueDate: string;
       status: string;
+      assignedTechnicianName: string | null;
     }>;
     recentWorkOrders: Array<{
       id: number;
@@ -940,6 +941,11 @@ export const api = {
     }>;
   }> {
     const response = await apiClient.get("/dashboard/stats");
+    return response.data;
+  },
+
+  async generateDueOccurrences(): Promise<{ generated: number; skipped: number }> {
+    const response = await apiClient.post<{ generated: number; skipped: number }>("/maintenance-plans/generate-due-occurrences");
     return response.data;
   },
 };

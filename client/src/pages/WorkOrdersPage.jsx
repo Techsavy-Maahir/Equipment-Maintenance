@@ -311,9 +311,15 @@ export function WorkOrdersPage({
     <div className="equipment-app rq-app wo-app">
       <aside className="equipment-sidebar">
         <div className="equipment-sidebar-top">
-          <a className="equipment-brand" href="#equipment" aria-label="IMMS Plant Engine">
-            <span className="equipment-brand-mark"><MaterialIcon>precision_manufacturing</MaterialIcon></span>
-            <span className="equipment-brand-copy"><strong>IMMS</strong><small>Plant Engine</small></span>
+          <a className="equipment-brand" href="#equipment" aria-label="Zamil Steel Equipment Maintenance">
+            <span className="equipment-brand-mark" style={{ background: "#ffffff", padding: "2px", overflow: "hidden" }}>
+              <img
+                src="/assets/zamil-steel-logo.png"
+                alt="Zamil Steel"
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
+            </span>
+            <span className="equipment-brand-copy"><strong>Zamil Steel</strong><small>Maintenance</small></span>
           </a>
           <nav className="equipment-nav" aria-label="Main navigation">
             <button type="button" className={`equipment-nav-item ${currentPage === "dashboard" ? "is-active" : ""}`} onClick={() => onNavigate("dashboard")}><MaterialIcon>dashboard</MaterialIcon><span>Dashboard</span></button>
@@ -428,7 +434,7 @@ export function WorkOrdersPage({
                 </nav>
               </footer>
             </section>
-            <div className="equipment-sample-note">Work order records · IMMS Maintenance Management</div>
+            <div className="equipment-sample-note">Work order records · Zamil Steel Maintenance Management</div>
           </div>
         </main>
       </div>

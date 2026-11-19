@@ -283,14 +283,18 @@ const handleGenerateDue = async () => {
               e.preventDefault();
               onNavigate("dashboard");
             }}
-            aria-label="IMMS dashboard"
+            aria-label="Zamil Steel Equipment Maintenance"
           >
-            <span className="equipment-brand-mark">
-              <MaterialIcon>precision_manufacturing</MaterialIcon>
+            <span className="equipment-brand-mark" style={{ background: "#ffffff", padding: "2px", overflow: "hidden" }}>
+              <img
+                src="/assets/zamil-steel-logo.png"
+                alt="Zamil Steel"
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
             </span>
             <span className="equipment-brand-copy">
-              <strong>IMMS</strong>
-              <small>OPS CORE</small>
+              <strong>Zamil Steel</strong>
+              <small>Maintenance</small>
             </span>
           </a>
 
@@ -456,7 +460,7 @@ const handleGenerateDue = async () => {
             <span>All systems operational</span>
           </div>
           <small style={{ color: "#64748b", fontSize: "10px", display: "block", marginTop: "4px" }}>
-            v2.4.0 © 2026 IMMS Engine
+            v2.4.0 © 2026 Zamil Steel Maintenance
           </small>
         </div>
       </aside>

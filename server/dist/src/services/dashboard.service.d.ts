@@ -23,6 +23,7 @@ export interface DashboardStats {
         activity: string;
         dueDate: string;
         status: string;
+        assignedTechnicianName: string | null;
     }>;
     recentWorkOrders: Array<{
         id: number;

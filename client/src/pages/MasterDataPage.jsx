@@ -327,14 +327,18 @@ export function MasterDataPage({
               e.preventDefault();
               onNavigate("equipment");
             }}
-            aria-label="IMMS Plant Engine"
+            aria-label="Zamil Steel Equipment Maintenance"
           >
-            <span className="equipment-brand-mark">
-              <MaterialIcon>precision_manufacturing</MaterialIcon>
+            <span className="equipment-brand-mark" style={{ background: "#ffffff", padding: "2px", overflow: "hidden" }}>
+              <img
+                src="/assets/zamil-steel-logo.png"
+                alt="Zamil Steel"
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
             </span>
             <span className="equipment-brand-copy">
-              <strong>IMMS</strong>
-              <small>Plant Engine</small>
+              <strong>Zamil Steel</strong>
+              <small>Maintenance</small>
             </span>
           </a>
 
@@ -732,7 +736,7 @@ export function MasterDataPage({
 
               {/* Footnote */}
               <div className="master-data-footnote">
-                IMMS Plant Engine • Master Data Configuration
+                Zamil Steel Equipment Maintenance • Master Data Configuration
               </div>
             </div>
           </div>

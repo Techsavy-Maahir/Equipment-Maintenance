@@ -203,13 +203,17 @@ export function KaizenPage({ user, onNavigate = () => {} }) {
               e.preventDefault();
               onNavigate("kaizen");
             }}
-            aria-label="IMMS Kaizen page"
+            aria-label="Zamil Steel Equipment Maintenance"
           >
-            <span className="equipment-brand-mark">
-              <MaterialIcon>trending_up</MaterialIcon>
+            <span className="equipment-brand-mark" style={{ background: "#ffffff", padding: "2px", overflow: "hidden" }}>
+              <img
+                src="/assets/zamil-steel-logo.png"
+                alt="Zamil Steel"
+                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
             </span>
             <span className="equipment-brand-copy">
-              <strong>IMMS</strong>
+              <strong>Zamil Steel</strong>
               <small>Kaizen</small>
             </span>
           </a>

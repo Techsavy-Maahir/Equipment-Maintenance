@@ -53,18 +53,35 @@ export async function getDashboardStats(actor) {
     let overduePm = 0;
     let upcomingPm = [];
     try {
-        const next7Days = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7);
-        const [overdueCount, upcomingOccurrences] = await Promise.all([
+        const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+        const next7Days = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7, 23, 59, 59, 999);
+        const [overdueCount, overdueOccurrences, upcomingOccurrences] = await Promise.all([
+            // Count all overdue (not completed/cancelled) for the KPI:
+            // Must belong to active maintenance plan and active equipment per IMMS business rules.
             prisma.maintenanceOccurrence.count({
                 where: {
                     status: { notIn: ["COMPLETED", "CANCELLED"] },
                     dueDate: { lt: startOfToday },
+                    maintenancePlan: {
+                        isActive: true,
+                        equipment: {
+                            isDeactivated: false,
+                        },
+                    },
                 },
             }),
+            // Fetch up to 5 overdue occurrences to show in the panel:
+            // Must belong to active maintenance plan and active equipment.
             prisma.maintenanceOccurrence.findMany({
                 where: {
                     status: { notIn: ["COMPLETED", "CANCELLED"] },
-                    dueDate: { gte: startOfToday, lte: next7Days },
+                    dueDate: { lt: startOfToday },
+                    maintenancePlan: {
+                        isActive: true,
+                        equipment: {
+                            isDeactivated: false,
+                        },
+                    },
                 },
                 take: 5,
                 orderBy: { dueDate: "asc" },
@@ -72,14 +89,49 @@ export async function getDashboardStats(actor) {
                     maintenancePlan: {
                         include: {
                             equipment: { select: { code: true, name: true } },
+                            assignedTechnician: { select: { name: true } },
+                        },
+                    },
+                },
+            }),
+            // Fetch upcoming occurrences in the next 7 days:
+            // Must belong to active maintenance plan and active equipment.
+            prisma.maintenanceOccurrence.findMany({
+                where: {
+                    status: { notIn: ["COMPLETED", "CANCELLED"] },
+                    dueDate: { gte: startOfToday, lte: next7Days },
+                    maintenancePlan: {
+                        isActive: true,
+                        equipment: {
+                            isDeactivated: false,
+                        },
+                    },
+                },
+                take: 7,
+                orderBy: { dueDate: "asc" },
+                include: {
+                    maintenancePlan: {
+                        include: {
+                            equipment: { select: { code: true, name: true } },
+                            assignedTechnician: { select: { name: true } },
                         },
                     },
                 },
             }),
         ]);
         overduePm = overdueCount;
-        upcomingPm = upcomingOccurrences.map((occ) => {
-            const isDueToday = new Date(occ.dueDate).toDateString() === now.toDateString();
+        // Map overdue occurrences first (tagged "Overdue"), then upcoming
+        const overdueItems = overdueOccurrences.map((occ) => ({
+            id: occ.id,
+            equipmentCode: occ.maintenancePlan.equipment.code,
+            equipmentName: occ.maintenancePlan.equipment.name,
+            activity: occ.maintenancePlan.activity,
+            dueDate: occ.dueDate.toISOString(),
+            status: "Overdue",
+            assignedTechnicianName: occ.maintenancePlan.assignedTechnician?.name ?? null,
+        }));
+        const upcomingItems = upcomingOccurrences.map((occ) => {
+            const isDueToday = occ.dueDate >= startOfToday && occ.dueDate <= endOfToday;
             return {
                 id: occ.id,
                 equipmentCode: occ.maintenancePlan.equipment.code,
@@ -87,8 +139,11 @@ export async function getDashboardStats(actor) {
                 activity: occ.maintenancePlan.activity,
                 dueDate: occ.dueDate.toISOString(),
                 status: isDueToday ? "Due today" : "Scheduled",
+                assignedTechnicianName: occ.maintenancePlan.assignedTechnician?.name ?? null,
             };
         });
+        // Merge: overdue first, then upcoming; cap at 7 total
+        upcomingPm = [...overdueItems, ...upcomingItems].slice(0, 7);
     }
     catch (err) {
         if (!isPendingMigrationError(err)) {
