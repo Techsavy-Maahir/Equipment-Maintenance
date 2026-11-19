@@ -14,5 +14,5 @@ export declare function createAuditLog(tx: Prisma.TransactionClient, input: Crea
     entityType: string;
     entityId: number;
     summary: string;
-}>;
+} | null>;
 //# sourceMappingURL=audit.service.d.ts.map

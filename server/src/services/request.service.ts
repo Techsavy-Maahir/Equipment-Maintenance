@@ -8,6 +8,7 @@ import { AppError, ConflictError, NotFoundError, ValidationError } from "../erro
 import type { AuthenticatedUser } from "../middleware/auth.middleware.js";
 import { prisma } from "../prisma.js";
 import { createAuditLog } from "./audit.service.js";
+import { hasWorkOrderMaintenanceOccurrenceSupport } from "./work-order.service.js";
 import type {
   CreateMaintenanceRequestInput,
   MaintenanceRequestListQuery,
@@ -135,6 +136,20 @@ export async function createMaintenanceRequest(
   input: CreateMaintenanceRequestInput,
   requester: AuthenticatedUser,
 ) {
+  if (input.requestType === "IMPROVEMENT") {
+    const problem = input.problem?.trim();
+    const proposedSolution = input.proposedSolution?.trim();
+    const expectedBenefit = input.expectedBenefit?.trim();
+
+    if (!problem || !proposedSolution || !expectedBenefit) {
+      throw new ValidationError({
+        problem: "Kaizen requests require a problem statement.",
+        proposedSolution: "Kaizen requests require a proposed solution.",
+        expectedBenefit: "Kaizen requests require an expected benefit.",
+      });
+    }
+  }
+
   return prisma.$transaction(async (tx) => {
     const equipment = await tx.equipment.findUnique({
       where: { id: input.equipmentId },
@@ -148,6 +163,10 @@ export async function createMaintenanceRequest(
     return tx.maintenanceRequest.create({
       data: {
         ...input,
+        problem: input.problem?.trim() || null,
+        proposedSolution: input.proposedSolution?.trim() || null,
+        expectedBenefit: input.expectedBenefit?.trim() || null,
+        implementationStatus: input.implementationStatus?.trim() || null,
         status: "SUBMITTED",
         requesterId: requester.id,
         reviewerId: null,
@@ -212,6 +231,7 @@ export async function transitionMaintenanceRequest(
 ) {
   const comment = input.comment?.trim() || null;
   const outcome = input.outcome?.trim() || null;
+  const implementationStatus = input.implementationStatus?.trim() || null;
 
   if (input.status === "REJECTED" && !comment) {
     throw new ValidationError({ comment: "A rejection reason is required" });
@@ -234,6 +254,26 @@ export async function transitionMaintenanceRequest(
 
     if (!current) {
       throw new NotFoundError("Maintenance request not found");
+    }
+
+    if (
+      current.requestType === "IMPROVEMENT" &&
+      input.status === "COMPLETED" &&
+      !outcome
+    ) {
+      throw new ValidationError({
+        outcome: "Kaizen closure requires an outcome before completion.",
+      });
+    }
+
+    if (
+      current.requestType === "IMPROVEMENT" &&
+      input.status === "COMPLETED" &&
+      !implementationStatus
+    ) {
+      throw new ValidationError({
+        implementationStatus: "Kaizen closure requires an implementation status.",
+      });
     }
 
     if (!allowedTransitions[current.status].includes(input.status)) {
@@ -314,6 +354,10 @@ export async function transitionMaintenanceRequest(
       updates.outcome = outcome;
     }
 
+    if (implementationStatus !== null) {
+      updates.implementationStatus = implementationStatus;
+    }
+
     const updateResult = await tx.maintenanceRequest.updateMany({
       where: { id: requestId, status: current.status },
       data: updates,
@@ -323,33 +367,73 @@ export async function transitionMaintenanceRequest(
       throw new ConflictError("Request status changed; reload and try again");
     }
     if (
-  current.status === "UNDER_REVIEW" &&
-  input.status === "APPROVED"
-) {
-  const year = new Date().getFullYear();
+      current.status === "UNDER_REVIEW" &&
+      input.status === "APPROVED"
+    ) {
+      const existingWorkOrder = await tx.workOrder.findUnique({
+        where: { maintenanceRequestId: current.id },
+        select: { id: true },
+      });
 
-  const counter = await tx.workOrderNumberCounter.upsert({
-    where: { year },
-    create: {
-      year,
-      lastNumber: 1,
-    },
-    update: {
-      lastNumber: { increment: 1 },
-    },
-  });
+      if (!existingWorkOrder) {
+        const year = new Date().getFullYear();
 
-  const workOrderNumber = `WO-${year}-${String(counter.lastNumber).padStart(4, "0")}`;
+        const counter = await tx.workOrderNumberCounter.upsert({
+          where: { year },
+          create: {
+            year,
+            lastNumber: 1,
+          },
+          update: {
+            lastNumber: { increment: 1 },
+          },
+        });
 
-  await tx.workOrder.create({
-    data: {
-      workOrderNumber,
-      maintenanceRequestId: current.id,
-      equipmentId: current.equipmentId,
-      status: "OPEN",
-    },
-  });
-}
+        let maintenanceOccurrenceId: number | null = null;
+
+        if (current.requestType === "PREVENTIVE" && (await hasWorkOrderMaintenanceOccurrenceSupport())) {
+          const matchingOccurrence = await tx.maintenanceOccurrence.findFirst({
+            where: {
+              maintenancePlan: {
+                equipmentId: current.equipmentId,
+                isActive: true,
+              },
+              status: { in: ["PENDING", "SCHEDULED"] },
+              linkedWorkOrder: { none: {} },
+            },
+            orderBy: { dueDate: "asc" },
+          });
+
+          if (matchingOccurrence) {
+            maintenanceOccurrenceId = matchingOccurrence.id;
+            await tx.maintenanceOccurrence.update({
+              where: { id: matchingOccurrence.id },
+              data: { status: "SCHEDULED" },
+            });
+          }
+        }
+
+        const workOrderNumber = `WO-${year}-${String(counter.lastNumber).padStart(4, "0")}`;
+
+        const createdWorkOrder = await tx.workOrder.create({
+          data: {
+            workOrderNumber,
+            maintenanceRequestId: current.id,
+            equipmentId: current.equipmentId,
+            status: "OPEN",
+            ...(maintenanceOccurrenceId !== null ? { maintenanceOccurrenceId } : {}),
+          },
+        });
+
+        await createAuditLog(tx, {
+          actorId: actor.id,
+          action: "WORK_ORDER_CREATED",
+          entityType: "WORK_ORDER",
+          entityId: createdWorkOrder.id,
+          summary: `${createdWorkOrder.workOrderNumber} created from approved ${current.requestType.toLowerCase()} maintenance request`,
+        });
+      }
+    }
 
     await tx.decisionHistory.create({
       data: {
@@ -368,6 +452,26 @@ export async function transitionMaintenanceRequest(
       entityId: requestId,
       summary: `Maintenance request #${requestId} status changed from ${current.status} to ${input.status}.`,
     });
+
+    if (input.status === "APPROVED") {
+      await createAuditLog(tx, {
+        actorId: actor.id,
+        action: "MAINTENANCE_REQUEST_APPROVED",
+        entityType: "MaintenanceRequest",
+        entityId: requestId,
+        summary: `Maintenance request #${requestId} approved`,
+      });
+    }
+
+    if (input.status === "REJECTED") {
+      await createAuditLog(tx, {
+        actorId: actor.id,
+        action: "MAINTENANCE_REQUEST_REJECTED",
+        entityType: "MaintenanceRequest",
+        entityId: requestId,
+        summary: `Maintenance request #${requestId} rejected`,
+      });
+    }
 
     return tx.maintenanceRequest.findUniqueOrThrow({
       where: { id: requestId },

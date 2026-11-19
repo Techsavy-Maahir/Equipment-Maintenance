@@ -274,6 +274,66 @@ export type EnumMaintenanceRequestStatusWithAggregatesFilter<$PrismaModel = neve
     _min?: Prisma.NestedEnumMaintenanceRequestStatusFilter<$PrismaModel>;
     _max?: Prisma.NestedEnumMaintenanceRequestStatusFilter<$PrismaModel>;
 };
+export type EnumWorkOrderStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkOrderStatus | Prisma.EnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    in?: $Enums.WorkOrderStatus[] | Prisma.ListEnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.WorkOrderStatus[] | Prisma.ListEnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumWorkOrderStatusFilter<$PrismaModel> | $Enums.WorkOrderStatus;
+};
+export type EnumWorkOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkOrderStatus | Prisma.EnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    in?: $Enums.WorkOrderStatus[] | Prisma.ListEnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.WorkOrderStatus[] | Prisma.ListEnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumWorkOrderStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkOrderStatus;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumWorkOrderStatusFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumWorkOrderStatusFilter<$PrismaModel>;
+};
+export type EnumMaintenanceFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.MaintenanceFrequency | Prisma.EnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    in?: $Enums.MaintenanceFrequency[] | Prisma.ListEnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.MaintenanceFrequency[] | Prisma.ListEnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumMaintenanceFrequencyFilter<$PrismaModel> | $Enums.MaintenanceFrequency;
+};
+export type EnumMaintenanceFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MaintenanceFrequency | Prisma.EnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    in?: $Enums.MaintenanceFrequency[] | Prisma.ListEnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.MaintenanceFrequency[] | Prisma.ListEnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumMaintenanceFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.MaintenanceFrequency;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumMaintenanceFrequencyFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumMaintenanceFrequencyFilter<$PrismaModel>;
+};
+export type EnumMaintenanceOccurrenceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MaintenanceOccurrenceStatus | Prisma.EnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    in?: $Enums.MaintenanceOccurrenceStatus[] | Prisma.ListEnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.MaintenanceOccurrenceStatus[] | Prisma.ListEnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumMaintenanceOccurrenceStatusFilter<$PrismaModel> | $Enums.MaintenanceOccurrenceStatus;
+};
+export type EnumMaintenanceOccurrenceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MaintenanceOccurrenceStatus | Prisma.EnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    in?: $Enums.MaintenanceOccurrenceStatus[] | Prisma.ListEnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.MaintenanceOccurrenceStatus[] | Prisma.ListEnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumMaintenanceOccurrenceStatusWithAggregatesFilter<$PrismaModel> | $Enums.MaintenanceOccurrenceStatus;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumMaintenanceOccurrenceStatusFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumMaintenanceOccurrenceStatusFilter<$PrismaModel>;
+};
+export type EnumNotificationKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationKind | Prisma.EnumNotificationKindFieldRefInput<$PrismaModel>;
+    in?: $Enums.NotificationKind[] | Prisma.ListEnumNotificationKindFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.NotificationKind[] | Prisma.ListEnumNotificationKindFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumNotificationKindFilter<$PrismaModel> | $Enums.NotificationKind;
+};
+export type EnumNotificationKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationKind | Prisma.EnumNotificationKindFieldRefInput<$PrismaModel>;
+    in?: $Enums.NotificationKind[] | Prisma.ListEnumNotificationKindFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.NotificationKind[] | Prisma.ListEnumNotificationKindFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumNotificationKindWithAggregatesFilter<$PrismaModel> | $Enums.NotificationKind;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumNotificationKindFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumNotificationKindFilter<$PrismaModel>;
+};
 export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;
     in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
@@ -558,5 +618,65 @@ export type NestedEnumMaintenanceRequestStatusWithAggregatesFilter<$PrismaModel 
     _count?: Prisma.NestedIntFilter<$PrismaModel>;
     _min?: Prisma.NestedEnumMaintenanceRequestStatusFilter<$PrismaModel>;
     _max?: Prisma.NestedEnumMaintenanceRequestStatusFilter<$PrismaModel>;
+};
+export type NestedEnumWorkOrderStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkOrderStatus | Prisma.EnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    in?: $Enums.WorkOrderStatus[] | Prisma.ListEnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.WorkOrderStatus[] | Prisma.ListEnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumWorkOrderStatusFilter<$PrismaModel> | $Enums.WorkOrderStatus;
+};
+export type NestedEnumWorkOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkOrderStatus | Prisma.EnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    in?: $Enums.WorkOrderStatus[] | Prisma.ListEnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.WorkOrderStatus[] | Prisma.ListEnumWorkOrderStatusFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumWorkOrderStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkOrderStatus;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumWorkOrderStatusFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumWorkOrderStatusFilter<$PrismaModel>;
+};
+export type NestedEnumMaintenanceFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.MaintenanceFrequency | Prisma.EnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    in?: $Enums.MaintenanceFrequency[] | Prisma.ListEnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.MaintenanceFrequency[] | Prisma.ListEnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumMaintenanceFrequencyFilter<$PrismaModel> | $Enums.MaintenanceFrequency;
+};
+export type NestedEnumMaintenanceFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MaintenanceFrequency | Prisma.EnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    in?: $Enums.MaintenanceFrequency[] | Prisma.ListEnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.MaintenanceFrequency[] | Prisma.ListEnumMaintenanceFrequencyFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumMaintenanceFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.MaintenanceFrequency;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumMaintenanceFrequencyFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumMaintenanceFrequencyFilter<$PrismaModel>;
+};
+export type NestedEnumMaintenanceOccurrenceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MaintenanceOccurrenceStatus | Prisma.EnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    in?: $Enums.MaintenanceOccurrenceStatus[] | Prisma.ListEnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.MaintenanceOccurrenceStatus[] | Prisma.ListEnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumMaintenanceOccurrenceStatusFilter<$PrismaModel> | $Enums.MaintenanceOccurrenceStatus;
+};
+export type NestedEnumMaintenanceOccurrenceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MaintenanceOccurrenceStatus | Prisma.EnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    in?: $Enums.MaintenanceOccurrenceStatus[] | Prisma.ListEnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.MaintenanceOccurrenceStatus[] | Prisma.ListEnumMaintenanceOccurrenceStatusFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumMaintenanceOccurrenceStatusWithAggregatesFilter<$PrismaModel> | $Enums.MaintenanceOccurrenceStatus;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumMaintenanceOccurrenceStatusFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumMaintenanceOccurrenceStatusFilter<$PrismaModel>;
+};
+export type NestedEnumNotificationKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationKind | Prisma.EnumNotificationKindFieldRefInput<$PrismaModel>;
+    in?: $Enums.NotificationKind[] | Prisma.ListEnumNotificationKindFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.NotificationKind[] | Prisma.ListEnumNotificationKindFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumNotificationKindFilter<$PrismaModel> | $Enums.NotificationKind;
+};
+export type NestedEnumNotificationKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationKind | Prisma.EnumNotificationKindFieldRefInput<$PrismaModel>;
+    in?: $Enums.NotificationKind[] | Prisma.ListEnumNotificationKindFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.NotificationKind[] | Prisma.ListEnumNotificationKindFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumNotificationKindWithAggregatesFilter<$PrismaModel> | $Enums.NotificationKind;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumNotificationKindFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumNotificationKindFilter<$PrismaModel>;
 };
 //# sourceMappingURL=commonInputTypes.d.ts.map

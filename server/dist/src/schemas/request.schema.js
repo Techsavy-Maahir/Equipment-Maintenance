@@ -46,6 +46,7 @@ export const transitionMaintenanceRequestSchema = z
     status: maintenanceRequestStatusSchema,
     comment: z.string().trim().max(2000).nullable().optional(),
     outcome: z.string().trim().max(5000).nullable().optional(),
+    implementationStatus: z.string().trim().max(100).nullable().optional(),
 })
     .strict();
 //# sourceMappingURL=request.schema.js.map

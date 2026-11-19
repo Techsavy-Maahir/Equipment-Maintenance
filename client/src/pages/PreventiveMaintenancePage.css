@@ -1,0 +1,346 @@
+/* PreventiveMaintenancePage.css — PM Management Dashboard */
+
+.pm-app {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.pm-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #f8fafc;
+}
+
+.pm-content {
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Topbar Breadcrumb & Telemetry Search ── */
+.pm-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 32px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.pm-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.pm-breadcrumb-active {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.pm-search-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 12px;
+  width: 320px;
+  font-size: 13px;
+}
+
+.pm-search-telemetry input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+/* ── Header ── */
+.pm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pm-header-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px 0;
+}
+
+.pm-header-sub {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.pm-btn-generate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pm-btn-generate:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+/* ── Filter Bar ── */
+.pm-filter-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pm-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 14px;
+  flex: 1;
+  min-width: 260px;
+}
+
+.pm-search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.pm-select {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #334155;
+  background: #ffffff;
+  outline: none;
+  min-width: 170px;
+}
+
+.pm-btn-clear {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+.pm-btn-clear:hover {
+  color: #0f172a;
+  text-decoration: underline;
+}
+
+/* ── Occurrences Table ── */
+.pm-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.pm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.pm-table th {
+  padding: 14px 18px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.pm-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.pm-table tr:hover td {
+  background: #f8fafc;
+}
+
+.pm-id-link {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.pm-id-link:hover {
+  text-decoration: underline;
+}
+
+.pm-plan-name {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.pm-eq-name {
+  color: #334155;
+}
+
+.pm-date-cell {
+  font-size: 12px;
+  color: #475569;
+}
+
+/* ── Workflow Stage Badges ── */
+.pm-stage-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pm-stage-overdue {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.pm-stage-wo-open {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.pm-stage-req-raised {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.pm-stage-due {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.pm-stage-completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.pm-stage-scheduled {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* ── Linked Record Badge ── */
+.pm-linked-link {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.pm-linked-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Table Action Button ── */
+.pm-action-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pm-action-btn:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+/* ── Pagination ── */
+.pm-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.pm-page-btns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pm-page-btn {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.pm-page-btn.is-active {
+  background: #1d4ed8;
+  color: #ffffff;
+  border-color: #1d4ed8;
+  font-weight: 600;
+}
+
+.pm-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

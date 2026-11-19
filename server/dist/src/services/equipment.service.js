@@ -1,5 +1,6 @@
 import { AppError, ValidationError } from "../errors.js";
 import { prisma } from "../prisma.js";
+import { createAuditLog } from "./audit.service.js";
 import { getWarrantyStatus } from "./warranty.service.js";
 const equipmentInclude = {
     department: true,
@@ -106,23 +107,31 @@ export async function getEquipment(id) {
         warrantyStatus: getWarrantyStatus(equipment.warrantyExpiryDate),
     };
 }
-export async function createEquipment(input) {
+export async function createEquipment(input, actor) {
     return prisma.$transaction(async (tx) => {
         await validateEquipmentReferences(tx, {
             departmentId: input.departmentId,
             locationId: input.locationId,
             categoryId: input.categoryId,
         });
-        return tx.equipment.create({
+        const created = await tx.equipment.create({
             data: {
                 ...input,
                 description: input.description ?? null,
             },
             include: equipmentInclude,
         });
+        await createAuditLog(tx, {
+            actorId: actor?.id ?? null,
+            action: "EQUIPMENT_CREATED",
+            entityType: "Equipment",
+            entityId: created.id,
+            summary: `Equipment ${created.code} created`,
+        });
+        return created;
     });
 }
-async function changeEquipmentLocation(tx, equipmentId, newLocationId) {
+export async function changeEquipmentLocation(tx, equipmentId, newLocationId) {
     const current = await tx.equipment.findUnique({
         where: { id: equipmentId },
         select: {
@@ -148,7 +157,7 @@ async function changeEquipmentLocation(tx, equipmentId, newLocationId) {
         },
     });
 }
-export async function updateEquipment(id, input) {
+export async function updateEquipment(id, input, actor) {
     return prisma.$transaction(async (tx) => {
         const current = await tx.equipment.findUnique({
             where: { id },
@@ -177,13 +186,21 @@ export async function updateEquipment(id, input) {
         if (locationId !== undefined && locationId !== current.locationId) {
             await changeEquipmentLocation(tx, id, locationId);
         }
-        return tx.equipment.findUniqueOrThrow({
+        const updated = await tx.equipment.findUniqueOrThrow({
             where: { id },
             include: equipmentInclude,
         });
+        await createAuditLog(tx, {
+            actorId: actor?.id ?? null,
+            action: "EQUIPMENT_UPDATED",
+            entityType: "Equipment",
+            entityId: id,
+            summary: `Equipment ${current.code} updated`,
+        });
+        return updated;
     });
 }
-export async function deactivateEquipment(id) {
+export async function deactivateEquipment(id, actor) {
     return prisma.$transaction(async (tx) => {
         const current = await tx.equipment.findUnique({
             where: { id },
@@ -194,7 +211,7 @@ export async function deactivateEquipment(id) {
         if (current.isDeactivated) {
             return current;
         }
-        return tx.equipment.update({
+        const updated = await tx.equipment.update({
             where: { id },
             data: {
                 isDeactivated: true,
@@ -202,6 +219,14 @@ export async function deactivateEquipment(id) {
             },
             include: equipmentInclude,
         });
+        await createAuditLog(tx, {
+            actorId: actor?.id ?? null,
+            action: "EQUIPMENT_DEACTIVATED",
+            entityType: "Equipment",
+            entityId: id,
+            summary: `Equipment ${current.code} deactivated`,
+        });
+        return updated;
     });
 }
 /**

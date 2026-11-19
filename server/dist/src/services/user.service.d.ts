@@ -50,4 +50,9 @@ export declare function reactivateUser(targetUserId: number): Promise<{
     createdAt: Date;
     updatedAt: Date;
 }>;
+export declare function listActiveTechnicians(): Promise<{
+    email: string;
+    id: number;
+    name: string;
+}[]>;
 //# sourceMappingURL=user.service.d.ts.map

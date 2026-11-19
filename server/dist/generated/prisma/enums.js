@@ -29,6 +29,26 @@ export const MaintenanceRequestType = {
     PREVENTIVE: 'PREVENTIVE',
     IMPROVEMENT: 'IMPROVEMENT'
 };
+export const NotificationKind = {
+    REMINDER: 'REMINDER',
+    OVERDUE: 'OVERDUE',
+    ALERT: 'ALERT'
+};
+export const MaintenanceFrequency = {
+    DAILY: 'DAILY',
+    WEEKLY: 'WEEKLY',
+    MONTHLY: 'MONTHLY',
+    QUARTERLY: 'QUARTERLY',
+    HALF_YEARLY: 'HALF_YEARLY',
+    YEARLY: 'YEARLY'
+};
+export const MaintenanceOccurrenceStatus = {
+    PENDING: 'PENDING',
+    SCHEDULED: 'SCHEDULED',
+    COMPLETED: 'COMPLETED',
+    MISSED: 'MISSED',
+    CANCELLED: 'CANCELLED'
+};
 export const MaintenanceRequestStatus = {
     SUBMITTED: 'SUBMITTED',
     UNDER_REVIEW: 'UNDER_REVIEW',
@@ -37,5 +57,12 @@ export const MaintenanceRequestStatus = {
     IN_PROGRESS: 'IN_PROGRESS',
     COMPLETED: 'COMPLETED',
     CANCELLED: 'CANCELLED'
+};
+export const WorkOrderStatus = {
+    OPEN: 'OPEN',
+    ASSIGNED: 'ASSIGNED',
+    IN_PROGRESS: 'IN_PROGRESS',
+    COMPLETED: 'COMPLETED',
+    CLOSED: 'CLOSED'
 };
 //# sourceMappingURL=enums.js.map

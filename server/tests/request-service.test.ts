@@ -18,7 +18,7 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
 
   const decisionHistory = { create: vi.fn() };
   const auditLog = { create: vi.fn() };
-  const workOrder = { create: vi.fn() };
+  const workOrder = { create: vi.fn(), findUnique: vi.fn() };
 const workOrderNumberCounter = { upsert: vi.fn() };
 
   return {
@@ -170,6 +170,7 @@ beforeEach(() => {
 });
 
 transactionMocks.workOrder.create.mockResolvedValue({});
+  transactionMocks.workOrder.findUnique.mockResolvedValue(null);
 });
 
 describe("maintenance request service", () => {
@@ -236,6 +237,52 @@ describe("maintenance request service", () => {
         actor("VIEWER", 2),
       ),
     ).rejects.toMatchObject({ statusCode: 404 });
+  });
+
+  it("requires Kaizen details before creating an improvement request", async () => {
+    transactionMocks.equipment.findUnique.mockResolvedValue({
+      id: 7,
+      isDeactivated: false,
+      status: "ACTIVE",
+    });
+
+    await expect(
+      createMaintenanceRequest(
+        {
+          requestType: "IMPROVEMENT",
+          equipmentId: 7,
+          description: "Improve the setup process.",
+          criticality: "MEDIUM",
+          problem: "Operators take too long to set up.",
+          expectedBenefit: "Faster changeover times.",
+        },
+        actor("VIEWER", 2),
+      ),
+    ).rejects.toMatchObject({ statusCode: 400 });
+  });
+
+  it("requires outcome and implementation status to complete a Kaizen request", async () => {
+    transactionMocks.maintenanceRequest.findUnique.mockResolvedValue({
+      id: 55,
+      requestType: "IMPROVEMENT",
+      status: "IN_PROGRESS",
+      equipmentId: 7,
+      requesterId: 2,
+      description: "Improve setup flow.",
+      criticality: "MEDIUM",
+      reviewerId: 3,
+      decisionReason: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await expect(
+      transitionMaintenanceRequest(
+        55,
+        actor("TECHNICIAN", 4),
+        { status: "COMPLETED" },
+      ),
+    ).rejects.toMatchObject({ statusCode: 400 });
   });
 
   it("lists only requests visible to the requesting user and applies filters", async () => {
@@ -748,6 +795,32 @@ it("does not create a Work Order when a request enters review or is rejected", a
 
   await transitionMaintenanceRequest(44, actor("MANAGER"), {
     status: "UNDER_REVIEW",
+  });
+
+  expect(transactionMocks.workOrderNumberCounter.upsert).not.toHaveBeenCalled();
+  expect(transactionMocks.workOrder.create).not.toHaveBeenCalled();
+});
+
+it("does not create a duplicate Work Order if one already exists for the approved request", async () => {
+  const current = {
+    ...request("UNDER_REVIEW"),
+    requestType: "PREVENTIVE",
+  };
+
+  transactionMocks.maintenanceRequest.findUnique.mockResolvedValue(current);
+  transactionMocks.maintenanceRequest.updateMany.mockResolvedValue({ count: 1 });
+  transactionMocks.decisionHistory.create.mockResolvedValue({});
+  transactionMocks.maintenanceRequest.findUniqueOrThrow.mockResolvedValue({
+    ...current,
+    status: "APPROVED",
+  });
+  transactionMocks.workOrder.findUnique.mockResolvedValue({
+    id: 101,
+    workOrderNumber: "WO-2026-0001",
+  });
+
+  await transitionMaintenanceRequest(44, actor("MANAGER"), {
+    status: "APPROVED",
   });
 
   expect(transactionMocks.workOrderNumberCounter.upsert).not.toHaveBeenCalled();

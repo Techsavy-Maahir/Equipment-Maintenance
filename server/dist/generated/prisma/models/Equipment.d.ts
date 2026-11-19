@@ -294,6 +294,8 @@ export type EquipmentWhereInput = {
     category?: Prisma.XOR<Prisma.EquipmentCategoryScalarRelationFilter, Prisma.EquipmentCategoryWhereInput>;
     locationHistory?: Prisma.EquipmentLocationHistoryListRelationFilter;
     maintenanceRequests?: Prisma.MaintenanceRequestListRelationFilter;
+    workOrders?: Prisma.WorkOrderListRelationFilter;
+    maintenancePlans?: Prisma.MaintenancePlanListRelationFilter;
 };
 export type EquipmentOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
@@ -319,6 +321,8 @@ export type EquipmentOrderByWithRelationInput = {
     category?: Prisma.EquipmentCategoryOrderByWithRelationInput;
     locationHistory?: Prisma.EquipmentLocationHistoryOrderByRelationAggregateInput;
     maintenanceRequests?: Prisma.MaintenanceRequestOrderByRelationAggregateInput;
+    workOrders?: Prisma.WorkOrderOrderByRelationAggregateInput;
+    maintenancePlans?: Prisma.MaintenancePlanOrderByRelationAggregateInput;
 };
 export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
     id?: number;
@@ -347,6 +351,8 @@ export type EquipmentWhereUniqueInput = Prisma.AtLeast<{
     category?: Prisma.XOR<Prisma.EquipmentCategoryScalarRelationFilter, Prisma.EquipmentCategoryWhereInput>;
     locationHistory?: Prisma.EquipmentLocationHistoryListRelationFilter;
     maintenanceRequests?: Prisma.MaintenanceRequestListRelationFilter;
+    workOrders?: Prisma.WorkOrderListRelationFilter;
+    maintenancePlans?: Prisma.MaintenancePlanListRelationFilter;
 }, "id" | "code">;
 export type EquipmentOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
@@ -416,6 +422,8 @@ export type EquipmentCreateInput = {
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
     locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
     maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateInput = {
     id?: number;
@@ -438,6 +446,8 @@ export type EquipmentUncheckedCreateInput = {
     updatedAt?: Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUpdateInput = {
     code?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -459,6 +469,8 @@ export type EquipmentUpdateInput = {
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
     locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -481,6 +493,8 @@ export type EquipmentUncheckedUpdateInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentCreateManyInput = {
     id?: number;
@@ -778,6 +792,30 @@ export type EquipmentUpdateOneRequiredWithoutMaintenanceRequestsNestedInput = {
     connect?: Prisma.EquipmentWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.EquipmentUpdateToOneWithWhereWithoutMaintenanceRequestsInput, Prisma.EquipmentUpdateWithoutMaintenanceRequestsInput>, Prisma.EquipmentUncheckedUpdateWithoutMaintenanceRequestsInput>;
 };
+export type EquipmentCreateNestedOneWithoutWorkOrdersInput = {
+    create?: Prisma.XOR<Prisma.EquipmentCreateWithoutWorkOrdersInput, Prisma.EquipmentUncheckedCreateWithoutWorkOrdersInput>;
+    connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutWorkOrdersInput;
+    connect?: Prisma.EquipmentWhereUniqueInput;
+};
+export type EquipmentUpdateOneRequiredWithoutWorkOrdersNestedInput = {
+    create?: Prisma.XOR<Prisma.EquipmentCreateWithoutWorkOrdersInput, Prisma.EquipmentUncheckedCreateWithoutWorkOrdersInput>;
+    connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutWorkOrdersInput;
+    upsert?: Prisma.EquipmentUpsertWithoutWorkOrdersInput;
+    connect?: Prisma.EquipmentWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.EquipmentUpdateToOneWithWhereWithoutWorkOrdersInput, Prisma.EquipmentUpdateWithoutWorkOrdersInput>, Prisma.EquipmentUncheckedUpdateWithoutWorkOrdersInput>;
+};
+export type EquipmentCreateNestedOneWithoutMaintenancePlansInput = {
+    create?: Prisma.XOR<Prisma.EquipmentCreateWithoutMaintenancePlansInput, Prisma.EquipmentUncheckedCreateWithoutMaintenancePlansInput>;
+    connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutMaintenancePlansInput;
+    connect?: Prisma.EquipmentWhereUniqueInput;
+};
+export type EquipmentUpdateOneRequiredWithoutMaintenancePlansNestedInput = {
+    create?: Prisma.XOR<Prisma.EquipmentCreateWithoutMaintenancePlansInput, Prisma.EquipmentUncheckedCreateWithoutMaintenancePlansInput>;
+    connectOrCreate?: Prisma.EquipmentCreateOrConnectWithoutMaintenancePlansInput;
+    upsert?: Prisma.EquipmentUpsertWithoutMaintenancePlansInput;
+    connect?: Prisma.EquipmentWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.EquipmentUpdateToOneWithWhereWithoutMaintenancePlansInput, Prisma.EquipmentUpdateWithoutMaintenancePlansInput>, Prisma.EquipmentUncheckedUpdateWithoutMaintenancePlansInput>;
+};
 export type EquipmentCreateWithoutDepartmentInput = {
     code: string;
     serialNumber?: string | null;
@@ -797,6 +835,8 @@ export type EquipmentCreateWithoutDepartmentInput = {
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
     locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
     maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutDepartmentInput = {
     id?: number;
@@ -818,6 +858,8 @@ export type EquipmentUncheckedCreateWithoutDepartmentInput = {
     updatedAt?: Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutDepartmentInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -882,6 +924,8 @@ export type EquipmentCreateWithoutLocationInput = {
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
     locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
     maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutLocationInput = {
     id?: number;
@@ -903,6 +947,8 @@ export type EquipmentUncheckedCreateWithoutLocationInput = {
     updatedAt?: Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutLocationInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -944,6 +990,8 @@ export type EquipmentCreateWithoutCategoryInput = {
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
     locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
     maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutCategoryInput = {
     id?: number;
@@ -965,6 +1013,8 @@ export type EquipmentUncheckedCreateWithoutCategoryInput = {
     updatedAt?: Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutCategoryInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -1006,6 +1056,8 @@ export type EquipmentCreateWithoutLocationHistoryInput = {
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
     maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutLocationHistoryInput = {
     id?: number;
@@ -1027,6 +1079,8 @@ export type EquipmentUncheckedCreateWithoutLocationHistoryInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutLocationHistoryInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -1060,6 +1114,8 @@ export type EquipmentUpdateWithoutLocationHistoryInput = {
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutLocationHistoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1081,6 +1137,8 @@ export type EquipmentUncheckedUpdateWithoutLocationHistoryInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentCreateWithoutMaintenanceRequestsInput = {
     code: string;
@@ -1101,6 +1159,8 @@ export type EquipmentCreateWithoutMaintenanceRequestsInput = {
     location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
     category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
     locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentUncheckedCreateWithoutMaintenanceRequestsInput = {
     id?: number;
@@ -1122,6 +1182,8 @@ export type EquipmentUncheckedCreateWithoutMaintenanceRequestsInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutEquipmentInput;
 };
 export type EquipmentCreateOrConnectWithoutMaintenanceRequestsInput = {
     where: Prisma.EquipmentWhereUniqueInput;
@@ -1155,6 +1217,8 @@ export type EquipmentUpdateWithoutMaintenanceRequestsInput = {
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
     locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutMaintenanceRequestsInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1176,6 +1240,214 @@ export type EquipmentUncheckedUpdateWithoutMaintenanceRequestsInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutEquipmentNestedInput;
+};
+export type EquipmentCreateWithoutWorkOrdersInput = {
+    code: string;
+    serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
+    name: string;
+    description?: string | null;
+    status?: $Enums.EquipmentStatus;
+    criticality: $Enums.Criticality;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
+    location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
+    category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutEquipmentInput;
+};
+export type EquipmentUncheckedCreateWithoutWorkOrdersInput = {
+    id?: number;
+    code: string;
+    serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
+    name: string;
+    description?: string | null;
+    status?: $Enums.EquipmentStatus;
+    criticality: $Enums.Criticality;
+    departmentId: number;
+    locationId: number;
+    categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutEquipmentInput;
+};
+export type EquipmentCreateOrConnectWithoutWorkOrdersInput = {
+    where: Prisma.EquipmentWhereUniqueInput;
+    create: Prisma.XOR<Prisma.EquipmentCreateWithoutWorkOrdersInput, Prisma.EquipmentUncheckedCreateWithoutWorkOrdersInput>;
+};
+export type EquipmentUpsertWithoutWorkOrdersInput = {
+    update: Prisma.XOR<Prisma.EquipmentUpdateWithoutWorkOrdersInput, Prisma.EquipmentUncheckedUpdateWithoutWorkOrdersInput>;
+    create: Prisma.XOR<Prisma.EquipmentCreateWithoutWorkOrdersInput, Prisma.EquipmentUncheckedCreateWithoutWorkOrdersInput>;
+    where?: Prisma.EquipmentWhereInput;
+};
+export type EquipmentUpdateToOneWithWhereWithoutWorkOrdersInput = {
+    where?: Prisma.EquipmentWhereInput;
+    data: Prisma.XOR<Prisma.EquipmentUpdateWithoutWorkOrdersInput, Prisma.EquipmentUncheckedUpdateWithoutWorkOrdersInput>;
+};
+export type EquipmentUpdateWithoutWorkOrdersInput = {
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
+    location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
+    category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutEquipmentNestedInput;
+};
+export type EquipmentUncheckedUpdateWithoutWorkOrdersInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
+    locationId?: Prisma.IntFieldUpdateOperationsInput | number;
+    categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutEquipmentNestedInput;
+};
+export type EquipmentCreateWithoutMaintenancePlansInput = {
+    code: string;
+    serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
+    name: string;
+    description?: string | null;
+    status?: $Enums.EquipmentStatus;
+    criticality: $Enums.Criticality;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    department: Prisma.DepartmentCreateNestedOneWithoutEquipmentInput;
+    location: Prisma.LocationCreateNestedOneWithoutEquipmentInput;
+    category: Prisma.EquipmentCategoryCreateNestedOneWithoutEquipmentInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderCreateNestedManyWithoutEquipmentInput;
+};
+export type EquipmentUncheckedCreateWithoutMaintenancePlansInput = {
+    id?: number;
+    code: string;
+    serialNumber?: string | null;
+    purchaseDate?: Date | string | null;
+    purchaseCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Date | string | null;
+    warrantyExpiryDate?: Date | string | null;
+    name: string;
+    description?: string | null;
+    status?: $Enums.EquipmentStatus;
+    criticality: $Enums.Criticality;
+    departmentId: number;
+    locationId: number;
+    categoryId: number;
+    isDeactivated?: boolean;
+    deactivatedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedCreateNestedManyWithoutEquipmentInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutEquipmentInput;
+    workOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutEquipmentInput;
+};
+export type EquipmentCreateOrConnectWithoutMaintenancePlansInput = {
+    where: Prisma.EquipmentWhereUniqueInput;
+    create: Prisma.XOR<Prisma.EquipmentCreateWithoutMaintenancePlansInput, Prisma.EquipmentUncheckedCreateWithoutMaintenancePlansInput>;
+};
+export type EquipmentUpsertWithoutMaintenancePlansInput = {
+    update: Prisma.XOR<Prisma.EquipmentUpdateWithoutMaintenancePlansInput, Prisma.EquipmentUncheckedUpdateWithoutMaintenancePlansInput>;
+    create: Prisma.XOR<Prisma.EquipmentCreateWithoutMaintenancePlansInput, Prisma.EquipmentUncheckedCreateWithoutMaintenancePlansInput>;
+    where?: Prisma.EquipmentWhereInput;
+};
+export type EquipmentUpdateToOneWithWhereWithoutMaintenancePlansInput = {
+    where?: Prisma.EquipmentWhereInput;
+    data: Prisma.XOR<Prisma.EquipmentUpdateWithoutMaintenancePlansInput, Prisma.EquipmentUncheckedUpdateWithoutMaintenancePlansInput>;
+};
+export type EquipmentUpdateWithoutMaintenancePlansInput = {
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    department?: Prisma.DepartmentUpdateOneRequiredWithoutEquipmentNestedInput;
+    location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
+    category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
+    locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUpdateManyWithoutEquipmentNestedInput;
+};
+export type EquipmentUncheckedUpdateWithoutMaintenancePlansInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    serialNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    purchaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    purchaseCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    warrantyStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    warrantyExpiryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumEquipmentStatusFieldUpdateOperationsInput | $Enums.EquipmentStatus;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    departmentId?: Prisma.IntFieldUpdateOperationsInput | number;
+    locationId?: Prisma.IntFieldUpdateOperationsInput | number;
+    categoryId?: Prisma.IntFieldUpdateOperationsInput | number;
+    isDeactivated?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentCreateManyDepartmentInput = {
     id?: number;
@@ -1215,6 +1487,8 @@ export type EquipmentUpdateWithoutDepartmentInput = {
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
     locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutDepartmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1236,6 +1510,8 @@ export type EquipmentUncheckedUpdateWithoutDepartmentInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateManyWithoutDepartmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1294,6 +1570,8 @@ export type EquipmentUpdateWithoutLocationInput = {
     category?: Prisma.EquipmentCategoryUpdateOneRequiredWithoutEquipmentNestedInput;
     locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutLocationInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1315,6 +1593,8 @@ export type EquipmentUncheckedUpdateWithoutLocationInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateManyWithoutLocationInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1373,6 +1653,8 @@ export type EquipmentUpdateWithoutCategoryInput = {
     location?: Prisma.LocationUpdateOneRequiredWithoutEquipmentNestedInput;
     locationHistory?: Prisma.EquipmentLocationHistoryUpdateManyWithoutEquipmentNestedInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateWithoutCategoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1394,6 +1676,8 @@ export type EquipmentUncheckedUpdateWithoutCategoryInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     locationHistory?: Prisma.EquipmentLocationHistoryUncheckedUpdateManyWithoutEquipmentNestedInput;
     maintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutEquipmentNestedInput;
+    workOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutEquipmentNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutEquipmentNestedInput;
 };
 export type EquipmentUncheckedUpdateManyWithoutCategoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1420,10 +1704,14 @@ export type EquipmentUncheckedUpdateManyWithoutCategoryInput = {
 export type EquipmentCountOutputType = {
     locationHistory: number;
     maintenanceRequests: number;
+    workOrders: number;
+    maintenancePlans: number;
 };
 export type EquipmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     locationHistory?: boolean | EquipmentCountOutputTypeCountLocationHistoryArgs;
     maintenanceRequests?: boolean | EquipmentCountOutputTypeCountMaintenanceRequestsArgs;
+    workOrders?: boolean | EquipmentCountOutputTypeCountWorkOrdersArgs;
+    maintenancePlans?: boolean | EquipmentCountOutputTypeCountMaintenancePlansArgs;
 };
 /**
  * EquipmentCountOutputType without action
@@ -1445,6 +1733,18 @@ export type EquipmentCountOutputTypeCountLocationHistoryArgs<ExtArgs extends run
  */
 export type EquipmentCountOutputTypeCountMaintenanceRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.MaintenanceRequestWhereInput;
+};
+/**
+ * EquipmentCountOutputType without action
+ */
+export type EquipmentCountOutputTypeCountWorkOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.WorkOrderWhereInput;
+};
+/**
+ * EquipmentCountOutputType without action
+ */
+export type EquipmentCountOutputTypeCountMaintenancePlansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.MaintenancePlanWhereInput;
 };
 export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
@@ -1470,6 +1770,8 @@ export type EquipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
     category?: boolean | Prisma.EquipmentCategoryDefaultArgs<ExtArgs>;
     locationHistory?: boolean | Prisma.Equipment$locationHistoryArgs<ExtArgs>;
     maintenanceRequests?: boolean | Prisma.Equipment$maintenanceRequestsArgs<ExtArgs>;
+    workOrders?: boolean | Prisma.Equipment$workOrdersArgs<ExtArgs>;
+    maintenancePlans?: boolean | Prisma.Equipment$maintenancePlansArgs<ExtArgs>;
     _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["equipment"]>;
 export type EquipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1545,6 +1847,8 @@ export type EquipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
     category?: boolean | Prisma.EquipmentCategoryDefaultArgs<ExtArgs>;
     locationHistory?: boolean | Prisma.Equipment$locationHistoryArgs<ExtArgs>;
     maintenanceRequests?: boolean | Prisma.Equipment$maintenanceRequestsArgs<ExtArgs>;
+    workOrders?: boolean | Prisma.Equipment$workOrdersArgs<ExtArgs>;
+    maintenancePlans?: boolean | Prisma.Equipment$maintenancePlansArgs<ExtArgs>;
     _count?: boolean | Prisma.EquipmentCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type EquipmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1565,6 +1869,8 @@ export type $EquipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
         category: Prisma.$EquipmentCategoryPayload<ExtArgs>;
         locationHistory: Prisma.$EquipmentLocationHistoryPayload<ExtArgs>[];
         maintenanceRequests: Prisma.$MaintenanceRequestPayload<ExtArgs>[];
+        workOrders: Prisma.$WorkOrderPayload<ExtArgs>[];
+        maintenancePlans: Prisma.$MaintenancePlanPayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: number;
@@ -1919,6 +2225,8 @@ export interface Prisma__EquipmentClient<T, Null = never, ExtArgs extends runtim
     category<T extends Prisma.EquipmentCategoryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EquipmentCategoryDefaultArgs<ExtArgs>>): Prisma.Prisma__EquipmentCategoryClient<runtime.Types.Result.GetResult<Prisma.$EquipmentCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
     locationHistory<T extends Prisma.Equipment$locationHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$locationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EquipmentLocationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     maintenanceRequests<T extends Prisma.Equipment$maintenanceRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$maintenanceRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    workOrders<T extends Prisma.Equipment$workOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$workOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    maintenancePlans<T extends Prisma.Equipment$maintenancePlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Equipment$maintenancePlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenancePlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2385,6 +2693,52 @@ export type Equipment$maintenanceRequestsArgs<ExtArgs extends runtime.Types.Exte
     take?: number;
     skip?: number;
     distinct?: Prisma.MaintenanceRequestScalarFieldEnum | Prisma.MaintenanceRequestScalarFieldEnum[];
+};
+/**
+ * Equipment.workOrders
+ */
+export type Equipment$workOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkOrder
+     */
+    select?: Prisma.WorkOrderSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the WorkOrder
+     */
+    omit?: Prisma.WorkOrderOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.WorkOrderInclude<ExtArgs> | null;
+    where?: Prisma.WorkOrderWhereInput;
+    orderBy?: Prisma.WorkOrderOrderByWithRelationInput | Prisma.WorkOrderOrderByWithRelationInput[];
+    cursor?: Prisma.WorkOrderWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.WorkOrderScalarFieldEnum | Prisma.WorkOrderScalarFieldEnum[];
+};
+/**
+ * Equipment.maintenancePlans
+ */
+export type Equipment$maintenancePlansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaintenancePlan
+     */
+    select?: Prisma.MaintenancePlanSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MaintenancePlan
+     */
+    omit?: Prisma.MaintenancePlanOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.MaintenancePlanInclude<ExtArgs> | null;
+    where?: Prisma.MaintenancePlanWhereInput;
+    orderBy?: Prisma.MaintenancePlanOrderByWithRelationInput | Prisma.MaintenancePlanOrderByWithRelationInput[];
+    cursor?: Prisma.MaintenancePlanWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.MaintenancePlanScalarFieldEnum | Prisma.MaintenancePlanScalarFieldEnum[];
 };
 /**
  * Equipment without action

@@ -6,18 +6,36 @@ import { EquipmentFormPage } from "./pages/EquipmentFormPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MasterDataPage } from "./pages/MasterDataPage";
 import { RequestsPage } from "./pages/RequestsPage";
+import { WorkOrdersPage } from "./pages/WorkOrdersPage";
 import { UserManagementPage } from "./pages/UserManagementPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { ApprovalsPage } from "./pages/ApprovalsPage";
+import { PreventiveMaintenancePage } from "./pages/PreventiveMaintenancePage";
+import { AuditLogsPage } from "./pages/AuditLogsPage";
+import { KaizenPage } from "./pages/KaizenPage";
+import { RelocationPage } from "./pages/RelocationPage";
 import "./App.css";
 
-function getInitialPage() {
-  const hash = window.location.hash.toLowerCase();
+function resolvePageFromHash(hash = window.location.hash.toLowerCase()) {
+  if (hash === "#dashboard") return "dashboard";
   if (hash === "#requests") return "requests";
+  if (hash === "#approvals") return "approvals";
+  if (hash === "#work-orders") return "work-orders";
+  if (hash === "#preventive-maintenance") return "preventive-maintenance";
+  if (hash === "#audit-logs") return "audit-logs";
+  if (hash === "#kaizen") return "kaizen";
+  if (hash === "#relocation") return "relocation";
   if (hash === "#master-data") return "master-data";
   if (hash === "#user-management") return "user-management";
+  if (hash === "#equipment") return "equipment";
   if (hash === "#equipment-create") return "equipment-create";
   if (hash.startsWith("#equipment-edit-")) return hash.slice(1);
   if (hash.startsWith("#equipment-detail-")) return hash.slice(1);
-  return "equipment";
+  return "dashboard";
+}
+
+function getInitialPage() {
+  return resolvePageFromHash();
 }
 
 function App() {
@@ -29,22 +47,7 @@ function App() {
 
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.toLowerCase();
-      if (hash === "#requests") {
-        setCurrentPage("requests");
-      } else if (hash === "#master-data") {
-        setCurrentPage("master-data");
-      } else if (hash === "#user-management") {
-        setCurrentPage("user-management");
-      } else if (hash === "#equipment-create") {
-        setCurrentPage("equipment-create");
-      } else if (hash.startsWith("#equipment-edit-")) {
-        setCurrentPage(hash.slice(1));
-      } else if (hash.startsWith("#equipment-detail-")) {
-        setCurrentPage(hash.slice(1));
-      } else if (hash === "#equipment" || !hash) {
-        setCurrentPage("equipment");
-      }
+      setCurrentPage(resolvePageFromHash());
     };
 
     window.addEventListener("hashchange", handleHashChange);
@@ -53,7 +56,10 @@ function App() {
 
   const handleNavigate = (page) => {
     setCurrentPage(page);
-    window.location.hash = page === "equipment" ? "#equipment" : `#${page}`;
+    const nextHash = page === "equipment" ? "#equipment" : `#${page}`;
+    if (window.location.hash !== nextHash) {
+      window.location.hash = nextHash;
+    }
   };
 
   const loadCurrentUser = useCallback(async () => {
@@ -144,6 +150,111 @@ function App() {
 
   if (authStatus === "unauthenticated") {
     return <LoginPage onLogin={handleLogin} />;
+  }
+
+  if (currentPage === "dashboard") {
+    return (
+      <main className="app-shell app-shell-equipment">
+        <DashboardPage
+          user={user}
+          authError={authError}
+          onLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+        />
+      </main>
+    );
+  }
+
+  if (currentPage === "approvals") {
+    return (
+      <main className="app-shell app-shell-equipment">
+        <ApprovalsPage
+          user={user}
+          authError={authError}
+          onLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+        />
+      </main>
+    );
+  }
+
+  if (currentPage === "work-orders") {
+    return (
+      <main className="app-shell app-shell-equipment">
+        <WorkOrdersPage
+          user={user}
+          authError={authError}
+          onLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+        />
+      </main>
+    );
+  }
+
+  if (currentPage === "preventive-maintenance") {
+    return (
+      <main className="app-shell app-shell-equipment">
+        <PreventiveMaintenancePage
+          user={user}
+          authError={authError}
+          onLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+        />
+      </main>
+    );
+  }
+
+  if (currentPage === "audit-logs") {
+    return (
+      <main className="app-shell app-shell-equipment">
+        <AuditLogsPage
+          user={user}
+          authError={authError}
+          onLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+        />
+      </main>
+    );
+  }
+
+  if (currentPage === "kaizen") {
+    return (
+      <main className="app-shell app-shell-equipment">
+        <KaizenPage
+          user={user}
+          authError={authError}
+          onLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+        />
+      </main>
+    );
+  }
+
+  if (currentPage === "relocation") {
+    return (
+      <main className="app-shell app-shell-equipment">
+        <RelocationPage
+          user={user}
+          authError={authError}
+          onLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+        />
+      </main>
+    );
   }
 
   if (currentPage === "requests") {

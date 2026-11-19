@@ -1,7 +1,16 @@
+import type { Prisma } from "../../generated/prisma/client.js";
+import type { AuthenticatedUser } from "../middleware/auth.middleware.js";
 import type { CreateEquipmentInput, EquipmentListQuery, UpdateEquipmentInput } from "../schemas/equipment.schema.js";
 export declare function listEquipment(query: EquipmentListQuery): Promise<{
     items: {
         warrantyStatus: import("./warranty.service.js").WarrantyStatus;
+        department: {
+            id: number;
+            name: string;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+        };
         location: {
             id: number;
             name: string;
@@ -16,29 +25,22 @@ export declare function listEquipment(query: EquipmentListQuery): Promise<{
             createdAt: Date;
             updatedAt: Date;
         };
-        department: {
-            id: number;
-            name: string;
-            isActive: boolean;
-            createdAt: Date;
-            updatedAt: Date;
-        };
         id: number;
         name: string;
         createdAt: Date;
         updatedAt: Date;
+        status: import("../../generated/prisma/enums.js").EquipmentStatus;
         code: string;
-        criticality: import("../../generated/prisma/enums.js").Criticality;
-        departmentId: number;
-        locationId: number;
-        categoryId: number;
+        serialNumber: string | null;
         purchaseDate: Date | null;
         purchaseCost: import("@prisma/client/runtime/library.js").Decimal | null;
         warrantyStartDate: Date | null;
         warrantyExpiryDate: Date | null;
-        serialNumber: string | null;
         description: string | null;
-        status: import("../../generated/prisma/enums.js").EquipmentStatus;
+        criticality: import("../../generated/prisma/enums.js").Criticality;
+        departmentId: number;
+        locationId: number;
+        categoryId: number;
         isDeactivated: boolean;
         deactivatedAt: Date | null;
     }[];
@@ -56,6 +58,13 @@ export declare function listEquipment(query: EquipmentListQuery): Promise<{
 }>;
 export declare function getEquipment(id: number): Promise<{
     warrantyStatus: import("./warranty.service.js").WarrantyStatus;
+    department: {
+        id: number;
+        name: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    };
     location: {
         id: number;
         name: string;
@@ -64,13 +73,6 @@ export declare function getEquipment(id: number): Promise<{
         updatedAt: Date;
     };
     category: {
-        id: number;
-        name: string;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-    };
-    department: {
         id: number;
         name: string;
         isActive: boolean;
@@ -81,22 +83,29 @@ export declare function getEquipment(id: number): Promise<{
     name: string;
     createdAt: Date;
     updatedAt: Date;
+    status: import("../../generated/prisma/enums.js").EquipmentStatus;
     code: string;
-    criticality: import("../../generated/prisma/enums.js").Criticality;
-    departmentId: number;
-    locationId: number;
-    categoryId: number;
+    serialNumber: string | null;
     purchaseDate: Date | null;
     purchaseCost: import("@prisma/client/runtime/library.js").Decimal | null;
     warrantyStartDate: Date | null;
     warrantyExpiryDate: Date | null;
-    serialNumber: string | null;
     description: string | null;
-    status: import("../../generated/prisma/enums.js").EquipmentStatus;
+    criticality: import("../../generated/prisma/enums.js").Criticality;
+    departmentId: number;
+    locationId: number;
+    categoryId: number;
     isDeactivated: boolean;
     deactivatedAt: Date | null;
 }>;
-export declare function createEquipment(input: CreateEquipmentInput): Promise<{
+export declare function createEquipment(input: CreateEquipmentInput, actor?: Pick<AuthenticatedUser, "id"> | null): Promise<{
+    department: {
+        id: number;
+        name: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    };
     location: {
         id: number;
         name: string;
@@ -105,13 +114,6 @@ export declare function createEquipment(input: CreateEquipmentInput): Promise<{
         updatedAt: Date;
     };
     category: {
-        id: number;
-        name: string;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-    };
-    department: {
         id: number;
         name: string;
         isActive: boolean;
@@ -123,22 +125,30 @@ export declare function createEquipment(input: CreateEquipmentInput): Promise<{
     name: string;
     createdAt: Date;
     updatedAt: Date;
+    status: import("../../generated/prisma/enums.js").EquipmentStatus;
     code: string;
-    criticality: import("../../generated/prisma/enums.js").Criticality;
-    departmentId: number;
-    locationId: number;
-    categoryId: number;
+    serialNumber: string | null;
     purchaseDate: Date | null;
     purchaseCost: import("@prisma/client/runtime/library.js").Decimal | null;
     warrantyStartDate: Date | null;
     warrantyExpiryDate: Date | null;
-    serialNumber: string | null;
     description: string | null;
-    status: import("../../generated/prisma/enums.js").EquipmentStatus;
+    criticality: import("../../generated/prisma/enums.js").Criticality;
+    departmentId: number;
+    locationId: number;
+    categoryId: number;
     isDeactivated: boolean;
     deactivatedAt: Date | null;
 }>;
-export declare function updateEquipment(id: number, input: UpdateEquipmentInput): Promise<{
+export declare function changeEquipmentLocation(tx: Prisma.TransactionClient, equipmentId: number, newLocationId: number): Promise<void>;
+export declare function updateEquipment(id: number, input: UpdateEquipmentInput, actor?: Pick<AuthenticatedUser, "id"> | null): Promise<{
+    department: {
+        id: number;
+        name: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+    };
     location: {
         id: number;
         name: string;
@@ -153,50 +163,43 @@ export declare function updateEquipment(id: number, input: UpdateEquipmentInput)
         createdAt: Date;
         updatedAt: Date;
     };
-    department: {
-        id: number;
-        name: string;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-    };
 } & {
     id: number;
     name: string;
     createdAt: Date;
     updatedAt: Date;
+    status: import("../../generated/prisma/enums.js").EquipmentStatus;
     code: string;
-    criticality: import("../../generated/prisma/enums.js").Criticality;
-    departmentId: number;
-    locationId: number;
-    categoryId: number;
+    serialNumber: string | null;
     purchaseDate: Date | null;
     purchaseCost: import("@prisma/client/runtime/library.js").Decimal | null;
     warrantyStartDate: Date | null;
     warrantyExpiryDate: Date | null;
-    serialNumber: string | null;
     description: string | null;
-    status: import("../../generated/prisma/enums.js").EquipmentStatus;
+    criticality: import("../../generated/prisma/enums.js").Criticality;
+    departmentId: number;
+    locationId: number;
+    categoryId: number;
     isDeactivated: boolean;
     deactivatedAt: Date | null;
 }>;
-export declare function deactivateEquipment(id: number): Promise<{
+export declare function deactivateEquipment(id: number, actor?: Pick<AuthenticatedUser, "id"> | null): Promise<{
     id: number;
     name: string;
     createdAt: Date;
     updatedAt: Date;
+    status: import("../../generated/prisma/enums.js").EquipmentStatus;
     code: string;
-    criticality: import("../../generated/prisma/enums.js").Criticality;
-    departmentId: number;
-    locationId: number;
-    categoryId: number;
+    serialNumber: string | null;
     purchaseDate: Date | null;
     purchaseCost: import("@prisma/client/runtime/library.js").Decimal | null;
     warrantyStartDate: Date | null;
     warrantyExpiryDate: Date | null;
-    serialNumber: string | null;
     description: string | null;
-    status: import("../../generated/prisma/enums.js").EquipmentStatus;
+    criticality: import("../../generated/prisma/enums.js").Criticality;
+    departmentId: number;
+    locationId: number;
+    categoryId: number;
     isDeactivated: boolean;
     deactivatedAt: Date | null;
 }>;

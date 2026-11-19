@@ -15,12 +15,14 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
     create: vi.fn(),
     findMany: vi.fn(),
   };
+  const auditLog = { create: vi.fn() };
 
   return {
     prismaMock: {
       $transaction: vi.fn(),
       equipment: equipmentDelegates,
       equipmentLocationHistory: historyDelegates,
+      auditLog,
       department: { findUnique: vi.fn() },
       location: { findMany: vi.fn(), findUnique: vi.fn() },
       equipmentCategory: { findMany: vi.fn(), findUnique: vi.fn() },
@@ -37,6 +39,7 @@ const { prismaMock, transactionMocks } = vi.hoisted(() => {
       equipmentLocationHistory: {
         create: vi.fn(),
       },
+      auditLog,
       department: { findUnique: vi.fn() },
       location: { findMany: vi.fn(), findUnique: vi.fn() },
       equipmentCategory: { findMany: vi.fn(), findUnique: vi.fn() },
@@ -71,6 +74,7 @@ const equipment = {
 const transactionClient = {
   equipment: transactionMocks.equipment,
   equipmentLocationHistory: transactionMocks.equipmentLocationHistory,
+  auditLog: transactionMocks.auditLog,
   department: transactionMocks.department,
   location: transactionMocks.location,
   equipmentCategory: transactionMocks.equipmentCategory,
@@ -95,6 +99,7 @@ const createInput = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  transactionMocks.auditLog.create.mockResolvedValue({});
   prismaMock.$transaction.mockImplementation((callback) =>
     callback(transactionClient),
   );

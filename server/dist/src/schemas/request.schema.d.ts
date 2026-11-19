@@ -1,12 +1,12 @@
 import { z } from "zod";
 export declare const maintenanceRequestStatusSchema: z.ZodEnum<{
+    COMPLETED: "COMPLETED";
+    CANCELLED: "CANCELLED";
+    IN_PROGRESS: "IN_PROGRESS";
     SUBMITTED: "SUBMITTED";
     UNDER_REVIEW: "UNDER_REVIEW";
     APPROVED: "APPROVED";
     REJECTED: "REJECTED";
-    IN_PROGRESS: "IN_PROGRESS";
-    COMPLETED: "COMPLETED";
-    CANCELLED: "CANCELLED";
 }>;
 export declare const maintenanceRequestTypeSchema: z.ZodEnum<{
     BREAKDOWN: "BREAKDOWN";
@@ -34,13 +34,13 @@ export declare const createMaintenanceRequestSchema: z.ZodObject<{
 export declare const maintenanceRequestIdSchema: z.ZodCoercedNumber<unknown>;
 export declare const maintenanceRequestListQuerySchema: z.ZodObject<{
     status: z.ZodOptional<z.ZodEnum<{
+        COMPLETED: "COMPLETED";
+        CANCELLED: "CANCELLED";
+        IN_PROGRESS: "IN_PROGRESS";
         SUBMITTED: "SUBMITTED";
         UNDER_REVIEW: "UNDER_REVIEW";
         APPROVED: "APPROVED";
         REJECTED: "REJECTED";
-        IN_PROGRESS: "IN_PROGRESS";
-        COMPLETED: "COMPLETED";
-        CANCELLED: "CANCELLED";
     }>>;
     requestType: z.ZodOptional<z.ZodEnum<{
         BREAKDOWN: "BREAKDOWN";
@@ -53,16 +53,17 @@ export declare const maintenanceRequestListQuerySchema: z.ZodObject<{
 }, z.core.$strict>;
 export declare const transitionMaintenanceRequestSchema: z.ZodObject<{
     status: z.ZodEnum<{
+        COMPLETED: "COMPLETED";
+        CANCELLED: "CANCELLED";
+        IN_PROGRESS: "IN_PROGRESS";
         SUBMITTED: "SUBMITTED";
         UNDER_REVIEW: "UNDER_REVIEW";
         APPROVED: "APPROVED";
         REJECTED: "REJECTED";
-        IN_PROGRESS: "IN_PROGRESS";
-        COMPLETED: "COMPLETED";
-        CANCELLED: "CANCELLED";
     }>;
     comment: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     outcome: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    implementationStatus: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, z.core.$strict>;
 export type CreateMaintenanceRequestInput = z.infer<typeof createMaintenanceRequestSchema>;
 export type MaintenanceRequestListQuery = z.infer<typeof maintenanceRequestListQuerySchema>;

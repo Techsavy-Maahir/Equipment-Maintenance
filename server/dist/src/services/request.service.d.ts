@@ -24,19 +24,19 @@ export declare function createMaintenanceRequest(input: CreateMaintenanceRequest
     id: number;
     createdAt: Date;
     updatedAt: Date;
-    criticality: import("../../generated/prisma/enums.js").Criticality;
-    description: string;
     status: MaintenanceRequestStatus;
     equipmentId: number;
+    description: string;
+    criticality: import("../../generated/prisma/enums.js").Criticality;
     requestType: import("../../generated/prisma/enums.js").MaintenanceRequestType;
-    problem: string | null;
-    proposedSolution: string | null;
-    expectedBenefit: string | null;
-    implementationStatus: string | null;
-    outcome: string | null;
     requesterId: number;
     reviewerId: number | null;
     decisionReason: string | null;
+    problem: string | null;
+    proposedSolution: string | null;
+    expectedBenefit: string | null;
+    outcome: string | null;
+    implementationStatus: string | null;
 }>;
 export declare function listMaintenanceRequests(query: MaintenanceRequestListQuery, actor: AuthenticatedUser): Promise<{
     items: ({
@@ -62,19 +62,19 @@ export declare function listMaintenanceRequests(query: MaintenanceRequestListQue
         id: number;
         createdAt: Date;
         updatedAt: Date;
-        criticality: import("../../generated/prisma/enums.js").Criticality;
-        description: string;
         status: MaintenanceRequestStatus;
         equipmentId: number;
+        description: string;
+        criticality: import("../../generated/prisma/enums.js").Criticality;
         requestType: import("../../generated/prisma/enums.js").MaintenanceRequestType;
-        problem: string | null;
-        proposedSolution: string | null;
-        expectedBenefit: string | null;
-        implementationStatus: string | null;
-        outcome: string | null;
         requesterId: number;
         reviewerId: number | null;
         decisionReason: string | null;
+        problem: string | null;
+        proposedSolution: string | null;
+        expectedBenefit: string | null;
+        outcome: string | null;
+        implementationStatus: string | null;
     })[];
     total: number;
     page: number;
@@ -97,11 +97,11 @@ export declare function getMaintenanceRequest(requestId: number, actor: Authenti
     } & {
         id: number;
         createdAt: Date;
+        actorId: number;
         comment: string | null;
         requestId: number;
         previousStatus: MaintenanceRequestStatus;
         newStatus: MaintenanceRequestStatus;
-        actorId: number;
     })[];
     requester: {
         email: string;
@@ -119,19 +119,19 @@ export declare function getMaintenanceRequest(requestId: number, actor: Authenti
     id: number;
     createdAt: Date;
     updatedAt: Date;
-    criticality: import("../../generated/prisma/enums.js").Criticality;
-    description: string;
     status: MaintenanceRequestStatus;
     equipmentId: number;
+    description: string;
+    criticality: import("../../generated/prisma/enums.js").Criticality;
     requestType: import("../../generated/prisma/enums.js").MaintenanceRequestType;
-    problem: string | null;
-    proposedSolution: string | null;
-    expectedBenefit: string | null;
-    implementationStatus: string | null;
-    outcome: string | null;
     requesterId: number;
     reviewerId: number | null;
     decisionReason: string | null;
+    problem: string | null;
+    proposedSolution: string | null;
+    expectedBenefit: string | null;
+    outcome: string | null;
+    implementationStatus: string | null;
 }>;
 export declare function transitionMaintenanceRequest(requestId: number, actor: AuthenticatedUser, input: TransitionMaintenanceRequestInput): Promise<{
     equipment: {
@@ -150,11 +150,11 @@ export declare function transitionMaintenanceRequest(requestId: number, actor: A
     } & {
         id: number;
         createdAt: Date;
+        actorId: number;
         comment: string | null;
         requestId: number;
         previousStatus: MaintenanceRequestStatus;
         newStatus: MaintenanceRequestStatus;
-        actorId: number;
     })[];
     requester: {
         email: string;
@@ -172,18 +172,18 @@ export declare function transitionMaintenanceRequest(requestId: number, actor: A
     id: number;
     createdAt: Date;
     updatedAt: Date;
-    criticality: import("../../generated/prisma/enums.js").Criticality;
-    description: string;
     status: MaintenanceRequestStatus;
     equipmentId: number;
+    description: string;
+    criticality: import("../../generated/prisma/enums.js").Criticality;
     requestType: import("../../generated/prisma/enums.js").MaintenanceRequestType;
-    problem: string | null;
-    proposedSolution: string | null;
-    expectedBenefit: string | null;
-    implementationStatus: string | null;
-    outcome: string | null;
     requesterId: number;
     reviewerId: number | null;
     decisionReason: string | null;
+    problem: string | null;
+    proposedSolution: string | null;
+    expectedBenefit: string | null;
+    outcome: string | null;
+    implementationStatus: string | null;
 }>;
 //# sourceMappingURL=request.service.d.ts.map

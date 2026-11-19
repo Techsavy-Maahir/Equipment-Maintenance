@@ -327,3 +327,358 @@
     align-items: flex-start;
   }
 }
+
+/* Shared application layout */
+.equipment-app > .dash-main,
+.equipment-app > .appv-main,
+.equipment-app > .audit-main,
+.equipment-app > .pm-main,
+.equipment-app > .reloc-main {
+  width: calc(100% - 240px);
+  min-width: 0;
+  margin-left: 240px;
+}
+
+html:has(.equipment-app),
+body:has(.equipment-app),
+.equipment-app,
+.equipment-app * {
+  scrollbar-width: auto;
+}
+
+html:has(.equipment-app)::-webkit-scrollbar,
+body:has(.equipment-app)::-webkit-scrollbar,
+.equipment-app::-webkit-scrollbar,
+.equipment-app *::-webkit-scrollbar {
+  display: initial;
+  width: 8px;
+  height: 8px;
+}
+
+.equipment-app::-webkit-scrollbar-thumb,
+.equipment-app *::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #c4c5d7;
+}
+
+.equipment-content,
+.dash-content,
+.appv-content,
+.audit-content,
+.pm-content,
+.reloc-content {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 2.2vw, 36px);
+}
+
+.equipment-content {
+  max-width: 1440px;
+}
+
+.equipment-nav-item:not(:disabled) {
+  cursor: pointer;
+}
+
+.dash-content,
+.appv-content,
+.audit-content,
+.pm-content,
+.reloc-content {
+  gap: 20px;
+}
+
+.equipment-page-heading,
+.dash-header,
+.pm-header,
+.reloc-form-header,
+.master-data-header,
+.user-mgmt-header {
+  min-width: 0;
+}
+
+.equipment-page-heading > *,
+.dash-header > *,
+.pm-header > *,
+.reloc-form-header > *,
+.master-data-header > *,
+.user-mgmt-header > * {
+  min-width: 0;
+}
+
+.equipment-table-card,
+.appv-table-card,
+.audit-table-card,
+.pm-table-card,
+.master-data-table-wrap,
+.user-mgmt-table-wrap,
+.dash-table-wrap {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.appv-table,
+.audit-table,
+.pm-table,
+.master-data-table,
+.user-mgmt-table {
+  min-width: 720px;
+}
+
+.dash-kpis-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.dash-kpi-card {
+  min-width: 0;
+  min-height: 146px;
+}
+
+.dash-middle-grid {
+  min-width: 0;
+}
+
+.dash-card {
+  min-width: 0;
+}
+
+.equipment-detail-page {
+  width: min(100%, 1100px);
+}
+
+.equipment-detail-header,
+.equipment-detail-title {
+  flex-wrap: wrap;
+}
+
+.master-data-page,
+.user-mgmt-page {
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  background: transparent;
+}
+
+.master-data-container,
+.user-mgmt-container {
+  padding-inline: 0;
+}
+
+.kaizen-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.6fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.kaizen-layout > * {
+  min-width: 0;
+}
+
+.kaizen-layout .rq-detail-section {
+  margin: 0;
+}
+
+.kaizen-submission-panel,
+.kaizen-backlog-panel {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.kaizen-form {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.kaizen-form select,
+.kaizen-form textarea {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 1200px) {
+  .dash-kpis-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .equipment-app > .dash-main,
+  .equipment-app > .appv-main,
+  .equipment-app > .audit-main,
+  .equipment-app > .pm-main,
+  .equipment-app > .reloc-main {
+    width: calc(100% - 240px);
+    margin-left: 240px;
+  }
+
+  .equipment-content,
+  .dash-content,
+  .appv-content,
+  .audit-content,
+  .pm-content,
+  .reloc-content {
+    padding-inline: 16px;
+  }
+
+  .dash-kpis-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .equipment-sidebar {
+    position: fixed;
+    inset: 64px 0 auto;
+    width: 100%;
+    height: auto;
+    max-height: 56px;
+    overflow: hidden;
+    border-bottom: 1px solid rgb(255 255 255 / 12%);
+  }
+
+  .equipment-sidebar-top {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .equipment-brand,
+  .equipment-sidebar-bottom,
+  .equipment-admin-label,
+  .equipment-release,
+  .rq-plant-facility-selector {
+    display: none;
+  }
+
+  .equipment-nav {
+    width: 100%;
+    flex-direction: row;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 8px;
+    scrollbar-width: thin;
+  }
+
+  .equipment-nav-divider {
+    display: none;
+  }
+
+  .equipment-nav-item {
+    min-height: 40px;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    gap: 7px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .equipment-nav-item > span:not(.material-symbols-outlined) {
+    display: inline;
+  }
+
+  .equipment-app > .equipment-main,
+  .equipment-app > .dash-main,
+  .equipment-app > .appv-main,
+  .equipment-app > .audit-main,
+  .equipment-app > .pm-main,
+  .equipment-app > .reloc-main {
+    width: 100%;
+    margin-left: 0;
+    padding-top: 120px;
+  }
+
+  .equipment-topbar,
+  .pm-topbar {
+    left: 0;
+    padding-inline: 12px;
+  }
+
+  .equipment-workspace {
+    min-height: calc(100vh - 120px);
+  }
+
+  .dash-content,
+  .appv-content,
+  .audit-content,
+  .pm-content,
+  .reloc-content {
+    padding-top: 18px;
+    padding-bottom: 24px;
+  }
+
+  .kaizen-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dash-kpis-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .equipment-topbar {
+    gap: 8px;
+  }
+
+  .dash-topbar,
+  .pm-topbar {
+    padding-inline: 12px;
+  }
+
+  .dash-topbar-right {
+    gap: 8px;
+  }
+
+  .dash-profile-text,
+  .dash-search-box,
+  .pm-search-telemetry {
+    display: none;
+  }
+
+  .equipment-page-heading,
+  .dash-header,
+  .pm-header,
+  .reloc-form-header,
+  .master-data-header,
+  .user-mgmt-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .equipment-add-button,
+  .user-mgmt-add-btn,
+  .master-data-add-btn {
+    align-self: flex-start;
+  }
+
+  .dash-kpis-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dash-kpi-card {
+    min-height: 124px;
+  }
+
+  .equipment-detail-page,
+  .equipment-form-container {
+    padding-inline: 16px;
+  }
+
+  .equipment-form-grid,
+  .equipment-form-grid-3,
+  .reloc-meta-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .equipment-form-card,
+  .reloc-card-form {
+    padding: 18px 16px;
+  }
+}

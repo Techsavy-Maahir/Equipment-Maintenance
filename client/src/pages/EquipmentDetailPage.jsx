@@ -15,6 +15,15 @@ function formatDate(value) {
   return value ? new Date(value).toLocaleString() : "—";
 }
 
+function toDateInputValue(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 10);
+}
+
 function EquipmentField({ label, children }) {
   return (
     <div className="equipment-detail-item">
@@ -31,6 +40,19 @@ export function EquipmentDetailPage({ user, equipmentId, onNavigate = () => {} }
   const [error, setError] = useState("");
   const [notFound, setNotFound] = useState(false);
   const [deactivating, setDeactivating] = useState(false);
+  const [maintenancePlans, setMaintenancePlans] = useState([]);
+  const [planSaving, setPlanSaving] = useState(false);
+  const [planError, setPlanError] = useState("");
+  const [planSuccess, setPlanSuccess] = useState("");
+  const [editingPlanId, setEditingPlanId] = useState(null);
+  const [planForm, setPlanForm] = useState({
+    activity: "",
+    instructions: "",
+    frequency: "MONTHLY",
+    nextDueDate: "",
+    assignedTechnicianId: "",
+    isActive: true,
+  });
   const [success, setSuccess] = useState("");
 
   const validId =
@@ -52,13 +74,17 @@ export function EquipmentDetailPage({ user, equipmentId, onNavigate = () => {} }
       setError("");
       setNotFound(false);
       try {
-        const [item, locationHistory] = await Promise.all([
+        const [item, locationHistory, plans] = await Promise.all([
           api.getEquipmentById(Number(equipmentId)),
           api.getEquipmentLocationHistory(Number(equipmentId)),
+          typeof api.listMaintenancePlansByEquipment === "function"
+            ? api.listMaintenancePlansByEquipment(Number(equipmentId))
+            : Promise.resolve([]),
         ]);
         if (!cancelled) {
           setEquipment(item);
           setHistory(locationHistory);
+          setMaintenancePlans(plans);
         }
       } catch (requestError) {
         if (!cancelled) {
@@ -75,6 +101,96 @@ export function EquipmentDetailPage({ user, equipmentId, onNavigate = () => {} }
       cancelled = true;
     };
   }, [equipmentId, validId]);
+
+  function resetPlanForm() {
+    setPlanForm({
+      activity: "",
+      instructions: "",
+      frequency: "MONTHLY",
+      nextDueDate: "",
+      assignedTechnicianId: "",
+      isActive: true,
+    });
+    setEditingPlanId(null);
+  }
+
+  function startPlanEdit(plan) {
+    setEditingPlanId(plan.id);
+    setPlanForm({
+      activity: plan.activity || "",
+      instructions: plan.instructions || "",
+      frequency: plan.frequency || "MONTHLY",
+      nextDueDate: toDateInputValue(plan.nextDueDate),
+      assignedTechnicianId: plan.assignedTechnicianId ? String(plan.assignedTechnicianId) : "",
+      isActive: Boolean(plan.isActive),
+    });
+    setPlanError("");
+    setPlanSuccess("");
+  }
+
+  async function handleCreateMaintenancePlan(event) {
+    event.preventDefault();
+    if (!equipment) return;
+
+    setPlanError("");
+    setPlanSuccess("");
+    setPlanSaving(true);
+
+    try {
+      const payload = {
+        equipmentId: equipment.id,
+        activity: planForm.activity,
+        instructions: planForm.instructions || undefined,
+        frequency: planForm.frequency,
+        assignedTechnicianId: planForm.assignedTechnicianId ? Number(planForm.assignedTechnicianId) : null,
+        nextDueDate: planForm.nextDueDate || new Date().toISOString(),
+        isActive: planForm.isActive,
+      };
+
+      if (editingPlanId) {
+        const updatePayload = {
+          activity: payload.activity,
+          instructions: payload.instructions ?? null,
+          frequency: payload.frequency,
+          assignedTechnicianId: payload.assignedTechnicianId,
+          nextDueDate: payload.nextDueDate,
+          isActive: payload.isActive,
+        };
+        await api.updateMaintenancePlan(editingPlanId, updatePayload);
+        setPlanSuccess("Maintenance plan updated.");
+      } else {
+        await api.createMaintenancePlan(payload);
+        setPlanSuccess("Maintenance plan created.");
+      }
+
+      resetPlanForm();
+      const plans = typeof api.listMaintenancePlansByEquipment === "function"
+        ? await api.listMaintenancePlansByEquipment(equipment.id)
+        : [];
+      setMaintenancePlans(plans);
+    } catch (requestError) {
+      setPlanError(handleApiError(requestError));
+    } finally {
+      setPlanSaving(false);
+    }
+  }
+
+  async function handleTogglePlanStatus(plan) {
+    if (!canManagePlans) return;
+
+    setPlanError("");
+    setPlanSuccess("");
+    try {
+      await api.updateMaintenancePlan(plan.id, { isActive: !plan.isActive });
+      const plans = typeof api.listMaintenancePlansByEquipment === "function"
+        ? await api.listMaintenancePlansByEquipment(equipment.id)
+        : maintenancePlans;
+      setMaintenancePlans(plans);
+      setPlanSuccess(`Maintenance plan ${!plan.isActive ? "activated" : "deactivated"}.`);
+    } catch (requestError) {
+      setPlanError(handleApiError(requestError));
+    }
+  }
 
   async function handleDeactivate() {
     if (!equipment || !window.confirm(
@@ -98,6 +214,7 @@ export function EquipmentDetailPage({ user, equipmentId, onNavigate = () => {} }
   }
 
   const canDeactivate = user?.role === "ADMIN" || user?.role === "MANAGER";
+  const canManagePlans = user?.role === "ADMIN" || user?.role === "MANAGER";
   const warranty = WARRANTY_BADGES[equipment?.warrantyStatus] || WARRANTY_BADGES.NOT_RECORDED;
 
   return (
@@ -194,6 +311,124 @@ export function EquipmentDetailPage({ user, equipmentId, onNavigate = () => {} }
               <EquipmentField label="Warranty Expiry Date">{formatDate(equipment.warrantyExpiryDate)}</EquipmentField>
               <EquipmentField label="Warranty Status">{warranty.label}</EquipmentField>
             </div>
+          </section>
+
+          <section className="equipment-detail-card" aria-labelledby="maintenance-plans-heading">
+            <h2 id="maintenance-plans-heading">Preventive Maintenance Plans</h2>
+            {canManagePlans && (
+              <form onSubmit={handleCreateMaintenancePlan} className="equipment-detail-form" style={{ marginBottom: "1rem" }}>
+                <div className="equipment-details-grid">
+                  <label className="equipment-detail-item">
+                    <span className="equipment-detail-label">Activity</span>
+                    <input
+                      value={planForm.activity}
+                      onChange={(event) => setPlanForm({ ...planForm, activity: event.target.value })}
+                      required
+                      placeholder="Oil change"
+                    />
+                  </label>
+                  <label className="equipment-detail-item">
+                    <span className="equipment-detail-label">Frequency</span>
+                    <select value={planForm.frequency} onChange={(event) => setPlanForm({ ...planForm, frequency: event.target.value })}>
+                      <option value="DAILY">Daily</option>
+                      <option value="WEEKLY">Weekly</option>
+                      <option value="MONTHLY">Monthly</option>
+                      <option value="QUARTERLY">Quarterly</option>
+                      <option value="HALF_YEARLY">Half yearly</option>
+                      <option value="YEARLY">Yearly</option>
+                    </select>
+                  </label>
+                  <label className="equipment-detail-item">
+                    <span className="equipment-detail-label">Next due</span>
+                    <input
+                      type="date"
+                      value={planForm.nextDueDate}
+                      onChange={(event) => setPlanForm({ ...planForm, nextDueDate: event.target.value })}
+                    />
+                  </label>
+                  <label className="equipment-detail-item">
+                    <span className="equipment-detail-label">Assigned technician</span>
+                    <input
+                      type="number"
+                      min="1"
+                      value={planForm.assignedTechnicianId}
+                      onChange={(event) => setPlanForm({ ...planForm, assignedTechnicianId: event.target.value })}
+                      placeholder="Optional"
+                    />
+                  </label>
+                  <label className="equipment-detail-item">
+                    <span className="equipment-detail-label">Plan status</span>
+                    <select
+                      value={String(planForm.isActive)}
+                      onChange={(event) => setPlanForm({ ...planForm, isActive: event.target.value === "true" })}
+                    >
+                      <option value="true">Active</option>
+                      <option value="false">Inactive</option>
+                    </select>
+                  </label>
+                </div>
+                <label className="equipment-detail-item">
+                  <span className="equipment-detail-label">Instructions</span>
+                  <textarea
+                    value={planForm.instructions}
+                    onChange={(event) => setPlanForm({ ...planForm, instructions: event.target.value })}
+                    rows="3"
+                    placeholder="Optional work instructions"
+                  />
+                </label>
+                {planError && <p className="equipment-alert" role="alert">{planError}</p>}
+                {planSuccess && <p className="equipment-detail-success" role="status">{planSuccess}</p>}
+                <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                  <button type="submit" className="equipment-btn-secondary" disabled={planSaving}>
+                    {planSaving ? "Saving..." : editingPlanId ? "Update plan" : "Add plan"}
+                  </button>
+                  {editingPlanId && (
+                    <button type="button" className="equipment-btn-secondary" onClick={resetPlanForm}>
+                      Cancel edit
+                    </button>
+                  )}
+                </div>
+              </form>
+            )}
+            {maintenancePlans.length === 0 ? (
+              <p className="equipment-detail-empty">No preventive maintenance plans have been created for this equipment.</p>
+            ) : (
+              <div className="equipment-detail-history-scroll">
+                <table className="equipment-table equipment-detail-history">
+                  <thead>
+                    <tr>
+                      <th scope="col">Activity</th>
+                      <th scope="col">Frequency</th>
+                      <th scope="col">Next Due</th>
+                      <th scope="col">Status</th>
+                      {canManagePlans && <th scope="col">Actions</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {maintenancePlans.map((plan) => (
+                      <tr key={plan.id}>
+                        <td>{plan.activity}</td>
+                        <td>{plan.frequency.replaceAll("_", " ")}</td>
+                        <td>{formatDate(plan.nextDueDate)}</td>
+                        <td>{plan.isActive ? "Active" : "Inactive"}</td>
+                        {canManagePlans && (
+                          <td>
+                            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                              <button type="button" className="equipment-btn-secondary" onClick={() => startPlanEdit(plan)}>
+                                Edit
+                              </button>
+                              <button type="button" className="equipment-btn-secondary" onClick={() => handleTogglePlanStatus(plan)}>
+                                {plan.isActive ? "Deactivate" : "Activate"}
+                              </button>
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </section>
 
           <section className="equipment-detail-card" aria-labelledby="location-history-heading">

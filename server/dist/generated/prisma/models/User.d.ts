@@ -197,6 +197,11 @@ export type UserWhereInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestListRelationFilter;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestListRelationFilter;
     decisionHistoryEntries?: Prisma.DecisionHistoryListRelationFilter;
+    assignedWorkOrders?: Prisma.WorkOrderListRelationFilter;
+    createdWorkOrders?: Prisma.WorkOrderListRelationFilter;
+    maintenancePlans?: Prisma.MaintenancePlanListRelationFilter;
+    notificationRecipients?: Prisma.NotificationRecipientListRelationFilter;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceListRelationFilter;
 };
 export type UserOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
@@ -211,6 +216,11 @@ export type UserOrderByWithRelationInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestOrderByRelationAggregateInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestOrderByRelationAggregateInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryOrderByRelationAggregateInput;
+    assignedWorkOrders?: Prisma.WorkOrderOrderByRelationAggregateInput;
+    createdWorkOrders?: Prisma.WorkOrderOrderByRelationAggregateInput;
+    maintenancePlans?: Prisma.MaintenancePlanOrderByRelationAggregateInput;
+    notificationRecipients?: Prisma.NotificationRecipientOrderByRelationAggregateInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceOrderByRelationAggregateInput;
 };
 export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: number;
@@ -228,6 +238,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestListRelationFilter;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestListRelationFilter;
     decisionHistoryEntries?: Prisma.DecisionHistoryListRelationFilter;
+    assignedWorkOrders?: Prisma.WorkOrderListRelationFilter;
+    createdWorkOrders?: Prisma.WorkOrderListRelationFilter;
+    maintenancePlans?: Prisma.MaintenancePlanListRelationFilter;
+    notificationRecipients?: Prisma.NotificationRecipientListRelationFilter;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceListRelationFilter;
 }, "id" | "email">;
 export type UserOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
@@ -269,6 +284,11 @@ export type UserCreateInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutRequesterInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutReviewerInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceCreateNestedManyWithoutCompletedByInput;
 };
 export type UserUncheckedCreateInput = {
     id?: number;
@@ -283,6 +303,11 @@ export type UserUncheckedCreateInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutRequesterInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutReviewerInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedCreateNestedManyWithoutCompletedByInput;
 };
 export type UserUpdateInput = {
     email?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -296,6 +321,11 @@ export type UserUpdateInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutRequesterNestedInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutReviewerNestedInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUpdateManyWithoutCompletedByNestedInput;
 };
 export type UserUncheckedUpdateInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -310,6 +340,11 @@ export type UserUncheckedUpdateInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutRequesterNestedInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutReviewerNestedInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedUpdateManyWithoutCompletedByNestedInput;
 };
 export type UserCreateManyInput = {
     id?: number;
@@ -458,6 +493,74 @@ export type UserUpdateOneRequiredWithoutDecisionHistoryEntriesNestedInput = {
     connect?: Prisma.UserWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDecisionHistoryEntriesInput, Prisma.UserUpdateWithoutDecisionHistoryEntriesInput>, Prisma.UserUncheckedUpdateWithoutDecisionHistoryEntriesInput>;
 };
+export type UserCreateNestedOneWithoutAssignedWorkOrdersInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedWorkOrdersInput, Prisma.UserUncheckedCreateWithoutAssignedWorkOrdersInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedWorkOrdersInput;
+    connect?: Prisma.UserWhereUniqueInput;
+};
+export type UserCreateNestedOneWithoutCreatedWorkOrdersInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedWorkOrdersInput, Prisma.UserUncheckedCreateWithoutCreatedWorkOrdersInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedWorkOrdersInput;
+    connect?: Prisma.UserWhereUniqueInput;
+};
+export type UserUpdateOneWithoutAssignedWorkOrdersNestedInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedWorkOrdersInput, Prisma.UserUncheckedCreateWithoutAssignedWorkOrdersInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedWorkOrdersInput;
+    upsert?: Prisma.UserUpsertWithoutAssignedWorkOrdersInput;
+    disconnect?: Prisma.UserWhereInput | boolean;
+    delete?: Prisma.UserWhereInput | boolean;
+    connect?: Prisma.UserWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssignedWorkOrdersInput, Prisma.UserUpdateWithoutAssignedWorkOrdersInput>, Prisma.UserUncheckedUpdateWithoutAssignedWorkOrdersInput>;
+};
+export type UserUpdateOneWithoutCreatedWorkOrdersNestedInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedWorkOrdersInput, Prisma.UserUncheckedCreateWithoutCreatedWorkOrdersInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedWorkOrdersInput;
+    upsert?: Prisma.UserUpsertWithoutCreatedWorkOrdersInput;
+    disconnect?: Prisma.UserWhereInput | boolean;
+    delete?: Prisma.UserWhereInput | boolean;
+    connect?: Prisma.UserWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedWorkOrdersInput, Prisma.UserUpdateWithoutCreatedWorkOrdersInput>, Prisma.UserUncheckedUpdateWithoutCreatedWorkOrdersInput>;
+};
+export type UserCreateNestedOneWithoutMaintenancePlansInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutMaintenancePlansInput, Prisma.UserUncheckedCreateWithoutMaintenancePlansInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutMaintenancePlansInput;
+    connect?: Prisma.UserWhereUniqueInput;
+};
+export type UserUpdateOneWithoutMaintenancePlansNestedInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutMaintenancePlansInput, Prisma.UserUncheckedCreateWithoutMaintenancePlansInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutMaintenancePlansInput;
+    upsert?: Prisma.UserUpsertWithoutMaintenancePlansInput;
+    disconnect?: Prisma.UserWhereInput | boolean;
+    delete?: Prisma.UserWhereInput | boolean;
+    connect?: Prisma.UserWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMaintenancePlansInput, Prisma.UserUpdateWithoutMaintenancePlansInput>, Prisma.UserUncheckedUpdateWithoutMaintenancePlansInput>;
+};
+export type UserCreateNestedOneWithoutCompletedOccurrencesInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutCompletedOccurrencesInput, Prisma.UserUncheckedCreateWithoutCompletedOccurrencesInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompletedOccurrencesInput;
+    connect?: Prisma.UserWhereUniqueInput;
+};
+export type UserUpdateOneWithoutCompletedOccurrencesNestedInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutCompletedOccurrencesInput, Prisma.UserUncheckedCreateWithoutCompletedOccurrencesInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompletedOccurrencesInput;
+    upsert?: Prisma.UserUpsertWithoutCompletedOccurrencesInput;
+    disconnect?: Prisma.UserWhereInput | boolean;
+    delete?: Prisma.UserWhereInput | boolean;
+    connect?: Prisma.UserWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCompletedOccurrencesInput, Prisma.UserUpdateWithoutCompletedOccurrencesInput>, Prisma.UserUncheckedUpdateWithoutCompletedOccurrencesInput>;
+};
+export type UserCreateNestedOneWithoutNotificationRecipientsInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationRecipientsInput, Prisma.UserUncheckedCreateWithoutNotificationRecipientsInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationRecipientsInput;
+    connect?: Prisma.UserWhereUniqueInput;
+};
+export type UserUpdateOneRequiredWithoutNotificationRecipientsNestedInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationRecipientsInput, Prisma.UserUncheckedCreateWithoutNotificationRecipientsInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationRecipientsInput;
+    upsert?: Prisma.UserUpsertWithoutNotificationRecipientsInput;
+    connect?: Prisma.UserWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationRecipientsInput, Prisma.UserUpdateWithoutNotificationRecipientsInput>, Prisma.UserUncheckedUpdateWithoutNotificationRecipientsInput>;
+};
 export type UserCreateWithoutAuditLogsInput = {
     email: string;
     name: string;
@@ -469,6 +572,11 @@ export type UserCreateWithoutAuditLogsInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutRequesterInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutReviewerInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceCreateNestedManyWithoutCompletedByInput;
 };
 export type UserUncheckedCreateWithoutAuditLogsInput = {
     id?: number;
@@ -482,6 +590,11 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutRequesterInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutReviewerInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedCreateNestedManyWithoutCompletedByInput;
 };
 export type UserCreateOrConnectWithoutAuditLogsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -507,6 +620,11 @@ export type UserUpdateWithoutAuditLogsInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutRequesterNestedInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutReviewerNestedInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUpdateManyWithoutCompletedByNestedInput;
 };
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -520,6 +638,11 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutRequesterNestedInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutReviewerNestedInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedUpdateManyWithoutCompletedByNestedInput;
 };
 export type UserCreateWithoutRequestedMaintenanceRequestsInput = {
     email: string;
@@ -532,6 +655,11 @@ export type UserCreateWithoutRequestedMaintenanceRequestsInput = {
     auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutReviewerInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceCreateNestedManyWithoutCompletedByInput;
 };
 export type UserUncheckedCreateWithoutRequestedMaintenanceRequestsInput = {
     id?: number;
@@ -545,6 +673,11 @@ export type UserUncheckedCreateWithoutRequestedMaintenanceRequestsInput = {
     auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutReviewerInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedCreateNestedManyWithoutCompletedByInput;
 };
 export type UserCreateOrConnectWithoutRequestedMaintenanceRequestsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -561,6 +694,11 @@ export type UserCreateWithoutReviewedMaintenanceRequestsInput = {
     auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput;
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutRequesterInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceCreateNestedManyWithoutCompletedByInput;
 };
 export type UserUncheckedCreateWithoutReviewedMaintenanceRequestsInput = {
     id?: number;
@@ -574,6 +712,11 @@ export type UserUncheckedCreateWithoutReviewedMaintenanceRequestsInput = {
     auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput;
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutRequesterInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedCreateNestedManyWithoutCompletedByInput;
 };
 export type UserCreateOrConnectWithoutReviewedMaintenanceRequestsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -599,6 +742,11 @@ export type UserUpdateWithoutRequestedMaintenanceRequestsInput = {
     auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutReviewerNestedInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUpdateManyWithoutCompletedByNestedInput;
 };
 export type UserUncheckedUpdateWithoutRequestedMaintenanceRequestsInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -612,6 +760,11 @@ export type UserUncheckedUpdateWithoutRequestedMaintenanceRequestsInput = {
     auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutReviewerNestedInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedUpdateManyWithoutCompletedByNestedInput;
 };
 export type UserUpsertWithoutReviewedMaintenanceRequestsInput = {
     update: Prisma.XOR<Prisma.UserUpdateWithoutReviewedMaintenanceRequestsInput, Prisma.UserUncheckedUpdateWithoutReviewedMaintenanceRequestsInput>;
@@ -633,6 +786,11 @@ export type UserUpdateWithoutReviewedMaintenanceRequestsInput = {
     auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput;
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutRequesterNestedInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUpdateManyWithoutCompletedByNestedInput;
 };
 export type UserUncheckedUpdateWithoutReviewedMaintenanceRequestsInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -646,6 +804,11 @@ export type UserUncheckedUpdateWithoutReviewedMaintenanceRequestsInput = {
     auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput;
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutRequesterNestedInput;
     decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedUpdateManyWithoutCompletedByNestedInput;
 };
 export type UserCreateWithoutDecisionHistoryEntriesInput = {
     email: string;
@@ -658,6 +821,11 @@ export type UserCreateWithoutDecisionHistoryEntriesInput = {
     auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput;
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutRequesterInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutReviewerInput;
+    assignedWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceCreateNestedManyWithoutCompletedByInput;
 };
 export type UserUncheckedCreateWithoutDecisionHistoryEntriesInput = {
     id?: number;
@@ -671,6 +839,11 @@ export type UserUncheckedCreateWithoutDecisionHistoryEntriesInput = {
     auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput;
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutRequesterInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutReviewerInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedCreateNestedManyWithoutCompletedByInput;
 };
 export type UserCreateOrConnectWithoutDecisionHistoryEntriesInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -696,6 +869,11 @@ export type UserUpdateWithoutDecisionHistoryEntriesInput = {
     auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput;
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutRequesterNestedInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutReviewerNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUpdateManyWithoutCompletedByNestedInput;
 };
 export type UserUncheckedUpdateWithoutDecisionHistoryEntriesInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -709,6 +887,426 @@ export type UserUncheckedUpdateWithoutDecisionHistoryEntriesInput = {
     auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput;
     requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutRequesterNestedInput;
     reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutReviewerNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedUpdateManyWithoutCompletedByNestedInput;
+};
+export type UserCreateWithoutAssignedWorkOrdersInput = {
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryCreateNestedManyWithoutActorInput;
+    createdWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceCreateNestedManyWithoutCompletedByInput;
+};
+export type UserUncheckedCreateWithoutAssignedWorkOrdersInput = {
+    id?: number;
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutActorInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedCreateNestedManyWithoutCompletedByInput;
+};
+export type UserCreateOrConnectWithoutAssignedWorkOrdersInput = {
+    where: Prisma.UserWhereUniqueInput;
+    create: Prisma.XOR<Prisma.UserCreateWithoutAssignedWorkOrdersInput, Prisma.UserUncheckedCreateWithoutAssignedWorkOrdersInput>;
+};
+export type UserCreateWithoutCreatedWorkOrdersInput = {
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedTechnicianInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceCreateNestedManyWithoutCompletedByInput;
+};
+export type UserUncheckedCreateWithoutCreatedWorkOrdersInput = {
+    id?: number;
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedCreateNestedManyWithoutCompletedByInput;
+};
+export type UserCreateOrConnectWithoutCreatedWorkOrdersInput = {
+    where: Prisma.UserWhereUniqueInput;
+    create: Prisma.XOR<Prisma.UserCreateWithoutCreatedWorkOrdersInput, Prisma.UserUncheckedCreateWithoutCreatedWorkOrdersInput>;
+};
+export type UserUpsertWithoutAssignedWorkOrdersInput = {
+    update: Prisma.XOR<Prisma.UserUpdateWithoutAssignedWorkOrdersInput, Prisma.UserUncheckedUpdateWithoutAssignedWorkOrdersInput>;
+    create: Prisma.XOR<Prisma.UserCreateWithoutAssignedWorkOrdersInput, Prisma.UserUncheckedCreateWithoutAssignedWorkOrdersInput>;
+    where?: Prisma.UserWhereInput;
+};
+export type UserUpdateToOneWithWhereWithoutAssignedWorkOrdersInput = {
+    where?: Prisma.UserWhereInput;
+    data: Prisma.XOR<Prisma.UserUpdateWithoutAssignedWorkOrdersInput, Prisma.UserUncheckedUpdateWithoutAssignedWorkOrdersInput>;
+};
+export type UserUpdateWithoutAssignedWorkOrdersInput = {
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUpdateManyWithoutActorNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUpdateManyWithoutCompletedByNestedInput;
+};
+export type UserUncheckedUpdateWithoutAssignedWorkOrdersInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutActorNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedUpdateManyWithoutCompletedByNestedInput;
+};
+export type UserUpsertWithoutCreatedWorkOrdersInput = {
+    update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedWorkOrdersInput, Prisma.UserUncheckedUpdateWithoutCreatedWorkOrdersInput>;
+    create: Prisma.XOR<Prisma.UserCreateWithoutCreatedWorkOrdersInput, Prisma.UserUncheckedCreateWithoutCreatedWorkOrdersInput>;
+    where?: Prisma.UserWhereInput;
+};
+export type UserUpdateToOneWithWhereWithoutCreatedWorkOrdersInput = {
+    where?: Prisma.UserWhereInput;
+    data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedWorkOrdersInput, Prisma.UserUncheckedUpdateWithoutCreatedWorkOrdersInput>;
+};
+export type UserUpdateWithoutCreatedWorkOrdersInput = {
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedTechnicianNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUpdateManyWithoutCompletedByNestedInput;
+};
+export type UserUncheckedUpdateWithoutCreatedWorkOrdersInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedUpdateManyWithoutCompletedByNestedInput;
+};
+export type UserCreateWithoutMaintenancePlansInput = {
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedByInput;
+    notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceCreateNestedManyWithoutCompletedByInput;
+};
+export type UserUncheckedCreateWithoutMaintenancePlansInput = {
+    id?: number;
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedByInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedCreateNestedManyWithoutCompletedByInput;
+};
+export type UserCreateOrConnectWithoutMaintenancePlansInput = {
+    where: Prisma.UserWhereUniqueInput;
+    create: Prisma.XOR<Prisma.UserCreateWithoutMaintenancePlansInput, Prisma.UserUncheckedCreateWithoutMaintenancePlansInput>;
+};
+export type UserUpsertWithoutMaintenancePlansInput = {
+    update: Prisma.XOR<Prisma.UserUpdateWithoutMaintenancePlansInput, Prisma.UserUncheckedUpdateWithoutMaintenancePlansInput>;
+    create: Prisma.XOR<Prisma.UserCreateWithoutMaintenancePlansInput, Prisma.UserUncheckedCreateWithoutMaintenancePlansInput>;
+    where?: Prisma.UserWhereInput;
+};
+export type UserUpdateToOneWithWhereWithoutMaintenancePlansInput = {
+    where?: Prisma.UserWhereInput;
+    data: Prisma.XOR<Prisma.UserUpdateWithoutMaintenancePlansInput, Prisma.UserUncheckedUpdateWithoutMaintenancePlansInput>;
+};
+export type UserUpdateWithoutMaintenancePlansInput = {
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedByNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUpdateManyWithoutCompletedByNestedInput;
+};
+export type UserUncheckedUpdateWithoutMaintenancePlansInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedByNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedUpdateManyWithoutCompletedByNestedInput;
+};
+export type UserCreateWithoutCompletedOccurrencesInput = {
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput;
+};
+export type UserUncheckedCreateWithoutCompletedOccurrencesInput = {
+    id?: number;
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput;
+};
+export type UserCreateOrConnectWithoutCompletedOccurrencesInput = {
+    where: Prisma.UserWhereUniqueInput;
+    create: Prisma.XOR<Prisma.UserCreateWithoutCompletedOccurrencesInput, Prisma.UserUncheckedCreateWithoutCompletedOccurrencesInput>;
+};
+export type UserUpsertWithoutCompletedOccurrencesInput = {
+    update: Prisma.XOR<Prisma.UserUpdateWithoutCompletedOccurrencesInput, Prisma.UserUncheckedUpdateWithoutCompletedOccurrencesInput>;
+    create: Prisma.XOR<Prisma.UserCreateWithoutCompletedOccurrencesInput, Prisma.UserUncheckedCreateWithoutCompletedOccurrencesInput>;
+    where?: Prisma.UserWhereInput;
+};
+export type UserUpdateToOneWithWhereWithoutCompletedOccurrencesInput = {
+    where?: Prisma.UserWhereInput;
+    data: Prisma.XOR<Prisma.UserUpdateWithoutCompletedOccurrencesInput, Prisma.UserUncheckedUpdateWithoutCompletedOccurrencesInput>;
+};
+export type UserUpdateWithoutCompletedOccurrencesInput = {
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput;
+};
+export type UserUncheckedUpdateWithoutCompletedOccurrencesInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput;
+};
+export type UserCreateWithoutNotificationRecipientsInput = {
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanCreateNestedManyWithoutAssignedTechnicianInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceCreateNestedManyWithoutCompletedByInput;
+};
+export type UserUncheckedCreateWithoutNotificationRecipientsInput = {
+    id?: number;
+    email: string;
+    name: string;
+    password_hash?: string | null;
+    role: $Enums.Role;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutRequesterInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedCreateNestedManyWithoutReviewerInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutActorInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedCreateNestedManyWithoutAssignedByInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedCreateNestedManyWithoutAssignedTechnicianInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedCreateNestedManyWithoutCompletedByInput;
+};
+export type UserCreateOrConnectWithoutNotificationRecipientsInput = {
+    where: Prisma.UserWhereUniqueInput;
+    create: Prisma.XOR<Prisma.UserCreateWithoutNotificationRecipientsInput, Prisma.UserUncheckedCreateWithoutNotificationRecipientsInput>;
+};
+export type UserUpsertWithoutNotificationRecipientsInput = {
+    update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationRecipientsInput, Prisma.UserUncheckedUpdateWithoutNotificationRecipientsInput>;
+    create: Prisma.XOR<Prisma.UserCreateWithoutNotificationRecipientsInput, Prisma.UserUncheckedCreateWithoutNotificationRecipientsInput>;
+    where?: Prisma.UserWhereInput;
+};
+export type UserUpdateToOneWithWhereWithoutNotificationRecipientsInput = {
+    where?: Prisma.UserWhereInput;
+    data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationRecipientsInput, Prisma.UserUncheckedUpdateWithoutNotificationRecipientsInput>;
+};
+export type UserUpdateWithoutNotificationRecipientsInput = {
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUpdateManyWithoutAssignedTechnicianNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUpdateManyWithoutCompletedByNestedInput;
+};
+export type UserUncheckedUpdateWithoutNotificationRecipientsInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput;
+    requestedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutRequesterNestedInput;
+    reviewedMaintenanceRequests?: Prisma.MaintenanceRequestUncheckedUpdateManyWithoutReviewerNestedInput;
+    decisionHistoryEntries?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutActorNestedInput;
+    assignedWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    createdWorkOrders?: Prisma.WorkOrderUncheckedUpdateManyWithoutAssignedByNestedInput;
+    maintenancePlans?: Prisma.MaintenancePlanUncheckedUpdateManyWithoutAssignedTechnicianNestedInput;
+    completedOccurrences?: Prisma.MaintenanceOccurrenceUncheckedUpdateManyWithoutCompletedByNestedInput;
 };
 /**
  * Count Type UserCountOutputType
@@ -718,12 +1316,22 @@ export type UserCountOutputType = {
     requestedMaintenanceRequests: number;
     reviewedMaintenanceRequests: number;
     decisionHistoryEntries: number;
+    assignedWorkOrders: number;
+    createdWorkOrders: number;
+    maintenancePlans: number;
+    notificationRecipients: number;
+    completedOccurrences: number;
 };
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs;
     requestedMaintenanceRequests?: boolean | UserCountOutputTypeCountRequestedMaintenanceRequestsArgs;
     reviewedMaintenanceRequests?: boolean | UserCountOutputTypeCountReviewedMaintenanceRequestsArgs;
     decisionHistoryEntries?: boolean | UserCountOutputTypeCountDecisionHistoryEntriesArgs;
+    assignedWorkOrders?: boolean | UserCountOutputTypeCountAssignedWorkOrdersArgs;
+    createdWorkOrders?: boolean | UserCountOutputTypeCountCreatedWorkOrdersArgs;
+    maintenancePlans?: boolean | UserCountOutputTypeCountMaintenancePlansArgs;
+    notificationRecipients?: boolean | UserCountOutputTypeCountNotificationRecipientsArgs;
+    completedOccurrences?: boolean | UserCountOutputTypeCountCompletedOccurrencesArgs;
 };
 /**
  * UserCountOutputType without action
@@ -758,6 +1366,36 @@ export type UserCountOutputTypeCountReviewedMaintenanceRequestsArgs<ExtArgs exte
 export type UserCountOutputTypeCountDecisionHistoryEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.DecisionHistoryWhereInput;
 };
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAssignedWorkOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.WorkOrderWhereInput;
+};
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedWorkOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.WorkOrderWhereInput;
+};
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMaintenancePlansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.MaintenancePlanWhereInput;
+};
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNotificationRecipientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.NotificationRecipientWhereInput;
+};
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCompletedOccurrencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.MaintenanceOccurrenceWhereInput;
+};
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     email?: boolean;
@@ -771,6 +1409,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     requestedMaintenanceRequests?: boolean | Prisma.User$requestedMaintenanceRequestsArgs<ExtArgs>;
     reviewedMaintenanceRequests?: boolean | Prisma.User$reviewedMaintenanceRequestsArgs<ExtArgs>;
     decisionHistoryEntries?: boolean | Prisma.User$decisionHistoryEntriesArgs<ExtArgs>;
+    assignedWorkOrders?: boolean | Prisma.User$assignedWorkOrdersArgs<ExtArgs>;
+    createdWorkOrders?: boolean | Prisma.User$createdWorkOrdersArgs<ExtArgs>;
+    maintenancePlans?: boolean | Prisma.User$maintenancePlansArgs<ExtArgs>;
+    notificationRecipients?: boolean | Prisma.User$notificationRecipientsArgs<ExtArgs>;
+    completedOccurrences?: boolean | Prisma.User$completedOccurrencesArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["user"]>;
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -809,6 +1452,11 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     requestedMaintenanceRequests?: boolean | Prisma.User$requestedMaintenanceRequestsArgs<ExtArgs>;
     reviewedMaintenanceRequests?: boolean | Prisma.User$reviewedMaintenanceRequestsArgs<ExtArgs>;
     decisionHistoryEntries?: boolean | Prisma.User$decisionHistoryEntriesArgs<ExtArgs>;
+    assignedWorkOrders?: boolean | Prisma.User$assignedWorkOrdersArgs<ExtArgs>;
+    createdWorkOrders?: boolean | Prisma.User$createdWorkOrdersArgs<ExtArgs>;
+    maintenancePlans?: boolean | Prisma.User$maintenancePlansArgs<ExtArgs>;
+    notificationRecipients?: boolean | Prisma.User$notificationRecipientsArgs<ExtArgs>;
+    completedOccurrences?: boolean | Prisma.User$completedOccurrencesArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
@@ -820,6 +1468,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         requestedMaintenanceRequests: Prisma.$MaintenanceRequestPayload<ExtArgs>[];
         reviewedMaintenanceRequests: Prisma.$MaintenanceRequestPayload<ExtArgs>[];
         decisionHistoryEntries: Prisma.$DecisionHistoryPayload<ExtArgs>[];
+        assignedWorkOrders: Prisma.$WorkOrderPayload<ExtArgs>[];
+        createdWorkOrders: Prisma.$WorkOrderPayload<ExtArgs>[];
+        maintenancePlans: Prisma.$MaintenancePlanPayload<ExtArgs>[];
+        notificationRecipients: Prisma.$NotificationRecipientPayload<ExtArgs>[];
+        completedOccurrences: Prisma.$MaintenanceOccurrencePayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: number;
@@ -1163,6 +1816,11 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
     requestedMaintenanceRequests<T extends Prisma.User$requestedMaintenanceRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$requestedMaintenanceRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     reviewedMaintenanceRequests<T extends Prisma.User$reviewedMaintenanceRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedMaintenanceRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     decisionHistoryEntries<T extends Prisma.User$decisionHistoryEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$decisionHistoryEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DecisionHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    assignedWorkOrders<T extends Prisma.User$assignedWorkOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assignedWorkOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    createdWorkOrders<T extends Prisma.User$createdWorkOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdWorkOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    maintenancePlans<T extends Prisma.User$maintenancePlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$maintenancePlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenancePlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    notificationRecipients<T extends Prisma.User$notificationRecipientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationRecipientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    completedOccurrences<T extends Prisma.User$completedOccurrencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$completedOccurrencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaintenanceOccurrencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1657,6 +2315,121 @@ export type User$decisionHistoryEntriesArgs<ExtArgs extends runtime.Types.Extens
     take?: number;
     skip?: number;
     distinct?: Prisma.DecisionHistoryScalarFieldEnum | Prisma.DecisionHistoryScalarFieldEnum[];
+};
+/**
+ * User.assignedWorkOrders
+ */
+export type User$assignedWorkOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkOrder
+     */
+    select?: Prisma.WorkOrderSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the WorkOrder
+     */
+    omit?: Prisma.WorkOrderOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.WorkOrderInclude<ExtArgs> | null;
+    where?: Prisma.WorkOrderWhereInput;
+    orderBy?: Prisma.WorkOrderOrderByWithRelationInput | Prisma.WorkOrderOrderByWithRelationInput[];
+    cursor?: Prisma.WorkOrderWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.WorkOrderScalarFieldEnum | Prisma.WorkOrderScalarFieldEnum[];
+};
+/**
+ * User.createdWorkOrders
+ */
+export type User$createdWorkOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkOrder
+     */
+    select?: Prisma.WorkOrderSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the WorkOrder
+     */
+    omit?: Prisma.WorkOrderOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.WorkOrderInclude<ExtArgs> | null;
+    where?: Prisma.WorkOrderWhereInput;
+    orderBy?: Prisma.WorkOrderOrderByWithRelationInput | Prisma.WorkOrderOrderByWithRelationInput[];
+    cursor?: Prisma.WorkOrderWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.WorkOrderScalarFieldEnum | Prisma.WorkOrderScalarFieldEnum[];
+};
+/**
+ * User.maintenancePlans
+ */
+export type User$maintenancePlansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaintenancePlan
+     */
+    select?: Prisma.MaintenancePlanSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MaintenancePlan
+     */
+    omit?: Prisma.MaintenancePlanOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.MaintenancePlanInclude<ExtArgs> | null;
+    where?: Prisma.MaintenancePlanWhereInput;
+    orderBy?: Prisma.MaintenancePlanOrderByWithRelationInput | Prisma.MaintenancePlanOrderByWithRelationInput[];
+    cursor?: Prisma.MaintenancePlanWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.MaintenancePlanScalarFieldEnum | Prisma.MaintenancePlanScalarFieldEnum[];
+};
+/**
+ * User.notificationRecipients
+ */
+export type User$notificationRecipientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NotificationRecipient
+     */
+    select?: Prisma.NotificationRecipientSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the NotificationRecipient
+     */
+    omit?: Prisma.NotificationRecipientOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.NotificationRecipientInclude<ExtArgs> | null;
+    where?: Prisma.NotificationRecipientWhereInput;
+    orderBy?: Prisma.NotificationRecipientOrderByWithRelationInput | Prisma.NotificationRecipientOrderByWithRelationInput[];
+    cursor?: Prisma.NotificationRecipientWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.NotificationRecipientScalarFieldEnum | Prisma.NotificationRecipientScalarFieldEnum[];
+};
+/**
+ * User.completedOccurrences
+ */
+export type User$completedOccurrencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaintenanceOccurrence
+     */
+    select?: Prisma.MaintenanceOccurrenceSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MaintenanceOccurrence
+     */
+    omit?: Prisma.MaintenanceOccurrenceOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.MaintenanceOccurrenceInclude<ExtArgs> | null;
+    where?: Prisma.MaintenanceOccurrenceWhereInput;
+    orderBy?: Prisma.MaintenanceOccurrenceOrderByWithRelationInput | Prisma.MaintenanceOccurrenceOrderByWithRelationInput[];
+    cursor?: Prisma.MaintenanceOccurrenceWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.MaintenanceOccurrenceScalarFieldEnum | Prisma.MaintenanceOccurrenceScalarFieldEnum[];
 };
 /**
  * User without action

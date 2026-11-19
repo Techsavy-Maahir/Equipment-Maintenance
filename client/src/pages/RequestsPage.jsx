@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api, handleApiError } from "../api";
+import NotificationBell from "../components/NotificationBell";
 import "./RequestsPage.css";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -144,15 +145,18 @@ function BreakdownModal({ onClose, onSuccess }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
+  const [requestType, setRequestType] = useState("BREAKDOWN");
 
   const [form, setForm] = useState({
     equipmentId: "",
     description: "",
     criticality: "HIGH",
     problem: "",
+    proposedSolution: "",
+    expectedBenefit: "",
+    implementationStatus: "",
   });
 
-  // Load active equipment for picker
   useEffect(() => {
     let cancelled = false;
 
@@ -190,6 +194,13 @@ function BreakdownModal({ onClose, onSuccess }) {
     else if (form.description.trim().length < 10)
       errors.description = "Please provide at least 10 characters.";
     if (!form.criticality) errors.criticality = "Please select a priority.";
+
+    if (requestType === "IMPROVEMENT") {
+      if (!form.problem.trim()) errors.problem = "Problem statement is required for Kaizen requests.";
+      if (!form.proposedSolution.trim()) errors.proposedSolution = "Proposed solution is required for Kaizen requests.";
+      if (!form.expectedBenefit.trim()) errors.expectedBenefit = "Expected benefit is required for Kaizen requests.";
+    }
+
     return errors;
   }
 
@@ -206,13 +217,16 @@ function BreakdownModal({ onClose, onSuccess }) {
 
     try {
       await api.createMaintenanceRequest({
-        requestType: "BREAKDOWN",
+        requestType,
         equipmentId: Number(form.equipmentId),
         description: form.description.trim(),
         criticality: form.criticality,
         problem: form.problem.trim() || undefined,
+        proposedSolution: form.proposedSolution.trim() || undefined,
+        expectedBenefit: form.expectedBenefit.trim() || undefined,
+        implementationStatus: form.implementationStatus.trim() || undefined,
       });
-      onSuccess();
+      onSuccess(requestType);
     } catch (err) {
       if (err?.response?.data?.details && typeof err.response.data.details === "object") {
         setFieldErrors(err.response.data.details);
@@ -225,7 +239,6 @@ function BreakdownModal({ onClose, onSuccess }) {
     }
   }
 
-  // Close on Escape
   const overlayRef = useRef(null);
   useEffect(() => {
     function onKey(e) {
@@ -234,6 +247,12 @@ function BreakdownModal({ onClose, onSuccess }) {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
+
+  const requestTitle = requestType === "IMPROVEMENT" ? "New Kaizen Request" : "New Breakdown Request";
+  const requestSubtitle = requestType === "IMPROVEMENT"
+    ? "Share a continuous-improvement idea for review."
+    : "Report a breakdown and submit for review.";
+  const submitLabel = requestType === "IMPROVEMENT" ? "Submit Kaizen Request" : "Submit Breakdown";
 
   return (
     <div
@@ -250,11 +269,11 @@ function BreakdownModal({ onClose, onSuccess }) {
         <header className="rq-modal-header">
           <div className="rq-modal-header-left">
             <span className="rq-modal-icon">
-              <MaterialIcon>warning</MaterialIcon>
+              <MaterialIcon>{requestType === "IMPROVEMENT" ? "trending_up" : "warning"}</MaterialIcon>
             </span>
             <div>
-              <h2 id="bd-modal-title">New Breakdown Request</h2>
-              <p>Report a breakdown and submit for review.</p>
+              <h2 id="bd-modal-title">{requestTitle}</h2>
+              <p>{requestSubtitle}</p>
             </div>
           </div>
           <button
@@ -276,7 +295,23 @@ function BreakdownModal({ onClose, onSuccess }) {
               </p>
             )}
 
-            {/* Equipment picker */}
+            <div className="rq-form-field">
+              <label htmlFor="rq-request-type" className="rq-form-label">
+                Request type
+              </label>
+              <div className="rq-select-wrap">
+                <select
+                  id="rq-request-type"
+                  value={requestType}
+                  onChange={(e) => setRequestType(e.target.value)}
+                >
+                  <option value="BREAKDOWN">Breakdown</option>
+                  <option value="IMPROVEMENT">Kaizen / Improvement</option>
+                </select>
+                <MaterialIcon>expand_more</MaterialIcon>
+              </div>
+            </div>
+
             <div className={`rq-form-field${fieldErrors.equipmentId ? " has-error" : ""}`}>
               <label htmlFor="bd-equipment" className="rq-form-label">
                 Equipment <span className="rq-required" aria-hidden="true">*</span>
@@ -313,7 +348,6 @@ function BreakdownModal({ onClose, onSuccess }) {
               )}
             </div>
 
-            {/* Priority / Criticality */}
             <div className={`rq-form-field${fieldErrors.criticality ? " has-error" : ""}`}>
               <label htmlFor="bd-criticality" className="rq-form-label">
                 Priority <span className="rq-required" aria-hidden="true">*</span>
@@ -338,23 +372,87 @@ function BreakdownModal({ onClose, onSuccess }) {
               )}
             </div>
 
-            {/* Problem (optional) */}
-            <div className="rq-form-field">
-              <label htmlFor="bd-problem" className="rq-form-label">
-                Problem Title <span className="rq-form-hint">(optional)</span>
-              </label>
-              <input
-                id="bd-problem"
-                type="text"
-                className="rq-form-input"
-                placeholder="e.g., Excessive vibration in motor shaft"
-                value={form.problem}
-                onChange={(e) => setField("problem", e.target.value)}
-                maxLength={500}
-              />
-            </div>
+            {requestType === "IMPROVEMENT" && (
+              <>
+                <div className={`rq-form-field${fieldErrors.problem ? " has-error" : ""}`}>
+                  <label htmlFor="rq-problem" className="rq-form-label">
+                    Problem statement <span className="rq-required" aria-hidden="true">*</span>
+                  </label>
+                  <textarea
+                    id="rq-problem"
+                    className="rq-form-textarea"
+                    rows={3}
+                    value={form.problem}
+                    onChange={(e) => setField("problem", e.target.value)}
+                    maxLength={5000}
+                  />
+                  {fieldErrors.problem && <span className="rq-field-error">{fieldErrors.problem}</span>}
+                </div>
 
-            {/* Description */}
+                <div className={`rq-form-field${fieldErrors.proposedSolution ? " has-error" : ""}`}>
+                  <label htmlFor="rq-solution" className="rq-form-label">
+                    Proposed solution <span className="rq-required" aria-hidden="true">*</span>
+                  </label>
+                  <textarea
+                    id="rq-solution"
+                    className="rq-form-textarea"
+                    rows={3}
+                    value={form.proposedSolution}
+                    onChange={(e) => setField("proposedSolution", e.target.value)}
+                    maxLength={5000}
+                  />
+                  {fieldErrors.proposedSolution && <span className="rq-field-error">{fieldErrors.proposedSolution}</span>}
+                </div>
+
+                <div className={`rq-form-field${fieldErrors.expectedBenefit ? " has-error" : ""}`}>
+                  <label htmlFor="rq-benefit" className="rq-form-label">
+                    Expected benefit <span className="rq-required" aria-hidden="true">*</span>
+                  </label>
+                  <textarea
+                    id="rq-benefit"
+                    className="rq-form-textarea"
+                    rows={3}
+                    value={form.expectedBenefit}
+                    onChange={(e) => setField("expectedBenefit", e.target.value)}
+                    maxLength={5000}
+                  />
+                  {fieldErrors.expectedBenefit && <span className="rq-field-error">{fieldErrors.expectedBenefit}</span>}
+                </div>
+
+                <div className="rq-form-field">
+                  <label htmlFor="rq-implementation-status" className="rq-form-label">
+                    Implementation status
+                  </label>
+                  <input
+                    id="rq-implementation-status"
+                    type="text"
+                    className="rq-form-input"
+                    value={form.implementationStatus}
+                    onChange={(e) => setField("implementationStatus", e.target.value)}
+                    maxLength={100}
+                    placeholder="Planned / In progress / Pilot"
+                  />
+                </div>
+              </>
+            )}
+
+            {requestType !== "IMPROVEMENT" && (
+              <div className="rq-form-field">
+                <label htmlFor="bd-problem" className="rq-form-label">
+                  Problem Title <span className="rq-form-hint">(optional)</span>
+                </label>
+                <input
+                  id="bd-problem"
+                  type="text"
+                  className="rq-form-input"
+                  placeholder="e.g., Excessive vibration in motor shaft"
+                  value={form.problem}
+                  onChange={(e) => setField("problem", e.target.value)}
+                  maxLength={500}
+                />
+              </div>
+            )}
+
             <div className={`rq-form-field${fieldErrors.description ? " has-error" : ""}`}>
               <label htmlFor="bd-description" className="rq-form-label">
                 Description <span className="rq-required" aria-hidden="true">*</span>
@@ -362,7 +460,9 @@ function BreakdownModal({ onClose, onSuccess }) {
               <textarea
                 id="bd-description"
                 className="rq-form-textarea"
-                placeholder="Describe the breakdown in detail — when it started, observed symptoms, any immediate actions taken…"
+                placeholder={requestType === "IMPROVEMENT"
+                  ? "Describe the improvement opportunity, operators affected, or current pain points…"
+                  : "Describe the breakdown in detail — when it started, observed symptoms, any immediate actions taken…"}
                 value={form.description}
                 onChange={(e) => setField("description", e.target.value)}
                 rows={5}
@@ -400,8 +500,8 @@ function BreakdownModal({ onClose, onSuccess }) {
                 </>
               ) : (
                 <>
-                  <MaterialIcon>report</MaterialIcon>
-                  Submit Breakdown
+                  <MaterialIcon>{requestType === "IMPROVEMENT" ? "trending_up" : "report"}</MaterialIcon>
+                  {submitLabel}
                 </>
               )}
             </button>
@@ -424,6 +524,8 @@ function RequestDetailModal({ requestId, user, onClose, onUpdated }) {
   const [submitting, setSubmitting] = useState(false);
   const [showRejection, setShowRejection] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [completionOutcome, setCompletionOutcome] = useState("");
+  const [completionImplementationStatus, setCompletionImplementationStatus] = useState("");
 
   const canReview = ["ADMIN", "MANAGER"].includes(user?.role);
 
@@ -450,7 +552,7 @@ function RequestDetailModal({ requestId, user, onClose, onUpdated }) {
     };
   }, [requestId]);
 
-  async function handleTransition(status, comment) {
+  async function handleTransition(status, comment, extra = {}) {
     if (submitting) return;
 
     setSubmitting(true);
@@ -460,12 +562,15 @@ function RequestDetailModal({ requestId, user, onClose, onUpdated }) {
       await api.transitionMaintenanceRequest(requestId, {
         status,
         ...(comment ? { comment } : {}),
+        ...extra,
       });
 
       const updated = await api.getMaintenanceRequest(requestId);
       setRequest(updated);
       setShowRejection(false);
       setRejectionReason("");
+      setCompletionOutcome("");
+      setCompletionImplementationStatus("");
       onUpdated();
     } catch (err) {
       setActionError(handleApiError(err));
@@ -483,6 +588,21 @@ function RequestDetailModal({ requestId, user, onClose, onUpdated }) {
     }
 
     handleTransition("REJECTED", reason);
+  }
+
+  function handleCompleteRequest() {
+    const outcomeText = completionOutcome.trim();
+    const implementationText = completionImplementationStatus.trim();
+
+    if (request?.requestType === "IMPROVEMENT" && !outcomeText) {
+      setActionError("Please enter an outcome before completing the Kaizen request.");
+      return;
+    }
+
+    handleTransition("COMPLETED", undefined, {
+      outcome: outcomeText || undefined,
+      implementationStatus: implementationText || undefined,
+    });
   }
 
   const status = request ? requestStatusDetails(request.status) : null;
@@ -576,6 +696,34 @@ function RequestDetailModal({ requestId, user, onClose, onUpdated }) {
                   <div className="rq-detail-description">
                     <span className="rq-detail-label">Problem title</span>
                     <p>{request.problem}</p>
+                  </div>
+                )}
+
+                {request.requestType === "IMPROVEMENT" && request.proposedSolution && (
+                  <div className="rq-detail-description">
+                    <span className="rq-detail-label">Proposed solution</span>
+                    <p>{request.proposedSolution}</p>
+                  </div>
+                )}
+
+                {request.requestType === "IMPROVEMENT" && request.expectedBenefit && (
+                  <div className="rq-detail-description">
+                    <span className="rq-detail-label">Expected benefit</span>
+                    <p>{request.expectedBenefit}</p>
+                  </div>
+                )}
+
+                {request.requestType === "IMPROVEMENT" && request.implementationStatus && (
+                  <div className="rq-detail-description">
+                    <span className="rq-detail-label">Implementation status</span>
+                    <p>{request.implementationStatus}</p>
+                  </div>
+                )}
+
+                {request.outcome && (
+                  <div className="rq-detail-description">
+                    <span className="rq-detail-label">Outcome</span>
+                    <p>{request.outcome}</p>
                   </div>
                 )}
 
@@ -695,6 +843,50 @@ function RequestDetailModal({ requestId, user, onClose, onUpdated }) {
                 </section>
               )}
 
+              {user?.role === "TECHNICIAN" && request?.status === "IN_PROGRESS" && (
+                <section className="rq-detail-section rq-review-actions">
+                  <h3>Completion</h3>
+                  <div className="rq-form-field">
+                    <label htmlFor="rq-completion-outcome" className="rq-form-label">
+                      Outcome <span className="rq-required" aria-hidden="true">*</span>
+                    </label>
+                    <textarea
+                      id="rq-completion-outcome"
+                      className="rq-form-textarea"
+                      rows={3}
+                      value={completionOutcome}
+                      onChange={(e) => setCompletionOutcome(e.target.value)}
+                      placeholder={request.requestType === "IMPROVEMENT" ? "Describe the Kaizen outcome and result" : "Describe the completed outcome"}
+                    />
+                  </div>
+
+                  {request.requestType === "IMPROVEMENT" && (
+                    <div className="rq-form-field">
+                      <label htmlFor="rq-completion-implementation-status" className="rq-form-label">
+                        Implementation status
+                      </label>
+                      <input
+                        id="rq-completion-implementation-status"
+                        className="rq-form-input"
+                        value={completionImplementationStatus}
+                        onChange={(e) => setCompletionImplementationStatus(e.target.value)}
+                        placeholder="Pilot / Live / Completed"
+                        maxLength={100}
+                      />
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    className="rq-btn rq-btn-primary"
+                    disabled={submitting}
+                    onClick={handleCompleteRequest}
+                  >
+                    {submitting ? "Processing…" : "Complete Request"}
+                  </button>
+                </section>
+              )}
+
               {actionError && (
                 <p className="rq-form-error-banner" role="alert">
                   {actionError}
@@ -809,9 +1001,10 @@ export function RequestsPage({
     setFilters({ status: "", page: 1, pageSize: DEFAULT_PAGE_SIZE });
   }
 
-  function handleModalSuccess() {
+  function handleModalSuccess(type = "BREAKDOWN") {
     setShowModal(false);
-    setSuccessBanner("Breakdown request submitted successfully. It is now under review.");
+    const label = type === "IMPROVEMENT" ? "Kaizen request" : "Breakdown request";
+    setSuccessBanner(`${label} submitted successfully. It is now under review.`);
     setRefreshKey((k) => k + 1);
   }
 
@@ -857,7 +1050,7 @@ export function RequestsPage({
           </a>
 
           <nav className="equipment-nav" aria-label="Main navigation">
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "dashboard" ? "is-active" : ""}`} onClick={() => onNavigate("dashboard")}>
               <MaterialIcon>dashboard</MaterialIcon><span>Dashboard</span>
             </button>
             <button
@@ -875,49 +1068,53 @@ export function RequestsPage({
             >
               <MaterialIcon>build_circle</MaterialIcon><span>Maintenance Requests</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "approvals" ? "is-active" : ""}`} onClick={() => onNavigate("approvals")}>
               <MaterialIcon>verified</MaterialIcon><span>Approvals</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "work-orders" ? "is-active" : ""}`} onClick={() => onNavigate("work-orders")} aria-current={currentPage === "work-orders" ? "page" : undefined}>
               <MaterialIcon>assignment</MaterialIcon><span>Work Orders</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "preventive-maintenance" ? "is-active" : ""}`} onClick={() => onNavigate("preventive-maintenance")}>
               <MaterialIcon>event_repeat</MaterialIcon><span>Preventive Maintenance</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "kaizen" ? "is-active" : ""}`} onClick={() => onNavigate("kaizen")}>
               <MaterialIcon>trending_up</MaterialIcon><span>Kaizen</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "relocation" ? "is-active" : ""}`} onClick={() => onNavigate("relocation")}>
               <MaterialIcon>swap_horiz</MaterialIcon><span>Relocation</span>
             </button>
           </nav>
 
-          <div className="equipment-nav-divider" />
-          <div className="equipment-admin-label">Administration</div>
-          <nav className="equipment-nav equipment-admin-nav" aria-label="Administration">
-            <button
-              type="button"
-              className={`equipment-nav-item ${currentPage === "master-data" ? "is-active" : ""}`}
-              onClick={() => onNavigate("master-data")}
-            >
-              <MaterialIcon>dataset</MaterialIcon><span>Master Data</span>
-            </button>
-            <button type="button" className="equipment-nav-item" disabled>
-              <MaterialIcon>history_edu</MaterialIcon><span>Audit Log</span>
-            </button>
-            {user?.role === "ADMIN" && (
-              <button
-                type="button"
-                className={`equipment-nav-item ${currentPage === "user-management" ? "is-active" : ""}`}
-                onClick={() => onNavigate("user-management")}
-              >
-                <MaterialIcon>group</MaterialIcon><span>User Management</span>
-              </button>
-            )}
-            <button type="button" className="equipment-nav-item" disabled>
-              <MaterialIcon>settings</MaterialIcon><span>Settings</span>
-            </button>
-          </nav>
+          {["ADMIN", "MANAGER"].includes(user?.role) && (
+            <>
+              <div className="equipment-nav-divider" />
+              <div className="equipment-admin-label">Administration</div>
+              <nav className="equipment-nav equipment-admin-nav" aria-label="Administration">
+                <button
+                  type="button"
+                  className={`equipment-nav-item ${currentPage === "master-data" ? "is-active" : ""}`}
+                  onClick={() => onNavigate("master-data")}
+                >
+                  <MaterialIcon>dataset</MaterialIcon><span>Master Data</span>
+                </button>
+                <button type="button" className={`equipment-nav-item ${currentPage === "audit-logs" ? "is-active" : ""}`} onClick={() => onNavigate("audit-logs")}>
+                  <MaterialIcon>history_edu</MaterialIcon><span>Audit Log</span>
+                </button>
+                {user?.role === "ADMIN" && (
+                  <button
+                    type="button"
+                    className={`equipment-nav-item ${currentPage === "user-management" ? "is-active" : ""}`}
+                    onClick={() => onNavigate("user-management")}
+                  >
+                    <MaterialIcon>group</MaterialIcon><span>User Management</span>
+                  </button>
+                )}
+                <button type="button" className="equipment-nav-item" disabled>
+                  <MaterialIcon>settings</MaterialIcon><span>Settings</span>
+                </button>
+              </nav>
+            </>
+          )}
         </div>
 
         <div className="equipment-release">
@@ -950,10 +1147,7 @@ export function RequestsPage({
           </div>
 
           <div className="equipment-user-area">
-            <button type="button" className="equipment-notifications" aria-label="Notifications" disabled>
-              <MaterialIcon>notifications</MaterialIcon>
-              <span className="equipment-notification-dot" />
-            </button>
+            <NotificationBell />
             <span className="equipment-user-divider" />
             <div className="equipment-user-info">
               <span className="equipment-user-avatar">

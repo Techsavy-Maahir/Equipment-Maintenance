@@ -322,46 +322,50 @@ export function EquipmentFormPage({
             >
               <MaterialIcon>build_circle</MaterialIcon><span>Maintenance Requests</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className="equipment-nav-item" onClick={() => onNavigate("approvals")}>
               <MaterialIcon>verified</MaterialIcon><span>Approvals</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className="equipment-nav-item" onClick={() => onNavigate("work-orders")}>
               <MaterialIcon>assignment</MaterialIcon><span>Work Orders</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className="equipment-nav-item" onClick={() => onNavigate("preventive-maintenance")}>
               <MaterialIcon>event_repeat</MaterialIcon><span>Preventive Maintenance</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className="equipment-nav-item" onClick={() => onNavigate("kaizen")}>
               <MaterialIcon>trending_up</MaterialIcon><span>Kaizen</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className="equipment-nav-item" onClick={() => onNavigate("relocation")}>
               <MaterialIcon>swap_horiz</MaterialIcon><span>Relocation</span>
             </button>
           </nav>
 
-          <div className="equipment-nav-divider" />
-          <div className="equipment-admin-label">Administration</div>
-          <nav className="equipment-nav equipment-admin-nav" aria-label="Administration">
-            <button
-              type="button"
-              className="equipment-nav-item"
-              onClick={() => onNavigate("master-data")}
-            >
-              <MaterialIcon>dataset</MaterialIcon><span>Master Data</span>
-            </button>
-            <button type="button" className="equipment-nav-item" disabled>
-              <MaterialIcon>history_edu</MaterialIcon><span>Audit Log</span>
-            </button>
-            {user?.role === "ADMIN" && (
-              <button
-                type="button"
-                className="equipment-nav-item"
-                onClick={() => onNavigate("user-management")}
-              >
-                <MaterialIcon>group</MaterialIcon><span>User Management</span>
-              </button>
-            )}
-          </nav>
+          {["ADMIN", "MANAGER"].includes(user?.role) && (
+            <>
+              <div className="equipment-nav-divider" />
+              <div className="equipment-admin-label">Administration</div>
+              <nav className="equipment-nav equipment-admin-nav" aria-label="Administration">
+                <button
+                  type="button"
+                  className="equipment-nav-item"
+                  onClick={() => onNavigate("master-data")}
+                >
+                  <MaterialIcon>dataset</MaterialIcon><span>Master Data</span>
+                </button>
+                <button type="button" className="equipment-nav-item" onClick={() => onNavigate("audit-logs")}>
+                  <MaterialIcon>history_edu</MaterialIcon><span>Audit Log</span>
+                </button>
+                {user?.role === "ADMIN" && (
+                  <button
+                    type="button"
+                    className="equipment-nav-item"
+                    onClick={() => onNavigate("user-management")}
+                  >
+                    <MaterialIcon>group</MaterialIcon><span>User Management</span>
+                  </button>
+                )}
+              </nav>
+            </>
+          )}
         </div>
 
         <div className="equipment-release">

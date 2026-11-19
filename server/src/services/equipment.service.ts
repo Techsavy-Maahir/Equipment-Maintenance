@@ -1,12 +1,14 @@
 
 import type { Prisma } from "../../generated/prisma/client.js";
 import { AppError, ValidationError } from "../errors.js";
+import type { AuthenticatedUser } from "../middleware/auth.middleware.js";
 import { prisma } from "../prisma.js";
 import type {
   CreateEquipmentInput,
   EquipmentListQuery,
   UpdateEquipmentInput,
 } from "../schemas/equipment.schema.js";
+import { createAuditLog } from "./audit.service.js";
 import { getWarrantyStatus } from "./warranty.service.js";
 
 const equipmentInclude = {
@@ -144,7 +146,10 @@ export async function getEquipment(id: number) {
   };
 }
 
-export async function createEquipment(input: CreateEquipmentInput) {
+export async function createEquipment(
+  input: CreateEquipmentInput,
+  actor?: Pick<AuthenticatedUser, "id"> | null,
+) {
   return prisma.$transaction(async (tx) => {
     await validateEquipmentReferences(tx, {
       departmentId: input.departmentId,
@@ -152,17 +157,27 @@ export async function createEquipment(input: CreateEquipmentInput) {
       categoryId: input.categoryId,
     });
 
-    return tx.equipment.create({
+    const created = await tx.equipment.create({
       data: {
         ...input,
         description: input.description ?? null,
       },
       include: equipmentInclude,
     });
+
+    await createAuditLog(tx, {
+      actorId: actor?.id ?? null,
+      action: "EQUIPMENT_CREATED",
+      entityType: "Equipment",
+      entityId: created.id,
+      summary: `Equipment ${created.code} created`,
+    });
+
+    return created;
   });
 }
 
-async function changeEquipmentLocation(
+export async function changeEquipmentLocation(
   tx: Prisma.TransactionClient,
   equipmentId: number,
   newLocationId: number,
@@ -200,6 +215,7 @@ async function changeEquipmentLocation(
 export async function updateEquipment(
   id: number,
   input: UpdateEquipmentInput,
+  actor?: Pick<AuthenticatedUser, "id"> | null,
 ) {
   return prisma.$transaction(async (tx) => {
     const current = await tx.equipment.findUnique({
@@ -239,14 +255,27 @@ export async function updateEquipment(
       await changeEquipmentLocation(tx, id, locationId);
     }
 
-    return tx.equipment.findUniqueOrThrow({
+    const updated = await tx.equipment.findUniqueOrThrow({
       where: { id },
       include: equipmentInclude,
     });
+
+    await createAuditLog(tx, {
+      actorId: actor?.id ?? null,
+      action: "EQUIPMENT_UPDATED",
+      entityType: "Equipment",
+      entityId: id,
+      summary: `Equipment ${current.code} updated`,
+    });
+
+    return updated;
   });
 }
 
-export async function deactivateEquipment(id: number) {
+export async function deactivateEquipment(
+  id: number,
+  actor?: Pick<AuthenticatedUser, "id"> | null,
+) {
   return prisma.$transaction(async (tx) => {
     const current = await tx.equipment.findUnique({
       where: { id },
@@ -260,7 +289,7 @@ export async function deactivateEquipment(id: number) {
       return current;
     }
 
-    return tx.equipment.update({
+    const updated = await tx.equipment.update({
       where: { id },
       data: {
         isDeactivated: true,
@@ -268,6 +297,16 @@ export async function deactivateEquipment(id: number) {
       },
       include: equipmentInclude,
     });
+
+    await createAuditLog(tx, {
+      actorId: actor?.id ?? null,
+      action: "EQUIPMENT_DEACTIVATED",
+      entityType: "Equipment",
+      entityId: id,
+      summary: `Equipment ${current.code} deactivated`,
+    });
+
+    return updated;
   });
 }
 

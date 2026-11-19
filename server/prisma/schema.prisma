@@ -34,6 +34,29 @@ enum MaintenanceRequestType {
   IMPROVEMENT
 }
 
+enum NotificationKind {
+  REMINDER
+  OVERDUE
+  ALERT
+}
+
+enum MaintenanceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  HALF_YEARLY
+  YEARLY
+}
+
+enum MaintenanceOccurrenceStatus {
+  PENDING
+  SCHEDULED
+  COMPLETED
+  MISSED
+  CANCELLED
+}
+
 enum MaintenanceRequestStatus {
   SUBMITTED
   UNDER_REVIEW
@@ -68,6 +91,9 @@ model User {
   decisionHistoryEntries       DecisionHistory[]
   assignedWorkOrders           WorkOrder[]          @relation("WorkOrderTechnician")
   createdWorkOrders            WorkOrder[]          @relation("WorkOrderAssigner")
+  maintenancePlans             MaintenancePlan[]    @relation("MaintenancePlanTechnician")
+  notificationRecipients      NotificationRecipient[]
+  completedOccurrences        MaintenanceOccurrence[] @relation("MaintenanceOccurrenceCompletedBy")
 }
 
 model Department {
@@ -128,6 +154,7 @@ model Equipment {
   locationHistory     EquipmentLocationHistory[]
   maintenanceRequests MaintenanceRequest[]
   workOrders          WorkOrder[]
+  maintenancePlans    MaintenancePlan[]
 
   @@index([departmentId])
   @@index([locationId])
@@ -219,6 +246,7 @@ model WorkOrder {
   maintenanceRequestId Int             @unique
   equipmentId          Int
   status               WorkOrderStatus @default(OPEN)
+  maintenanceOccurrenceId Int?
 
   assignedTechnicianId Int?
   assignedById         Int?
@@ -230,14 +258,101 @@ model WorkOrder {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  maintenanceRequest MaintenanceRequest @relation(fields: [maintenanceRequestId], references: [id], onDelete: Restrict)
-  equipment          Equipment          @relation(fields: [equipmentId], references: [id], onDelete: Restrict)
-  assignedTechnician User?              @relation("WorkOrderTechnician", fields: [assignedTechnicianId], references: [id], onDelete: SetNull)
-  assignedBy         User?              @relation("WorkOrderAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
+  maintenanceRequest    MaintenanceRequest    @relation(fields: [maintenanceRequestId], references: [id], onDelete: Restrict)
+  equipment             Equipment             @relation(fields: [equipmentId], references: [id], onDelete: Restrict)
+  maintenanceOccurrence MaintenanceOccurrence? @relation("WorkOrderOccurrence", fields: [maintenanceOccurrenceId], references: [id], onDelete: SetNull)
+  assignedTechnician    User?                 @relation("WorkOrderTechnician", fields: [assignedTechnicianId], references: [id], onDelete: SetNull)
+  assignedBy            User?                 @relation("WorkOrderAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
 
+  @@unique([maintenanceOccurrenceId])
   @@index([equipmentId, createdAt])
   @@index([assignedTechnicianId, status])
   @@index([status, createdAt])
+}
+
+model MaintenancePlan {
+  id                   Int                  @id @default(autoincrement())
+  equipmentId          Int
+  activity             String
+  instructions         String?
+  frequency            MaintenanceFrequency
+  assignedTechnicianId Int?
+  lastCompletedAt      DateTime?
+  nextDueDate          DateTime
+  isActive             Boolean              @default(true)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  equipment          Equipment            @relation(fields: [equipmentId], references: [id], onDelete: Restrict)
+  assignedTechnician User?                @relation("MaintenancePlanTechnician", fields: [assignedTechnicianId], references: [id], onDelete: SetNull)
+  occurrences        MaintenanceOccurrence[]
+
+  @@index([equipmentId, isActive])
+  @@index([assignedTechnicianId, isActive])
+  @@index([nextDueDate])
+}
+
+model MaintenanceOccurrence {
+  id               Int                         @id @default(autoincrement())
+  maintenancePlanId Int
+  dueDate          DateTime
+  status           MaintenanceOccurrenceStatus @default(PENDING)
+  completedAt      DateTime?
+  completedById    Int?
+  workPerformed    String?
+  remarks          String?
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
+
+  maintenancePlan  MaintenancePlan @relation(fields: [maintenancePlanId], references: [id], onDelete: Restrict)
+  completedBy      User?            @relation("MaintenanceOccurrenceCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  linkedWorkOrder  WorkOrder[]      @relation("WorkOrderOccurrence")
+  notifications    Notification[]
+
+  @@unique([maintenancePlanId, dueDate])
+  @@index([maintenancePlanId, dueDate])
+  @@index([status, dueDate])
+}
+
+model Notification {
+  id              Int             @id @default(autoincrement())
+  key             String          @unique
+  occurrenceId    Int?
+  kind            NotificationKind
+  dueDate         DateTime
+  title           String
+  message         String
+  createdAt       DateTime        @default(now())
+
+  occurrence      MaintenanceOccurrence? @relation(fields: [occurrenceId], references: [id], onDelete: SetNull)
+  recipients      NotificationRecipient[]
+
+  @@unique([occurrenceId, kind, dueDate])
+  @@index([kind, dueDate])
+}
+
+model NotificationRecipient {
+  id            Int       @id @default(autoincrement())
+  notificationId Int
+  userId        Int
+  isRead        Boolean   @default(false)
+  readAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([notificationId, userId])
+  @@index([userId, isRead])
+}
+
+model SchedulerRun {
+  id        Int      @id @default(autoincrement())
+  jobName   String
+  runDate   DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([jobName, runDate])
 }
 
 model WorkOrderNumberCounter {

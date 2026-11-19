@@ -47,7 +47,14 @@ export const ModelName = {
     EquipmentLocationHistory: 'EquipmentLocationHistory',
     AuditLog: 'AuditLog',
     MaintenanceRequest: 'MaintenanceRequest',
-    DecisionHistory: 'DecisionHistory'
+    DecisionHistory: 'DecisionHistory',
+    WorkOrder: 'WorkOrder',
+    MaintenancePlan: 'MaintenancePlan',
+    MaintenanceOccurrence: 'MaintenanceOccurrence',
+    Notification: 'Notification',
+    NotificationRecipient: 'NotificationRecipient',
+    SchedulerRun: 'SchedulerRun',
+    WorkOrderNumberCounter: 'WorkOrderNumberCounter'
 };
 /*
  * Enums
@@ -151,6 +158,76 @@ export const DecisionHistoryScalarFieldEnum = {
     actorId: 'actorId',
     comment: 'comment',
     createdAt: 'createdAt'
+};
+export const WorkOrderScalarFieldEnum = {
+    id: 'id',
+    workOrderNumber: 'workOrderNumber',
+    maintenanceRequestId: 'maintenanceRequestId',
+    equipmentId: 'equipmentId',
+    status: 'status',
+    maintenanceOccurrenceId: 'maintenanceOccurrenceId',
+    assignedTechnicianId: 'assignedTechnicianId',
+    assignedById: 'assignedById',
+    assignedAt: 'assignedAt',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    closedAt: 'closedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const MaintenancePlanScalarFieldEnum = {
+    id: 'id',
+    equipmentId: 'equipmentId',
+    activity: 'activity',
+    instructions: 'instructions',
+    frequency: 'frequency',
+    assignedTechnicianId: 'assignedTechnicianId',
+    lastCompletedAt: 'lastCompletedAt',
+    nextDueDate: 'nextDueDate',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const MaintenanceOccurrenceScalarFieldEnum = {
+    id: 'id',
+    maintenancePlanId: 'maintenancePlanId',
+    dueDate: 'dueDate',
+    status: 'status',
+    completedAt: 'completedAt',
+    completedById: 'completedById',
+    workPerformed: 'workPerformed',
+    remarks: 'remarks',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+export const NotificationScalarFieldEnum = {
+    id: 'id',
+    key: 'key',
+    occurrenceId: 'occurrenceId',
+    kind: 'kind',
+    dueDate: 'dueDate',
+    title: 'title',
+    message: 'message',
+    createdAt: 'createdAt'
+};
+export const NotificationRecipientScalarFieldEnum = {
+    id: 'id',
+    notificationId: 'notificationId',
+    userId: 'userId',
+    isRead: 'isRead',
+    readAt: 'readAt',
+    createdAt: 'createdAt'
+};
+export const SchedulerRunScalarFieldEnum = {
+    id: 'id',
+    jobName: 'jobName',
+    runDate: 'runDate',
+    createdAt: 'createdAt'
+};
+export const WorkOrderNumberCounterScalarFieldEnum = {
+    year: 'year',
+    lastNumber: 'lastNumber',
+    updatedAt: 'updatedAt'
 };
 export const SortOrder = {
     asc: 'asc',

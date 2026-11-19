@@ -198,7 +198,140 @@ export interface MaintenanceRequestListResponse {
   pageSize: number;
 }
 
+export interface AuditLogItem {
+  id: number;
+  actorId: number | null;
+  action: string;
+  entityType: string;
+  entityId: number;
+  summary: string;
+  createdAt: string;
+  actor: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+}
 
+export interface AuditLogListResponse {
+  items: AuditLogItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export type MaintenanceFrequency =
+  | "DAILY"
+  | "WEEKLY"
+  | "MONTHLY"
+  | "QUARTERLY"
+  | "HALF_YEARLY"
+  | "YEARLY";
+
+export interface MaintenancePlan {
+  id: number;
+  equipmentId: number;
+  activity: string;
+  instructions: string | null;
+  frequency: MaintenanceFrequency;
+  assignedTechnicianId: number | null;
+  lastCompletedAt: string | null;
+  nextDueDate: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  equipment: {
+    id: number;
+    code: string;
+    name: string;
+    status: string;
+    isDeactivated: boolean;
+  } | null;
+  assignedTechnician: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+}
+
+export type MaintenanceOccurrenceStatus =
+  | "PENDING"
+  | "SCHEDULED"
+  | "COMPLETED"
+  | "MISSED"
+  | "CANCELLED";
+
+export interface MaintenanceOccurrence {
+  id: number;
+  maintenancePlanId: number;
+  dueDate: string;
+  status: MaintenanceOccurrenceStatus;
+  displayStatus?: "COMPLETED" | "CANCELLED" | "MISSED" | "OVERDUE" | "DUE" | "UPCOMING";
+  completedAt: string | null;
+  completedById: number | null;
+  workPerformed: string | null;
+  remarks: string | null;
+  createdAt: string;
+  updatedAt: string;
+  maintenancePlan?: MaintenancePlan;
+  completedBy?: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+  linkedWorkOrder?: Array<{
+    id: number;
+    workOrderNumber: string;
+    status: string;
+  }>;
+}
+
+export interface MaintenanceOccurrenceListResponse {
+  items: MaintenanceOccurrence[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export interface RelocationRecord {
+  id: number;
+  equipmentId: number;
+  equipment: {
+    id: number;
+    code: string;
+    name: string;
+  };
+  fromLocationId: number | null;
+  fromLocation: {
+    id: number;
+    name: string;
+  } | null;
+  toLocationId: number;
+  toLocation: {
+    id: number;
+    name: string;
+  };
+  reason: string;
+  relocatedAt: string;
+  relocatedBy: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+}
+
+export interface RelocationListResponse {
+  items: RelocationRecord[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
 
 export interface MaintenanceRequestFilters {
   requestType?: MaintenanceRequestType | "";
@@ -206,6 +339,41 @@ export interface MaintenanceRequestFilters {
   equipmentId?: number;
   page?: number;
   pageSize?: number;
+}
+
+export type NotificationKind = "REMINDER" | "OVERDUE" | "ALERT";
+
+export interface NotificationItem {
+  id: number;
+  key: string;
+  kind: NotificationKind;
+  dueDate: string;
+  title: string;
+  message: string;
+  createdAt: string;
+  occurrenceId: number | null;
+  isRead: boolean;
+  readAt: string | null;
+  recipientId: number;
+  occurrence: {
+    id: number;
+    dueDate: string;
+    status: string;
+    maintenancePlan: {
+      id: number;
+      activity: string;
+      equipment: {
+        id: number;
+        code: string;
+        name: string;
+      } | null;
+    } | null;
+  } | null;
+}
+
+export interface NotificationsResponse {
+  items: NotificationItem[];
+  unreadCount: number;
 }
 
 export interface CreateMaintenanceRequestInput {
@@ -223,6 +391,7 @@ export interface TransitionMaintenanceRequestInput {
   status: MaintenanceRequestStatus;
   comment?: string | null;
   outcome?: string | null;
+  implementationStatus?: string | null;
 }
 
 // ─── Generic API response ─────────────────────────────────────────────────────
@@ -233,6 +402,62 @@ export interface ApiResponse<T> {
   loading: boolean;
 }
 
+export type WorkOrderStatus = "OPEN" | "ASSIGNED" | "IN_PROGRESS" | "COMPLETED" | "CLOSED";
+
+export interface WorkOrderTechnician {
+  id: number;
+  name: string;
+  email: string;
+  role?: string;
+}
+
+export interface WorkOrder {
+  id: number;
+  workOrderNumber: string;
+  maintenanceRequestId: number;
+  equipmentId: number;
+  status: WorkOrderStatus;
+  assignedTechnicianId: number | null;
+  assignedById: number | null;
+  assignedAt: string | null;
+  startedAt: string | null;
+  completedAt: string | null;
+  closedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  equipment: {
+    id: number;
+    code: string;
+    name: string;
+    status: string;
+    criticality: string;
+  };
+  maintenanceRequest: {
+    id: number;
+    requestType: string;
+    status: string;
+    criticality: string;
+    description: string;
+    createdAt: string;
+  };
+  assignedTechnician: WorkOrderTechnician | null;
+  assignedBy: WorkOrderTechnician | null;
+}
+
+export interface WorkOrderFilters {
+  status?: WorkOrderStatus;
+  search?: string;
+  equipmentId?: number;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface WorkOrderListResponse {
+  items: WorkOrder[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
 export const api = {
   async getEquipment(
     filters: EquipmentFilters = {},
@@ -461,6 +686,187 @@ export const api = {
   },
 
   // Maintenance Requests
+  // Work Orders
+  async listWorkOrders(filters: WorkOrderFilters = {}): Promise<WorkOrderListResponse> {
+    const response = await apiClient.get<WorkOrderListResponse>("/work-orders", {
+      params: {
+        status: filters.status || undefined,
+        search: filters.search || undefined,
+        equipmentId: filters.equipmentId || undefined,
+        page: filters.page ?? 1,
+        pageSize: filters.pageSize ?? 10,
+      },
+    });
+    return response.data;
+  },
+
+  async getWorkOrderTechnicians(): Promise<WorkOrderTechnician[]> {
+    const response = await apiClient.get<WorkOrderTechnician[]>("/work-orders/technicians");
+    return response.data;
+  },
+
+  async assignWorkOrder(id: number, assignedTechnicianId: number): Promise<WorkOrder> {
+    const response = await apiClient.patch<WorkOrder>(`/work-orders/${id}/assign`, {
+      assignedTechnicianId,
+    });
+    return response.data;
+  },
+
+  async startWorkOrder(id: number): Promise<WorkOrder> {
+    const response = await apiClient.patch<WorkOrder>(`/work-orders/${id}/start`);
+    return response.data;
+  },
+
+  async completeWorkOrder(id: number): Promise<WorkOrder> {
+    const response = await apiClient.patch<WorkOrder>(`/work-orders/${id}/complete`);
+    return response.data;
+  },
+
+  async closeWorkOrder(id: number): Promise<WorkOrder> {
+    const response = await apiClient.patch<WorkOrder>(`/work-orders/${id}/close`);
+    return response.data;
+  },
+
+   async listMaintenancePlans(filters: { equipmentId?: number; isActive?: boolean } = {}): Promise<MaintenancePlan[]> {
+    const response = await apiClient.get<MaintenancePlan[]>("/maintenance-plans", {
+      params: {
+        equipmentId: filters.equipmentId ?? undefined,
+        isActive: filters.isActive ?? undefined,
+      },
+    });
+    return response.data;
+  },
+
+  async generateDueOccurrences(): Promise<{ generated: number; skipped: number }> {
+    const response = await apiClient.post<{ generated: number; skipped: number }>(
+      "/maintenance-plans/generate-due-occurrences",
+    );
+    return response.data;
+  },
+
+  async getAuditLogs(filters: { page?: number; pageSize?: number; search?: string } = {}): Promise<AuditLogListResponse> {
+    const response = await apiClient.get<AuditLogListResponse>("/audit-logs", {
+      params: {
+        search: filters.search || undefined,
+        page: filters.page ?? 1,
+        pageSize: filters.pageSize ?? 10,
+      },
+    });
+    return response.data;
+  },
+
+  async getNotifications(): Promise<NotificationsResponse> {
+    const response = await apiClient.get<NotificationsResponse>("/notifications");
+    return response.data;
+  },
+
+  async markNotificationRead(id: number): Promise<{ id: number; isRead: boolean; readAt: string | null }> {
+    const response = await apiClient.post<{ id: number; isRead: boolean; readAt: string | null }>(`/notifications/${id}/read`);
+    return response.data;
+  },
+
+  async completeMaintenanceOccurrence(
+    id: number,
+    data: { completedAt?: string; workPerformed?: string; remarks?: string } = {},
+  ): Promise<{ occurrence: MaintenanceOccurrence; plan: MaintenancePlan; createdNextOccurrence: boolean }> {
+    const response = await apiClient.post<{ occurrence: MaintenanceOccurrence; plan: MaintenancePlan; createdNextOccurrence: boolean }>(
+      `/maintenance-occurrences/${id}/complete`,
+      data,
+    );
+    return response.data;
+  },
+
+  async listMaintenanceOccurrences(filters: {
+    maintenancePlanId?: number;
+    planId?: number;
+    equipmentId?: number;
+    status?: string;
+    page?: number;
+    pageSize?: number;
+  } = {}): Promise<MaintenanceOccurrenceListResponse> {
+    const response = await apiClient.get<MaintenanceOccurrenceListResponse>("/maintenance-occurrences", {
+      params: {
+        maintenancePlanId: filters.maintenancePlanId ?? filters.planId ?? undefined,
+        equipmentId: filters.equipmentId ?? undefined,
+        status: filters.status || undefined,
+        page: filters.page ?? 1,
+        pageSize: filters.pageSize ?? 10,
+      },
+    });
+    return response.data;
+  },
+
+  async getMaintenancePlanOccurrences(planId: number): Promise<MaintenanceOccurrence[]> {
+    const response = await apiClient.get<MaintenanceOccurrence[]>(`/maintenance-plans/${planId}/occurrences`);
+    return response.data;
+  },
+
+  async createRelocation(data: {
+    equipmentId: number;
+    toLocationId: number;
+    reason: string;
+  }): Promise<RelocationRecord> {
+    const response = await apiClient.post<RelocationRecord>("/relocations", data);
+    return response.data;
+  },
+
+  async listRelocations(filters: {
+    equipmentId?: number;
+    search?: string;
+    page?: number;
+    pageSize?: number;
+  } = {}): Promise<RelocationListResponse> {
+    const response = await apiClient.get<RelocationListResponse>("/relocations", {
+      params: {
+        equipmentId: filters.equipmentId ?? undefined,
+        search: filters.search || undefined,
+        page: filters.page ?? 1,
+        pageSize: filters.pageSize ?? 10,
+      },
+    });
+    return response.data;
+  },
+
+  async getEquipmentRelocations(equipmentId: number): Promise<RelocationRecord[]> {
+    const response = await apiClient.get<RelocationRecord[]>(`/equipment/${equipmentId}/relocations`);
+    return response.data;
+  },
+
+  async getMaintenancePlan(id: number): Promise<MaintenancePlan> {
+    const response = await apiClient.get<MaintenancePlan>(`/maintenance-plans/${id}`);
+    return response.data;
+  },
+
+  async listMaintenancePlansByEquipment(equipmentId: number): Promise<MaintenancePlan[]> {
+    const response = await apiClient.get<MaintenancePlan[]>(`/equipment/${equipmentId}/maintenance-plans`);
+    return response.data;
+  },
+
+  async createMaintenancePlan(data: {
+    equipmentId: number;
+    activity: string;
+    instructions?: string;
+    frequency: MaintenanceFrequency;
+    assignedTechnicianId?: number | null;
+    nextDueDate?: string;
+    isActive?: boolean;
+  }): Promise<MaintenancePlan> {
+    const response = await apiClient.post<MaintenancePlan>("/maintenance-plans", data);
+    return response.data;
+  },
+
+  async updateMaintenancePlan(id: number, data: Partial<{
+    activity: string;
+    instructions: string | null;
+    frequency: MaintenanceFrequency;
+    assignedTechnicianId: number | null;
+    nextDueDate: string;
+    isActive: boolean;
+  }>): Promise<MaintenancePlan> {
+    const response = await apiClient.patch<MaintenancePlan>(`/maintenance-plans/${id}`, data);
+    return response.data;
+  },
+
   async listMaintenanceRequests(
     filters: MaintenanceRequestFilters = {},
   ): Promise<MaintenanceRequestListResponse> {
@@ -493,6 +899,47 @@ export const api = {
     data: TransitionMaintenanceRequestInput,
   ): Promise<MaintenanceRequest> {
     const response = await apiClient.patch<MaintenanceRequest>(`/requests/${id}/status`, data);
+    return response.data;
+  },
+
+  async getDashboardStats(): Promise<{
+    kpis: {
+      totalEquipment: number;
+      operationalEquipment: number;
+      operationalPercentage: number;
+      activeBreakdowns: number;
+      openWorkOrders: number;
+      inProgressWorkOrders: number;
+      overduePm: number;
+      downtimeThisMonthHours: number;
+    };
+    monthlyVolume: Array<{
+      month: string;
+      breakdown: number;
+      preventive: number;
+      kaizen: number;
+      relocation: number;
+    }>;
+    upcomingPm: Array<{
+      id: number;
+      equipmentCode: string;
+      equipmentName: string;
+      activity: string;
+      dueDate: string;
+      status: string;
+    }>;
+    recentWorkOrders: Array<{
+      id: number;
+      workOrderNumber: string;
+      equipmentCode: string;
+      equipmentName: string;
+      assignedTechnicianName: string | null;
+      priority: string;
+      status: string;
+      dueDate: string | null;
+    }>;
+  }> {
+    const response = await apiClient.get("/dashboard/stats");
     return response.data;
   },
 };

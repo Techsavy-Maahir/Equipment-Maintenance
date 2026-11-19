@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, handleApiError } from "../api";
+import NotificationBell from "../components/NotificationBell";
 import "./EquipmentListPage.css";
 
 const DEFAULT_PAGE_SIZE = 8;
@@ -240,7 +241,7 @@ export function EquipmentListPage({
           </a>
 
           <nav className="equipment-nav" aria-label="Main navigation">
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "dashboard" ? "is-active" : ""}`} onClick={() => onNavigate("dashboard")}>
               <MaterialIcon>dashboard</MaterialIcon><span>Dashboard</span>
             </button>
             <button
@@ -259,49 +260,53 @@ export function EquipmentListPage({
             >
               <MaterialIcon>build_circle</MaterialIcon><span>Maintenance Requests</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "approvals" ? "is-active" : ""}`} onClick={() => onNavigate("approvals")}>
               <MaterialIcon>verified</MaterialIcon><span>Approvals</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "work-orders" ? "is-active" : ""}`} onClick={() => onNavigate("work-orders")}>
               <MaterialIcon>assignment</MaterialIcon><span>Work Orders</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "preventive-maintenance" ? "is-active" : ""}`} onClick={() => onNavigate("preventive-maintenance")}>
               <MaterialIcon>event_repeat</MaterialIcon><span>Preventive Maintenance</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "kaizen" ? "is-active" : ""}`} onClick={() => onNavigate("kaizen")}>
               <MaterialIcon>trending_up</MaterialIcon><span>Kaizen</span>
             </button>
-            <button type="button" className="equipment-nav-item" disabled>
+            <button type="button" className={`equipment-nav-item ${currentPage === "relocation" ? "is-active" : ""}`} onClick={() => onNavigate("relocation")}>
               <MaterialIcon>swap_horiz</MaterialIcon><span>Relocation</span>
             </button>
           </nav>
 
-          <div className="equipment-nav-divider" />
-          <div className="equipment-admin-label">Administration</div>
-          <nav className="equipment-nav equipment-admin-nav" aria-label="Administration">
-            <button
-              type="button"
-              className={`equipment-nav-item ${currentPage === "master-data" ? "is-active" : ""}`}
-              onClick={() => onNavigate("master-data")}
-            >
-              <MaterialIcon>dataset</MaterialIcon><span>Master Data</span>
-            </button>
-            <button type="button" className="equipment-nav-item" disabled>
-              <MaterialIcon>history_edu</MaterialIcon><span>Audit Log</span>
-            </button>
-            {user?.role === "ADMIN" && (
-              <button
-                type="button"
-                className={`equipment-nav-item ${currentPage === "user-management" ? "is-active" : ""}`}
-                onClick={() => onNavigate("user-management")}
-              >
-                <MaterialIcon>group</MaterialIcon><span>User Management</span>
-              </button>
-            )}
-            <button type="button" className="equipment-nav-item" disabled>
-              <MaterialIcon>settings</MaterialIcon><span>Settings</span>
-            </button>
-          </nav>
+          {["ADMIN", "MANAGER"].includes(user?.role) && (
+            <>
+              <div className="equipment-nav-divider" />
+              <div className="equipment-admin-label">Administration</div>
+              <nav className="equipment-nav equipment-admin-nav" aria-label="Administration">
+                <button
+                  type="button"
+                  className={`equipment-nav-item ${currentPage === "master-data" ? "is-active" : ""}`}
+                  onClick={() => onNavigate("master-data")}
+                >
+                  <MaterialIcon>dataset</MaterialIcon><span>Master Data</span>
+                </button>
+                <button type="button" className={`equipment-nav-item ${currentPage === "audit-logs" ? "is-active" : ""}`} onClick={() => onNavigate("audit-logs")}>
+                  <MaterialIcon>history_edu</MaterialIcon><span>Audit Log</span>
+                </button>
+                {user?.role === "ADMIN" && (
+                  <button
+                    type="button"
+                    className={`equipment-nav-item ${currentPage === "user-management" ? "is-active" : ""}`}
+                    onClick={() => onNavigate("user-management")}
+                  >
+                    <MaterialIcon>group</MaterialIcon><span>User Management</span>
+                  </button>
+                )}
+                <button type="button" className="equipment-nav-item" disabled>
+                  <MaterialIcon>settings</MaterialIcon><span>Settings</span>
+                </button>
+              </nav>
+            </>
+          )}
         </div>
 
         <div className="equipment-release">
@@ -332,10 +337,7 @@ export function EquipmentListPage({
           </div>
 
           <div className="equipment-user-area">
-            <button type="button" className="equipment-notifications" aria-label="Notifications" disabled>
-              <MaterialIcon>notifications</MaterialIcon>
-              <span className="equipment-notification-dot" />
-            </button>
+            <NotificationBell />
             <span className="equipment-user-divider" />
             <div className="equipment-user-info">
               <span className="equipment-user-avatar">

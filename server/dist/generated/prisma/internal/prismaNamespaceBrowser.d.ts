@@ -50,6 +50,13 @@ export declare const ModelName: {
     readonly AuditLog: "AuditLog";
     readonly MaintenanceRequest: "MaintenanceRequest";
     readonly DecisionHistory: "DecisionHistory";
+    readonly WorkOrder: "WorkOrder";
+    readonly MaintenancePlan: "MaintenancePlan";
+    readonly MaintenanceOccurrence: "MaintenanceOccurrence";
+    readonly Notification: "Notification";
+    readonly NotificationRecipient: "NotificationRecipient";
+    readonly SchedulerRun: "SchedulerRun";
+    readonly WorkOrderNumberCounter: "WorkOrderNumberCounter";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -162,6 +169,83 @@ export declare const DecisionHistoryScalarFieldEnum: {
     readonly createdAt: "createdAt";
 };
 export type DecisionHistoryScalarFieldEnum = (typeof DecisionHistoryScalarFieldEnum)[keyof typeof DecisionHistoryScalarFieldEnum];
+export declare const WorkOrderScalarFieldEnum: {
+    readonly id: "id";
+    readonly workOrderNumber: "workOrderNumber";
+    readonly maintenanceRequestId: "maintenanceRequestId";
+    readonly equipmentId: "equipmentId";
+    readonly status: "status";
+    readonly maintenanceOccurrenceId: "maintenanceOccurrenceId";
+    readonly assignedTechnicianId: "assignedTechnicianId";
+    readonly assignedById: "assignedById";
+    readonly assignedAt: "assignedAt";
+    readonly startedAt: "startedAt";
+    readonly completedAt: "completedAt";
+    readonly closedAt: "closedAt";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type WorkOrderScalarFieldEnum = (typeof WorkOrderScalarFieldEnum)[keyof typeof WorkOrderScalarFieldEnum];
+export declare const MaintenancePlanScalarFieldEnum: {
+    readonly id: "id";
+    readonly equipmentId: "equipmentId";
+    readonly activity: "activity";
+    readonly instructions: "instructions";
+    readonly frequency: "frequency";
+    readonly assignedTechnicianId: "assignedTechnicianId";
+    readonly lastCompletedAt: "lastCompletedAt";
+    readonly nextDueDate: "nextDueDate";
+    readonly isActive: "isActive";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type MaintenancePlanScalarFieldEnum = (typeof MaintenancePlanScalarFieldEnum)[keyof typeof MaintenancePlanScalarFieldEnum];
+export declare const MaintenanceOccurrenceScalarFieldEnum: {
+    readonly id: "id";
+    readonly maintenancePlanId: "maintenancePlanId";
+    readonly dueDate: "dueDate";
+    readonly status: "status";
+    readonly completedAt: "completedAt";
+    readonly completedById: "completedById";
+    readonly workPerformed: "workPerformed";
+    readonly remarks: "remarks";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type MaintenanceOccurrenceScalarFieldEnum = (typeof MaintenanceOccurrenceScalarFieldEnum)[keyof typeof MaintenanceOccurrenceScalarFieldEnum];
+export declare const NotificationScalarFieldEnum: {
+    readonly id: "id";
+    readonly key: "key";
+    readonly occurrenceId: "occurrenceId";
+    readonly kind: "kind";
+    readonly dueDate: "dueDate";
+    readonly title: "title";
+    readonly message: "message";
+    readonly createdAt: "createdAt";
+};
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum];
+export declare const NotificationRecipientScalarFieldEnum: {
+    readonly id: "id";
+    readonly notificationId: "notificationId";
+    readonly userId: "userId";
+    readonly isRead: "isRead";
+    readonly readAt: "readAt";
+    readonly createdAt: "createdAt";
+};
+export type NotificationRecipientScalarFieldEnum = (typeof NotificationRecipientScalarFieldEnum)[keyof typeof NotificationRecipientScalarFieldEnum];
+export declare const SchedulerRunScalarFieldEnum: {
+    readonly id: "id";
+    readonly jobName: "jobName";
+    readonly runDate: "runDate";
+    readonly createdAt: "createdAt";
+};
+export type SchedulerRunScalarFieldEnum = (typeof SchedulerRunScalarFieldEnum)[keyof typeof SchedulerRunScalarFieldEnum];
+export declare const WorkOrderNumberCounterScalarFieldEnum: {
+    readonly year: "year";
+    readonly lastNumber: "lastNumber";
+    readonly updatedAt: "updatedAt";
+};
+export type WorkOrderNumberCounterScalarFieldEnum = (typeof WorkOrderNumberCounterScalarFieldEnum)[keyof typeof WorkOrderNumberCounterScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";

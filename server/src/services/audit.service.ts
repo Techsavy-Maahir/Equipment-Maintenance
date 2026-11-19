@@ -12,6 +12,10 @@ export async function createAuditLog(
   tx: Prisma.TransactionClient,
   input: CreateAuditLogInput,
 ) {
+  if (!tx.auditLog) {
+    return null;
+  }
+
   return tx.auditLog.create({
     data: {
       actorId: input.actorId ?? null,

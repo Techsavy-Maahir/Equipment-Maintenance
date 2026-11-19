@@ -273,6 +273,7 @@ export type MaintenanceRequestWhereInput = {
     requester?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     reviewer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null;
     decisionHistory?: Prisma.DecisionHistoryListRelationFilter;
+    workOrder?: Prisma.XOR<Prisma.WorkOrderNullableScalarRelationFilter, Prisma.WorkOrderWhereInput> | null;
 };
 export type MaintenanceRequestOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
@@ -295,6 +296,7 @@ export type MaintenanceRequestOrderByWithRelationInput = {
     requester?: Prisma.UserOrderByWithRelationInput;
     reviewer?: Prisma.UserOrderByWithRelationInput;
     decisionHistory?: Prisma.DecisionHistoryOrderByRelationAggregateInput;
+    workOrder?: Prisma.WorkOrderOrderByWithRelationInput;
 };
 export type MaintenanceRequestWhereUniqueInput = Prisma.AtLeast<{
     id?: number;
@@ -320,6 +322,7 @@ export type MaintenanceRequestWhereUniqueInput = Prisma.AtLeast<{
     requester?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     reviewer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null;
     decisionHistory?: Prisma.DecisionHistoryListRelationFilter;
+    workOrder?: Prisma.XOR<Prisma.WorkOrderNullableScalarRelationFilter, Prisma.WorkOrderWhereInput> | null;
 }, "id">;
 export type MaintenanceRequestOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
@@ -382,6 +385,7 @@ export type MaintenanceRequestCreateInput = {
     requester: Prisma.UserCreateNestedOneWithoutRequestedMaintenanceRequestsInput;
     reviewer?: Prisma.UserCreateNestedOneWithoutReviewedMaintenanceRequestsInput;
     decisionHistory?: Prisma.DecisionHistoryCreateNestedManyWithoutRequestInput;
+    workOrder?: Prisma.WorkOrderCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestUncheckedCreateInput = {
     id?: number;
@@ -401,6 +405,7 @@ export type MaintenanceRequestUncheckedCreateInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     decisionHistory?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutRequestInput;
+    workOrder?: Prisma.WorkOrderUncheckedCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestUpdateInput = {
     requestType?: Prisma.EnumMaintenanceRequestTypeFieldUpdateOperationsInput | $Enums.MaintenanceRequestType;
@@ -419,6 +424,7 @@ export type MaintenanceRequestUpdateInput = {
     requester?: Prisma.UserUpdateOneRequiredWithoutRequestedMaintenanceRequestsNestedInput;
     reviewer?: Prisma.UserUpdateOneWithoutReviewedMaintenanceRequestsNestedInput;
     decisionHistory?: Prisma.DecisionHistoryUpdateManyWithoutRequestNestedInput;
+    workOrder?: Prisma.WorkOrderUpdateOneWithoutMaintenanceRequestNestedInput;
 };
 export type MaintenanceRequestUncheckedUpdateInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -438,6 +444,7 @@ export type MaintenanceRequestUncheckedUpdateInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     decisionHistory?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutRequestNestedInput;
+    workOrder?: Prisma.WorkOrderUncheckedUpdateOneWithoutMaintenanceRequestNestedInput;
 };
 export type MaintenanceRequestCreateManyInput = {
     id?: number;
@@ -699,6 +706,18 @@ export type MaintenanceRequestUpdateOneRequiredWithoutDecisionHistoryNestedInput
     connect?: Prisma.MaintenanceRequestWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.MaintenanceRequestUpdateToOneWithWhereWithoutDecisionHistoryInput, Prisma.MaintenanceRequestUpdateWithoutDecisionHistoryInput>, Prisma.MaintenanceRequestUncheckedUpdateWithoutDecisionHistoryInput>;
 };
+export type MaintenanceRequestCreateNestedOneWithoutWorkOrderInput = {
+    create?: Prisma.XOR<Prisma.MaintenanceRequestCreateWithoutWorkOrderInput, Prisma.MaintenanceRequestUncheckedCreateWithoutWorkOrderInput>;
+    connectOrCreate?: Prisma.MaintenanceRequestCreateOrConnectWithoutWorkOrderInput;
+    connect?: Prisma.MaintenanceRequestWhereUniqueInput;
+};
+export type MaintenanceRequestUpdateOneRequiredWithoutWorkOrderNestedInput = {
+    create?: Prisma.XOR<Prisma.MaintenanceRequestCreateWithoutWorkOrderInput, Prisma.MaintenanceRequestUncheckedCreateWithoutWorkOrderInput>;
+    connectOrCreate?: Prisma.MaintenanceRequestCreateOrConnectWithoutWorkOrderInput;
+    upsert?: Prisma.MaintenanceRequestUpsertWithoutWorkOrderInput;
+    connect?: Prisma.MaintenanceRequestWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.MaintenanceRequestUpdateToOneWithWhereWithoutWorkOrderInput, Prisma.MaintenanceRequestUpdateWithoutWorkOrderInput>, Prisma.MaintenanceRequestUncheckedUpdateWithoutWorkOrderInput>;
+};
 export type MaintenanceRequestCreateWithoutRequesterInput = {
     requestType: $Enums.MaintenanceRequestType;
     status?: $Enums.MaintenanceRequestStatus;
@@ -715,6 +734,7 @@ export type MaintenanceRequestCreateWithoutRequesterInput = {
     equipment: Prisma.EquipmentCreateNestedOneWithoutMaintenanceRequestsInput;
     reviewer?: Prisma.UserCreateNestedOneWithoutReviewedMaintenanceRequestsInput;
     decisionHistory?: Prisma.DecisionHistoryCreateNestedManyWithoutRequestInput;
+    workOrder?: Prisma.WorkOrderCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestUncheckedCreateWithoutRequesterInput = {
     id?: number;
@@ -733,6 +753,7 @@ export type MaintenanceRequestUncheckedCreateWithoutRequesterInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     decisionHistory?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutRequestInput;
+    workOrder?: Prisma.WorkOrderUncheckedCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestCreateOrConnectWithoutRequesterInput = {
     where: Prisma.MaintenanceRequestWhereUniqueInput;
@@ -758,6 +779,7 @@ export type MaintenanceRequestCreateWithoutReviewerInput = {
     equipment: Prisma.EquipmentCreateNestedOneWithoutMaintenanceRequestsInput;
     requester: Prisma.UserCreateNestedOneWithoutRequestedMaintenanceRequestsInput;
     decisionHistory?: Prisma.DecisionHistoryCreateNestedManyWithoutRequestInput;
+    workOrder?: Prisma.WorkOrderCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestUncheckedCreateWithoutReviewerInput = {
     id?: number;
@@ -776,6 +798,7 @@ export type MaintenanceRequestUncheckedCreateWithoutReviewerInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     decisionHistory?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutRequestInput;
+    workOrder?: Prisma.WorkOrderUncheckedCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestCreateOrConnectWithoutReviewerInput = {
     where: Prisma.MaintenanceRequestWhereUniqueInput;
@@ -848,6 +871,7 @@ export type MaintenanceRequestCreateWithoutEquipmentInput = {
     requester: Prisma.UserCreateNestedOneWithoutRequestedMaintenanceRequestsInput;
     reviewer?: Prisma.UserCreateNestedOneWithoutReviewedMaintenanceRequestsInput;
     decisionHistory?: Prisma.DecisionHistoryCreateNestedManyWithoutRequestInput;
+    workOrder?: Prisma.WorkOrderCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestUncheckedCreateWithoutEquipmentInput = {
     id?: number;
@@ -866,6 +890,7 @@ export type MaintenanceRequestUncheckedCreateWithoutEquipmentInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     decisionHistory?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutRequestInput;
+    workOrder?: Prisma.WorkOrderUncheckedCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestCreateOrConnectWithoutEquipmentInput = {
     where: Prisma.MaintenanceRequestWhereUniqueInput;
@@ -904,6 +929,7 @@ export type MaintenanceRequestCreateWithoutDecisionHistoryInput = {
     equipment: Prisma.EquipmentCreateNestedOneWithoutMaintenanceRequestsInput;
     requester: Prisma.UserCreateNestedOneWithoutRequestedMaintenanceRequestsInput;
     reviewer?: Prisma.UserCreateNestedOneWithoutReviewedMaintenanceRequestsInput;
+    workOrder?: Prisma.WorkOrderCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestUncheckedCreateWithoutDecisionHistoryInput = {
     id?: number;
@@ -922,6 +948,7 @@ export type MaintenanceRequestUncheckedCreateWithoutDecisionHistoryInput = {
     implementationStatus?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    workOrder?: Prisma.WorkOrderUncheckedCreateNestedOneWithoutMaintenanceRequestInput;
 };
 export type MaintenanceRequestCreateOrConnectWithoutDecisionHistoryInput = {
     where: Prisma.MaintenanceRequestWhereUniqueInput;
@@ -952,6 +979,7 @@ export type MaintenanceRequestUpdateWithoutDecisionHistoryInput = {
     equipment?: Prisma.EquipmentUpdateOneRequiredWithoutMaintenanceRequestsNestedInput;
     requester?: Prisma.UserUpdateOneRequiredWithoutRequestedMaintenanceRequestsNestedInput;
     reviewer?: Prisma.UserUpdateOneWithoutReviewedMaintenanceRequestsNestedInput;
+    workOrder?: Prisma.WorkOrderUpdateOneWithoutMaintenanceRequestNestedInput;
 };
 export type MaintenanceRequestUncheckedUpdateWithoutDecisionHistoryInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -970,6 +998,94 @@ export type MaintenanceRequestUncheckedUpdateWithoutDecisionHistoryInput = {
     implementationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    workOrder?: Prisma.WorkOrderUncheckedUpdateOneWithoutMaintenanceRequestNestedInput;
+};
+export type MaintenanceRequestCreateWithoutWorkOrderInput = {
+    requestType: $Enums.MaintenanceRequestType;
+    status?: $Enums.MaintenanceRequestStatus;
+    description: string;
+    criticality: $Enums.Criticality;
+    decisionReason?: string | null;
+    problem?: string | null;
+    proposedSolution?: string | null;
+    expectedBenefit?: string | null;
+    outcome?: string | null;
+    implementationStatus?: string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    equipment: Prisma.EquipmentCreateNestedOneWithoutMaintenanceRequestsInput;
+    requester: Prisma.UserCreateNestedOneWithoutRequestedMaintenanceRequestsInput;
+    reviewer?: Prisma.UserCreateNestedOneWithoutReviewedMaintenanceRequestsInput;
+    decisionHistory?: Prisma.DecisionHistoryCreateNestedManyWithoutRequestInput;
+};
+export type MaintenanceRequestUncheckedCreateWithoutWorkOrderInput = {
+    id?: number;
+    requestType: $Enums.MaintenanceRequestType;
+    status?: $Enums.MaintenanceRequestStatus;
+    equipmentId: number;
+    requesterId: number;
+    description: string;
+    criticality: $Enums.Criticality;
+    reviewerId?: number | null;
+    decisionReason?: string | null;
+    problem?: string | null;
+    proposedSolution?: string | null;
+    expectedBenefit?: string | null;
+    outcome?: string | null;
+    implementationStatus?: string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    decisionHistory?: Prisma.DecisionHistoryUncheckedCreateNestedManyWithoutRequestInput;
+};
+export type MaintenanceRequestCreateOrConnectWithoutWorkOrderInput = {
+    where: Prisma.MaintenanceRequestWhereUniqueInput;
+    create: Prisma.XOR<Prisma.MaintenanceRequestCreateWithoutWorkOrderInput, Prisma.MaintenanceRequestUncheckedCreateWithoutWorkOrderInput>;
+};
+export type MaintenanceRequestUpsertWithoutWorkOrderInput = {
+    update: Prisma.XOR<Prisma.MaintenanceRequestUpdateWithoutWorkOrderInput, Prisma.MaintenanceRequestUncheckedUpdateWithoutWorkOrderInput>;
+    create: Prisma.XOR<Prisma.MaintenanceRequestCreateWithoutWorkOrderInput, Prisma.MaintenanceRequestUncheckedCreateWithoutWorkOrderInput>;
+    where?: Prisma.MaintenanceRequestWhereInput;
+};
+export type MaintenanceRequestUpdateToOneWithWhereWithoutWorkOrderInput = {
+    where?: Prisma.MaintenanceRequestWhereInput;
+    data: Prisma.XOR<Prisma.MaintenanceRequestUpdateWithoutWorkOrderInput, Prisma.MaintenanceRequestUncheckedUpdateWithoutWorkOrderInput>;
+};
+export type MaintenanceRequestUpdateWithoutWorkOrderInput = {
+    requestType?: Prisma.EnumMaintenanceRequestTypeFieldUpdateOperationsInput | $Enums.MaintenanceRequestType;
+    status?: Prisma.EnumMaintenanceRequestStatusFieldUpdateOperationsInput | $Enums.MaintenanceRequestStatus;
+    description?: Prisma.StringFieldUpdateOperationsInput | string;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    problem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    proposedSolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    expectedBenefit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    implementationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    equipment?: Prisma.EquipmentUpdateOneRequiredWithoutMaintenanceRequestsNestedInput;
+    requester?: Prisma.UserUpdateOneRequiredWithoutRequestedMaintenanceRequestsNestedInput;
+    reviewer?: Prisma.UserUpdateOneWithoutReviewedMaintenanceRequestsNestedInput;
+    decisionHistory?: Prisma.DecisionHistoryUpdateManyWithoutRequestNestedInput;
+};
+export type MaintenanceRequestUncheckedUpdateWithoutWorkOrderInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    requestType?: Prisma.EnumMaintenanceRequestTypeFieldUpdateOperationsInput | $Enums.MaintenanceRequestType;
+    status?: Prisma.EnumMaintenanceRequestStatusFieldUpdateOperationsInput | $Enums.MaintenanceRequestStatus;
+    equipmentId?: Prisma.IntFieldUpdateOperationsInput | number;
+    requesterId?: Prisma.IntFieldUpdateOperationsInput | number;
+    description?: Prisma.StringFieldUpdateOperationsInput | string;
+    criticality?: Prisma.EnumCriticalityFieldUpdateOperationsInput | $Enums.Criticality;
+    reviewerId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    problem?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    proposedSolution?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    expectedBenefit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    implementationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    decisionHistory?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutRequestNestedInput;
 };
 export type MaintenanceRequestCreateManyRequesterInput = {
     id?: number;
@@ -1021,6 +1137,7 @@ export type MaintenanceRequestUpdateWithoutRequesterInput = {
     equipment?: Prisma.EquipmentUpdateOneRequiredWithoutMaintenanceRequestsNestedInput;
     reviewer?: Prisma.UserUpdateOneWithoutReviewedMaintenanceRequestsNestedInput;
     decisionHistory?: Prisma.DecisionHistoryUpdateManyWithoutRequestNestedInput;
+    workOrder?: Prisma.WorkOrderUpdateOneWithoutMaintenanceRequestNestedInput;
 };
 export type MaintenanceRequestUncheckedUpdateWithoutRequesterInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1039,6 +1156,7 @@ export type MaintenanceRequestUncheckedUpdateWithoutRequesterInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     decisionHistory?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutRequestNestedInput;
+    workOrder?: Prisma.WorkOrderUncheckedUpdateOneWithoutMaintenanceRequestNestedInput;
 };
 export type MaintenanceRequestUncheckedUpdateManyWithoutRequesterInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1073,6 +1191,7 @@ export type MaintenanceRequestUpdateWithoutReviewerInput = {
     equipment?: Prisma.EquipmentUpdateOneRequiredWithoutMaintenanceRequestsNestedInput;
     requester?: Prisma.UserUpdateOneRequiredWithoutRequestedMaintenanceRequestsNestedInput;
     decisionHistory?: Prisma.DecisionHistoryUpdateManyWithoutRequestNestedInput;
+    workOrder?: Prisma.WorkOrderUpdateOneWithoutMaintenanceRequestNestedInput;
 };
 export type MaintenanceRequestUncheckedUpdateWithoutReviewerInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1091,6 +1210,7 @@ export type MaintenanceRequestUncheckedUpdateWithoutReviewerInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     decisionHistory?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutRequestNestedInput;
+    workOrder?: Prisma.WorkOrderUncheckedUpdateOneWithoutMaintenanceRequestNestedInput;
 };
 export type MaintenanceRequestUncheckedUpdateManyWithoutReviewerInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1142,6 +1262,7 @@ export type MaintenanceRequestUpdateWithoutEquipmentInput = {
     requester?: Prisma.UserUpdateOneRequiredWithoutRequestedMaintenanceRequestsNestedInput;
     reviewer?: Prisma.UserUpdateOneWithoutReviewedMaintenanceRequestsNestedInput;
     decisionHistory?: Prisma.DecisionHistoryUpdateManyWithoutRequestNestedInput;
+    workOrder?: Prisma.WorkOrderUpdateOneWithoutMaintenanceRequestNestedInput;
 };
 export type MaintenanceRequestUncheckedUpdateWithoutEquipmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1160,6 +1281,7 @@ export type MaintenanceRequestUncheckedUpdateWithoutEquipmentInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     decisionHistory?: Prisma.DecisionHistoryUncheckedUpdateManyWithoutRequestNestedInput;
+    workOrder?: Prisma.WorkOrderUncheckedUpdateOneWithoutMaintenanceRequestNestedInput;
 };
 export type MaintenanceRequestUncheckedUpdateManyWithoutEquipmentInput = {
     id?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -1223,6 +1345,7 @@ export type MaintenanceRequestSelect<ExtArgs extends runtime.Types.Extensions.In
     requester?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
     reviewer?: boolean | Prisma.MaintenanceRequest$reviewerArgs<ExtArgs>;
     decisionHistory?: boolean | Prisma.MaintenanceRequest$decisionHistoryArgs<ExtArgs>;
+    workOrder?: boolean | Prisma.MaintenanceRequest$workOrderArgs<ExtArgs>;
     _count?: boolean | Prisma.MaintenanceRequestCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["maintenanceRequest"]>;
 export type MaintenanceRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1291,6 +1414,7 @@ export type MaintenanceRequestInclude<ExtArgs extends runtime.Types.Extensions.I
     requester?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
     reviewer?: boolean | Prisma.MaintenanceRequest$reviewerArgs<ExtArgs>;
     decisionHistory?: boolean | Prisma.MaintenanceRequest$decisionHistoryArgs<ExtArgs>;
+    workOrder?: boolean | Prisma.MaintenanceRequest$workOrderArgs<ExtArgs>;
     _count?: boolean | Prisma.MaintenanceRequestCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type MaintenanceRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1310,6 +1434,7 @@ export type $MaintenanceRequestPayload<ExtArgs extends runtime.Types.Extensions.
         requester: Prisma.$UserPayload<ExtArgs>;
         reviewer: Prisma.$UserPayload<ExtArgs> | null;
         decisionHistory: Prisma.$DecisionHistoryPayload<ExtArgs>[];
+        workOrder: Prisma.$WorkOrderPayload<ExtArgs> | null;
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: number;
@@ -1661,6 +1786,7 @@ export interface Prisma__MaintenanceRequestClient<T, Null = never, ExtArgs exten
     requester<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
     reviewer<T extends Prisma.MaintenanceRequest$reviewerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaintenanceRequest$reviewerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
     decisionHistory<T extends Prisma.MaintenanceRequest$decisionHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaintenanceRequest$decisionHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DecisionHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    workOrder<T extends Prisma.MaintenanceRequest$workOrderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaintenanceRequest$workOrderArgs<ExtArgs>>): Prisma.Prisma__WorkOrderClient<runtime.Types.Result.GetResult<Prisma.$WorkOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2120,6 +2246,24 @@ export type MaintenanceRequest$decisionHistoryArgs<ExtArgs extends runtime.Types
     take?: number;
     skip?: number;
     distinct?: Prisma.DecisionHistoryScalarFieldEnum | Prisma.DecisionHistoryScalarFieldEnum[];
+};
+/**
+ * MaintenanceRequest.workOrder
+ */
+export type MaintenanceRequest$workOrderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkOrder
+     */
+    select?: Prisma.WorkOrderSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the WorkOrder
+     */
+    omit?: Prisma.WorkOrderOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.WorkOrderInclude<ExtArgs> | null;
+    where?: Prisma.WorkOrderWhereInput;
 };
 /**
  * MaintenanceRequest without action

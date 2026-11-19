@@ -5,7 +5,9 @@ import { AppError, ValidationError } from "./errors.js";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js";
 import { env } from "./env.js";
 import cookieParser from "cookie-parser";
+import { prisma } from "./prisma.js";
 import { authService } from "./services/auth.service.js";
+import { getDashboardStats } from "./services/dashboard.service.js";
 import {
   authMiddleware,
   requireAdmin,
@@ -69,11 +71,58 @@ import {
   transitionMaintenanceRequest,
 } from "./services/request.service.js";
 import {
+  assignWorkOrder,
+  closeWorkOrder,
+  completeWorkOrder,
+  listWorkOrders,
+  startWorkOrder,
+} from "./services/work-order.service.js";
+import {
+  completeMaintenanceOccurrence,
+  createMaintenancePlan,
+  generateDueOccurrencesForActivePlans,
+  generateOccurrenceForPlan,
+  getMaintenanceOccurrence,
+  getMaintenancePlan,
+  listMaintenanceOccurrences,
+  listMaintenancePlans,
+  listMaintenancePlansForEquipment,
+  listOccurrencesForPlan,
+  updateMaintenancePlan,
+} from "./services/maintenance.service.js";
+import {
+  getNotificationsForUser,
+  markNotificationRead,
+} from "./services/notification.service.js";
+import { listActiveTechnicians } from "./services/user.service.js";
+import {
   createMaintenanceRequestSchema,
   maintenanceRequestIdSchema,
   maintenanceRequestListQuerySchema,
   transitionMaintenanceRequestSchema,
 } from "./schemas/request.schema.js";
+import {
+  assignWorkOrderSchema,
+  workOrderIdSchema,
+  workOrderListQuerySchema,
+} from "./schemas/work-order.schema.js";
+import {
+  completeMaintenanceOccurrenceSchema,
+  createMaintenancePlanSchema,
+  maintenanceOccurrenceIdSchema,
+  maintenanceOccurrenceListQuerySchema,
+  maintenancePlanIdSchema,
+  updateMaintenancePlanSchema,
+} from "./schemas/maintenance.schema.js";
+import {
+  createRelocationSchema,
+  relocationListQuerySchema,
+} from "./schemas/relocation.schema.js";
+import {
+  getRelocationsForEquipment,
+  listRelocations,
+  relocateEquipment,
+} from "./services/relocation.service.js";
 
 const app = express();
 
@@ -137,6 +186,17 @@ app.get("/api/me", authMiddleware, async (req: AuthRequest, res: Response, next:
   try {
     const user = await authService.getCurrentUser(req.userId!);
     res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET /api/dashboard/stats
+app.get("/api/dashboard/stats", authMiddleware, async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const user = req.user || { id: req.userId!, role: "VIEWER" };
+    const stats = await getDashboardStats(user);
+    res.status(200).json(stats);
   } catch (error) {
     next(error);
   }
@@ -315,6 +375,455 @@ app.get(
   },
 );
 
+// ==================== RELOCATIONS ====================
+
+app.post(
+  "/api/relocations",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  validate(createRelocationSchema),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const result = await relocateEquipment(req.body, req.user!);
+      res.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/relocations",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedQuery = relocationListQuerySchema.safeParse(req.query);
+      if (!parsedQuery.success) {
+        const details: Record<string, string> = {};
+        parsedQuery.error.issues.forEach((issue) => {
+          details[issue.path.join(".")] = issue.message;
+        });
+        throw new ValidationError(details);
+      }
+
+      const result = await listRelocations(parsedQuery.data);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/equipment/:id/relocations",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const equipmentId = parseEquipmentId(req.params.id);
+      const result = await getRelocationsForEquipment(equipmentId);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+// ==================== WORK ORDERS ====================
+
+app.get(
+  "/api/work-orders",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsed = workOrderListQuerySchema.safeParse(req.query);
+      if (!parsed.success) {
+        throw new ValidationError(parsed.error.flatten().fieldErrors);
+      }
+
+      const workOrders = await listWorkOrders(parsed.data, req.user!);
+      res.status(200).json(workOrders);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/work-orders/technicians",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+      const technicians = await listActiveTechnicians();
+      res.status(200).json(technicians);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.patch(
+  "/api/work-orders/:id/assign",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  validate(assignWorkOrderSchema),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = workOrderIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid work order ID" });
+      }
+
+      const workOrder = await assignWorkOrder(
+        parsedId.data,
+        req.body.assignedTechnicianId,
+        req.user!,
+      );
+      res.status(200).json(workOrder);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.patch(
+  "/api/work-orders/:id/start",
+  authMiddleware,
+  requireRole("TECHNICIAN"),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = workOrderIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid work order ID" });
+      }
+
+      const workOrder = await startWorkOrder(parsedId.data, req.user!);
+      res.status(200).json(workOrder);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.patch(
+  "/api/work-orders/:id/complete",
+  authMiddleware,
+  requireRole("TECHNICIAN"),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = workOrderIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid work order ID" });
+      }
+
+      const workOrder = await completeWorkOrder(parsedId.data, req.user!);
+      res.status(200).json(workOrder);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.patch(
+  "/api/work-orders/:id/close",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = workOrderIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid work order ID" });
+      }
+
+      const workOrder = await closeWorkOrder(parsedId.data, req.user!);
+      res.status(200).json(workOrder);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+// ==================== PREVENTIVE MAINTENANCE ====================
+
+app.get(
+  "/api/equipment/:id/maintenance-plans",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const equipmentId = parseEquipmentId(req.params.id);
+      const plans = await listMaintenancePlansForEquipment(equipmentId);
+      res.status(200).json(plans);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/maintenance-plans",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const equipmentId = req.query.equipmentId
+        ? parseEquipmentId(String(req.query.equipmentId))
+        : undefined;
+      const plans = await listMaintenancePlans({ equipmentId });
+      res.status(200).json(plans);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/maintenance-plans/:id",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = maintenancePlanIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid maintenance plan ID" });
+      }
+
+      const plan = await getMaintenancePlan(parsedId.data);
+      res.status(200).json(plan);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.post(
+  "/api/maintenance-plans",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  validate(createMaintenancePlanSchema),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const plan = await createMaintenancePlan(req.body, req.user!);
+      res.status(201).json(plan);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.patch(
+  "/api/maintenance-plans/:id",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  validate(updateMaintenancePlanSchema),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = maintenancePlanIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid maintenance plan ID" });
+      }
+
+      const plan = await updateMaintenancePlan(parsedId.data, req.body, req.user!);
+      res.status(200).json(plan);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/maintenance-plans/:id/occurrences",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = maintenancePlanIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid maintenance plan ID" });
+      }
+
+      const occurrences = await listOccurrencesForPlan(parsedId.data);
+      res.status(200).json(occurrences);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/maintenance-occurrences",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedQuery = maintenanceOccurrenceListQuerySchema.safeParse(req.query);
+      if (!parsedQuery.success) {
+        const details: Record<string, string> = {};
+        parsedQuery.error.issues.forEach((issue) => {
+          details[issue.path.join(".")] = issue.message;
+        });
+        throw new ValidationError(details);
+      }
+
+      const result = await listMaintenanceOccurrences(parsedQuery.data);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/maintenance-occurrences/:id",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = maintenanceOccurrenceIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid maintenance occurrence ID" });
+      }
+
+      const occurrence = await getMaintenanceOccurrence(parsedId.data);
+      res.status(200).json(occurrence);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.post(
+  "/api/maintenance-plans/:id/generate-occurrence",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = maintenancePlanIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid maintenance plan ID" });
+      }
+
+      const result = await generateOccurrenceForPlan(parsedId.data);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.post(
+  "/api/maintenance-plans/generate-due-occurrences",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  async (_req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const result = await generateDueOccurrencesForActivePlans();
+      res.status(200).json({
+        generated: result.filter((entry) => entry.created).length,
+        skipped: result.filter((entry) => !entry.created).length,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/notifications",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const notifications = await getNotificationsForUser(req.user!.id);
+      res.status(200).json(notifications);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.post(
+  "/api/notifications/:id/read",
+  authMiddleware,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const notificationId = Number(req.params.id);
+      if (!Number.isInteger(notificationId) || notificationId <= 0) {
+        throw new ValidationError({ id: "Invalid notification ID" });
+      }
+
+      const result = await markNotificationRead(notificationId, req.user!.id);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.get(
+  "/api/audit-logs",
+  authMiddleware,
+  requireRole("ADMIN", "MANAGER"),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const page = Number(req.query.page ?? 1);
+      const pageSize = Number(req.query.pageSize ?? 10);
+      const search = typeof req.query.search === "string" ? req.query.search.trim() : "";
+
+      const searchFilter = { contains: search, mode: "insensitive" as const };
+      const where = search
+        ? {
+            OR: [
+              { action: searchFilter },
+              { summary: searchFilter },
+              { entityType: searchFilter },
+            ],
+          }
+        : {};
+
+      const [total, items] = await Promise.all([
+        prisma.auditLog.count({ where }),
+        prisma.auditLog.findMany({
+          where,
+          include: {
+            actor: {
+              select: { id: true, name: true, email: true, role: true },
+            },
+          },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          skip: (page > 0 ? page - 1 : 0) * Math.max(pageSize, 1),
+          take: Math.max(pageSize, 1),
+        }),
+      ]);
+
+      res.status(200).json({
+        items,
+        total,
+        page: page > 0 ? page : 1,
+        pageSize: Math.max(pageSize, 1),
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+app.post(
+  "/api/maintenance-occurrences/:id/complete",
+  authMiddleware,
+  validate(completeMaintenanceOccurrenceSchema),
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const parsedId = maintenanceOccurrenceIdSchema.safeParse(req.params.id);
+      if (!parsedId.success) {
+        throw new ValidationError({ id: "Invalid maintenance occurrence ID" });
+      }
+
+      const result = await completeMaintenanceOccurrence(
+        parsedId.data,
+        req.body,
+        req.user!,
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 // ==================== MAINTENANCE REQUESTS ====================
 
 app.get(

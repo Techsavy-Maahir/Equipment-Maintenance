@@ -210,6 +210,83 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get decisionHistory(): Prisma.DecisionHistoryDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    /**
+     * `prisma.workOrder`: Exposes CRUD operations for the **WorkOrder** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more WorkOrders
+      * const workOrders = await prisma.workOrder.findMany()
+      * ```
+      */
+    get workOrder(): Prisma.WorkOrderDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.maintenancePlan`: Exposes CRUD operations for the **MaintenancePlan** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more MaintenancePlans
+      * const maintenancePlans = await prisma.maintenancePlan.findMany()
+      * ```
+      */
+    get maintenancePlan(): Prisma.MaintenancePlanDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.maintenanceOccurrence`: Exposes CRUD operations for the **MaintenanceOccurrence** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more MaintenanceOccurrences
+      * const maintenanceOccurrences = await prisma.maintenanceOccurrence.findMany()
+      * ```
+      */
+    get maintenanceOccurrence(): Prisma.MaintenanceOccurrenceDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more Notifications
+      * const notifications = await prisma.notification.findMany()
+      * ```
+      */
+    get notification(): Prisma.NotificationDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.notificationRecipient`: Exposes CRUD operations for the **NotificationRecipient** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more NotificationRecipients
+      * const notificationRecipients = await prisma.notificationRecipient.findMany()
+      * ```
+      */
+    get notificationRecipient(): Prisma.NotificationRecipientDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.schedulerRun`: Exposes CRUD operations for the **SchedulerRun** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more SchedulerRuns
+      * const schedulerRuns = await prisma.schedulerRun.findMany()
+      * ```
+      */
+    get schedulerRun(): Prisma.SchedulerRunDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.workOrderNumberCounter`: Exposes CRUD operations for the **WorkOrderNumberCounter** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more WorkOrderNumberCounters
+      * const workOrderNumberCounters = await prisma.workOrderNumberCounter.findMany()
+      * ```
+      */
+    get workOrderNumberCounter(): Prisma.WorkOrderNumberCounterDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
 }
 export declare function getPrismaClientClass(dirname: string): PrismaClientConstructor;
 //# sourceMappingURL=class.d.ts.map

@@ -134,4 +134,18 @@ export async function reactivateUser(targetUserId) {
         select: SAFE_USER_SELECT,
     });
 }
+export async function listActiveTechnicians() {
+    return prisma.user.findMany({
+        where: {
+            role: "TECHNICIAN",
+            isActive: true,
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+        },
+        orderBy: { name: "asc" },
+    });
+}
 //# sourceMappingURL=user.service.js.map

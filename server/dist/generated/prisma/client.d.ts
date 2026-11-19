@@ -64,4 +64,39 @@ export type MaintenanceRequest = Prisma.MaintenanceRequestModel;
  *
  */
 export type DecisionHistory = Prisma.DecisionHistoryModel;
+/**
+ * Model WorkOrder
+ *
+ */
+export type WorkOrder = Prisma.WorkOrderModel;
+/**
+ * Model MaintenancePlan
+ *
+ */
+export type MaintenancePlan = Prisma.MaintenancePlanModel;
+/**
+ * Model MaintenanceOccurrence
+ *
+ */
+export type MaintenanceOccurrence = Prisma.MaintenanceOccurrenceModel;
+/**
+ * Model Notification
+ *
+ */
+export type Notification = Prisma.NotificationModel;
+/**
+ * Model NotificationRecipient
+ *
+ */
+export type NotificationRecipient = Prisma.NotificationRecipientModel;
+/**
+ * Model SchedulerRun
+ *
+ */
+export type SchedulerRun = Prisma.SchedulerRunModel;
+/**
+ * Model WorkOrderNumberCounter
+ *
+ */
+export type WorkOrderNumberCounter = Prisma.WorkOrderNumberCounterModel;
 //# sourceMappingURL=client.d.ts.map
